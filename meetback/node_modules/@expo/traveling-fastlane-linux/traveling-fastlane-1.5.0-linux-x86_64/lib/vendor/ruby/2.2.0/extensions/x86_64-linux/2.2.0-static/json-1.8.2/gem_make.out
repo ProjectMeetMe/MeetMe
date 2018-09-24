@@ -1,0 +1,9 @@
+/tmp/ruby/bin/ruby -r ./siteconf20150714-3075-tmaka0.rb extconf.rb
+creating Makefile
+
+make "DESTDIR=" clean
+
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+make "DESTDIR=" install

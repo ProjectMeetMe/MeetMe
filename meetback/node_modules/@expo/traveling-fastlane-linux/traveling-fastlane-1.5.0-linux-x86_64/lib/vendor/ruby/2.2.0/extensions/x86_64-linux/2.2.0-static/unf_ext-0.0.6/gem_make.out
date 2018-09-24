@@ -1,0 +1,17 @@
+/tmp/ruby/bin/ruby -r ./siteconf20150714-13094-13t6xn1.rb extconf.rb
+checking for main() in -lstdc++... yes
+checking for ruby/encoding.h... yes
+creating Makefile
+
+make "DESTDIR=" clean
+
+make "DESTDIR="
+compiling unf.cc
+cc1plus: warning: command line option "-Wdeclaration-after-statement" is valid for C/ObjC but not for C++
+cc1plus: warning: command line option "-Wimplicit-function-declaration" is valid for C/ObjC but not for C++
+cc1plus: warning: command line option "-Wdeclaration-after-statement" is valid for C/ObjC but not for C++
+cc1plus: warning: command line option "-Wimplicit-function-declaration" is valid for C/ObjC but not for C++
+linking shared-object unf_ext.so
+
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 unf_ext.so ./.gem.20150714-13094-odce96

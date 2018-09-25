@@ -41,7 +41,7 @@ app.get('/logout', (req, res)=>{
 });
 
 //Testing DB:
-
+/*
 var dbConnection = mysql.createConnection({
   host: "104.42.79.90",
   user: "cpen321",
@@ -52,39 +52,20 @@ var dbConnection = mysql.createConnection({
 dbConnection.connect(function(err) {
   if (err) throw err
   console.log('You are now connected...');
-
-/*
-ageX=41;
-  dbConnection.query("SELECT * FROM people where age = (?)", [ageX], function(err, rows){
-	  console.log(rows[0]);
-  });*/
-
-email = "test@123.ca";
-password = "test";
-id = 123;
-  //var insertQuery = '"INSERT INTO users ( email, password, id ) values (?, ?, ?)", [email, password, id]';
-  //console.log(insertQuery);
-
-dbConnection.query('INSERT INTO users ( id, email, password ) VALUES (?, ?, ?)', [id, email, password], function(err, result){
-	console.log("Query result: " + result);
-	//return done(null, newUser);
-});
-
-
-/*
-  dbConnection.query('CREATE TABLE people(id int primary key, name varchar(255), age int, address text)', function(err, result) {
-    if (err) throw err
-    dbConnection.query('INSERT INTO people (id, name, age, address) VALUES (?, ?, ?, ?)', ['1', 'Larry', '41', 'California, USA'], function(err, result) {
-      if (err) throw err
-      dbConnection.query('SELECT * FROM people', function(err, results) {
-        if (err) throw err
-        console.log(results[0].id)
-        console.log(results[0].name)
-        console.log(results[0].age)
-        console.log(results[0].address)
-      })
-  })
-})*/
-
-
 })
+*/
+
+//Create table
+/*
+dbConnection.query('CREATE TABLE users(`id` int(11) NOT NULL AUTO_INCREMENT, `email` varchar(100) NOT NULL, `password` varchar(60) NOT NULL, PRIMARY KEY (id))', function(err, result) {
+	if (err) throw err
+})
+*/
+
+//Test insert
+/*
+email = "Test@456.ca";
+password = "testz";
+dbConnection.query('INSERT INTO users (email, password) VALUES (?, ?)', [email, password], function(err, result) {
+  if (err) throw err
+});*/

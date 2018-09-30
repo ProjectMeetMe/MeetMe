@@ -1,0 +1,24 @@
+{
+    "development": {
+        "username": "cpen321",
+        "password": "Test8as_",
+        "database": "CPEN321",
+        "host": "104.42.79.90",
+        "dialect": "mysql"
+    },
+    "test": {
+        "username": "",
+        "password": null,
+        "database": "",
+        "host": "",
+        "dialect": "mysql"
+
+    },
+    "production": {
+        "username": "",
+        "password": null,
+        "database": "",
+        "host": "127.0.0.1",
+        "dialect": "mysql"
+    }
+}

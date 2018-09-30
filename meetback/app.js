@@ -1,16 +1,22 @@
 var express = require('express');
-var mysql = require ('mysql');
-var passport = require ('passport');
-var session = require ('express-session');
-var bodyParser = require ('body-parser');
-var cookieParser = require ('cookie-parser');
+var mysql = require('mysql');
+var passport = require('passport');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var env = require('dotenv').load();
 port = process.env.PORT || 2990;
 
 var app = express();
 
-app.use(session({  secret: 'secret_name', resave: true, saveUninitialized: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+    secret: 'secret_name',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session()); // enables persistent login sessions
@@ -19,10 +25,10 @@ app.use(passport.session()); // enables persistent login sessions
 var models = require("./app/models");
 
 //Routes
-var authRoute = require('./app/routes/auth.js')(app,passport);
+var authRoute = require('./app/routes/auth.js')(app, passport);
 
 //load passport strategies
-require('./app/config/passport.js')(passport,models.user);
+require('./app/config/passport.js')(passport, models.user);
 
 //Sync database with defined models
 models.sequelize.sync().then(function() {
@@ -32,6 +38,6 @@ models.sequelize.sync().then(function() {
 });
 
 //Start server
-app.listen(port, function(){
-	console.log('RESTful API server listening on port: ' + port);
+app.listen(port, function() {
+    console.log('RESTful API server listening on port: ' + port);
 });

@@ -38,12 +38,12 @@ task wrapper(type: Wrapper) {
     distributionUrl = distributionUrl.replace("bin", "all")
 }
 
-android {
-    defaultConfig {
-        applicationId "com.MeetMe.SharedCalendarApp"
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
-    }
-}
+// android {
+//     defaultConfig {
+//         applicationId "com.MeetMe.SharedCalendarApp"
+//         minSdkVersion 15
+//         targetSdkVersion 24
+//         versionCode 1
+//         versionName "1.0"
+//     }
+//}

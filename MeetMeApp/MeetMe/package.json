@@ -11,7 +11,8 @@
     "react": "16.5.0",
     "react-native": "0.57.1",
     "react-native-google-signin": "^1.0.0-rc6",
-    "react-native-router-flux": "^4.0.5"
+    "react-native-router-flux": "^4.0.5",
+    "react-navigation": "^2.17.0"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",

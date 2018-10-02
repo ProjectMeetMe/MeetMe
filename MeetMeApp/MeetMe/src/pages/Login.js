@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Logo from '../components/Logo';
-import LoginFrom from '../components/LoginForm';
+import Logo from '../components/logo';
+import LoginFrom from '../components/loginForm';
 
 import {Actions} from 'react-native-router-flux';
 

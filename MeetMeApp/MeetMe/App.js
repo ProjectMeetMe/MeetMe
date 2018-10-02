@@ -8,9 +8,9 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
-import Routes from './src/Routes';
-import Login from './src/pages/Login';
-import Signup from './src/pages/Signup';
+import Routes from './src/routes';
+import Login from './src/pages/login';
+import Signup from './src/pages/signup';
 
 export default class App extends Component{
   render()

@@ -24,8 +24,9 @@ app.use(passport.session()); // enables persistent login sessions
 //Models
 var models = require("./app/models");
 
-//Routes
-var authRoute = require('./app/routes/auth.js')(app, passport);
+//Route imports
+var authRoutes = require('./app/routes/auth.js');
+var userRoutes = require('./app/routes/user.js');
 
 //load passport strategies
 require('./app/config/passport.js')(passport, models.user);
@@ -41,3 +42,7 @@ models.sequelize.sync().then(function() {
 app.listen(port, function() {
     console.log('RESTful API server listening on port: ' + port);
 });
+
+//Load routes
+app.use('/auth', authRoutes);
+app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);

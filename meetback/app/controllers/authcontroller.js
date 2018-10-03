@@ -2,6 +2,8 @@ var exports = module.exports = {}
 
 
 exports.signup = function(req, res) {
+	console.log("REQUEST:");
+	//console.log(JSON.stringify(req));
     res.send("SIGNUP PAGE");
 }
 

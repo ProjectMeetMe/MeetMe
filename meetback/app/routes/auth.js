@@ -8,10 +8,18 @@ module.exports = function(app, passport) {
     app.get('/signin', authController.signin); //Calls authController.signin
 
 
-    app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/signup'
-    }));
+    app.post('/signup', function(req, res, next){
+		//Custom callback
+		passport.authenticate('local-signup', function(err, user, info){
+			if (err) { return next(err); }
+
+			if (!user) {
+				return res.json({message: info.message}); //send relevant error message
+			}
+			return res.json({message: "Successful signup"}); //send user object, may not be necessary
+
+		}) (req, res, next);
+    });
 
 
     app.get('/dashboard', isLoggedIn, authController.dashboard);
@@ -20,10 +28,21 @@ module.exports = function(app, passport) {
     app.get('/logout', authController.logout);
 
 
-    app.post('/signin', passport.authenticate('local-signin', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/signin'
-    }));
+	app.post('/signin', function(req, res, next){
+		//Custom callback
+		passport.authenticate('local-signin', function(err, user, info){
+			if (err) { return next(err); }
+
+			if (!user) {
+				return res.json({message: info.message}); //send relevant error message
+			}
+			req.logIn(user, function(err) {
+				if (err) {return next(err); }
+				res.status(200); //success
+				return res.redirect('/dashboard'); //send user object, may not be necessary
+			});
+		}) (req, res, next);
+    });
 
     //middleware for checking if user is logged in
     function isLoggedIn(req, res, next) {

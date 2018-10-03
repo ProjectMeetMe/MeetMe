@@ -1,7 +1,6 @@
 var express = require('express');
 var mysql = require('mysql');
 var passport = require('passport');
-var session = require('express-session');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var env = require('dotenv').load();
@@ -9,17 +8,11 @@ port = process.env.PORT || 2990;
 
 var app = express();
 
-app.use(session({
-    secret: 'secret_name',
-    resave: true,
-    saveUninitialized: true
-}));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
-app.use(passport.session()); // enables persistent login sessions
 
 //Models
 var models = require("./app/models");
@@ -45,4 +38,4 @@ app.listen(port, function() {
 
 //Load routes
 app.use('/auth', authRoutes);
-app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);
+app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes); //use authentication middleware for user routes

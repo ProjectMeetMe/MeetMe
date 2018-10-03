@@ -13,23 +13,6 @@ module.exports = function(passport, user) {
     var User = user; // required for sequelize - treat user as a global class
     var LocalStrategy = require('passport-local').Strategy;
 
-    /*
-    passport.serializeUser(function(user, done) {
-        done(null, user.id);
-    });
-	*/
-
-    /* Deserializes user - used for persistent sessions */
-    /*
-    passport.deserializeUser(function(id, done) {
-        User.findById(id).then(function(user) {
-            if (user)
-                done(null, user.get());
-            else
-                done(user.errors, null);
-        });
-    });*/
-
     /* LOCAL SIGNUP */
     passport.use('local-signup', new LocalStrategy({
             //Override regular required fields
@@ -111,11 +94,10 @@ module.exports = function(passport, user) {
                 console.log("SUCCESSFUL LOGIN:")
                 console.log(JSON.stringify(userinfo));
 
-                //Update login time (for purposes of generating unique JWT each login)
+                //Update login time
                 user.update({
                     last_login: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
                 });
-                //console.log(JSON.stringify(moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')));
 
                 return done(null, userinfo);
             }).catch(function(err) {
@@ -132,19 +114,22 @@ module.exports = function(passport, user) {
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
             secretOrKey: 'your_jwt_secret'
         },
-        function(jwtPayload, cb) {
+        function(jwtPayload, cb) { //jwtPayload contains user info unencrypted
 
             //Find the user in db
             User.findOne({
                     where: {
-                        id: jwtPayload.id
+                        id: jwtPayload.id,
+						last_login: jwtPayload.last_login //last login time must match or token is invalid
                     }
                 })
                 .then(function(user) {
-                    var userinfo = user.get();
-                    return cb(null, userinfo);
+					if (!user){ //no matching database entry - lastlogin invalid
+						return cb(null);
+					}
+                    return cb(null, jwtPayload);
                 })
-                .catch(function(err) {
+                .catch(function(err) { //payload is nonsense
                     return cb(err);
                 })
         }));

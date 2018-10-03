@@ -56,8 +56,9 @@ router.post('/signin', function(req, res, next) {
             if (err) {
                 return next(err);
             }
-            //successful login
-            const token = jwt.sign(user, 'your_jwt_secret'); //second param is key for encryption, using user as seed
+            //successful login:
+            //1st param = payload, 2nd param = secret(for encryption), 3rd param = expiry date for jwt
+            const token = jwt.sign(user, 'your_jwt_secret', {expiresIn: '1d'});
             return res.status(200).json({
                 user,
                 token

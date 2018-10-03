@@ -1,4 +1,5 @@
 /* User based routes, all require authentication with JWT */
+/* req contains user object for all user info*/
 
 var express = require('express');
 var router = express.Router();
@@ -10,7 +11,15 @@ router.get('/', function(req, res, next) {
 
 /* GET user profile. */
 router.get('/profile', function(req, res, next) {
-	console.log("Successful access to user page");
+	console.log("Successful access to profile page");
+    res.send(req.user);
+});
+
+/* GET user profile. */
+router.get('/logout', function(req, res, next) {
+	console.log("Successful access to logout");
+	//Should do something here to invalidate the current token, perhaps set a logout value ?
+	//Or we could do it all frontend
     res.send(req.user);
 });
 

@@ -54,12 +54,11 @@ module.exports = function(passport, user) {
                         firstname: req.body.firstname,
                         lastname: req.body.lastname
                     };
-                    console.log("TEEEEEEEEEEST");
                     console.log(JSON.stringify(data));
                     //Creates a new entry in the database
                     User.create(data).then(function(newUser, created) {
                         if (!newUser) {
-                            return done(null, false);
+                            return done(null, false); //failed
                         }
                         if (newUser) {
                             return done(null, newUser);
@@ -97,7 +96,7 @@ module.exports = function(passport, user) {
                 if (!isValidPassword(user.password, password)) {
                     console.log("WRONG PASSWORD");
                     return done(null, false, {
-                        message: 'Incorrect password.'
+                        message: 'Incorrect password'
                     });
                 }
                 var userinfo = user.get();
@@ -107,7 +106,7 @@ module.exports = function(passport, user) {
             }).catch(function(err) {
                 console.log("Error:", err);
                 return done(null, false, {
-                    message: 'Something went wrong with your Signin'
+                    message: 'Something went wrong with your signin'
                 });
             });
         }

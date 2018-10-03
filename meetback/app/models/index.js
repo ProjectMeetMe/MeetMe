@@ -7,8 +7,8 @@ var fs = require("fs");
 var path = require("path");
 var Sequelize = require("sequelize");
 var env = process.env.NODE_ENV || "development";
-var config = require(path.join(__dirname, '..', 'config', 'database_config.json'))[env];
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
+var db_config = require(path.join(__dirname, '..', 'config', 'database_config.json'))[env]; //loads database login info
+var sequelize = new Sequelize(db_config.database, db_config.username, db_config.password, db_config);
 var db = {};
 
 
@@ -30,6 +30,5 @@ Object.keys(db).forEach(function(modelName) {
 
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
 module.exports = db;

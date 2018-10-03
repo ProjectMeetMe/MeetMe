@@ -18,8 +18,7 @@ router.get('/profile', function(req, res, next) {
 /* GET user profile. */
 router.get('/logout', function(req, res, next) {
 	console.log("Successful access to logout");
-	//Should do something here to invalidate the current token, perhaps set a logout value ?
-	//Or we could do it all frontend
+	//Should do something here to invalidate the current token, perhaps with a blacklist of token values
     res.send(req.user);
 });
 

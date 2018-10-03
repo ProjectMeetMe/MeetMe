@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import {
+  AppRegistry,
   StyleSheet,
   Text,
   View,
   StatusBar ,
   TouchableOpacity
 } from 'react-native';
-
+import Toast from 'react-native-simple-toast';
 import Logo from '../components/logo';
 import SignupForm from '../components/signupForm';
-
 import {Actions} from 'react-native-router-flux';
+
 
 export default class Signup extends Component {
 
@@ -18,6 +19,7 @@ export default class Signup extends Component {
       Actions.pop();
   }
 
+  
 	render() {
 		return(
 			<View style={styles.container}>
@@ -56,3 +58,5 @@ const styles = StyleSheet.create({
   	fontWeight:'500'
   }
 });
+
+AppRegistry.registerComponent('signup', () => signup);

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {AppRegistry, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Logo from '../components/logo';
 import LoginFrom from '../components/loginForm';
+import { StackNavigator } from 'react-navigation';
 
 import {Actions} from 'react-native-router-flux';
 
@@ -50,3 +51,5 @@ const styles = StyleSheet.create({
   	fontWeight:'500'
   }
 });
+
+AppRegistry.registerComponent('login', () => login);

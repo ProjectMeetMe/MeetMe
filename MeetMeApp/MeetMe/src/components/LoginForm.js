@@ -4,11 +4,68 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity 
+  TouchableOpacity,
+  Keyboard 
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 //import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 
 export default class LoginFrom extends Component {
+
+  constructor(props){
+		super(props)
+		this.state={
+			userEmail:'',
+			userPassword:''
+    }
+  }
+
+  login = () =>{
+		const {userEmail,userPassword} = this.state;
+		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+		if(userEmail==""){
+		  Toast.show('Please enter your email address!', Toast.LONG);		
+		}
+		
+		else if(reg.test(userEmail) === false)
+		{
+		  Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
+		  }
+
+		else if(userPassword==""){
+		this.setState({email:'Please enter your password'})
+		}
+		else{
+		
+		fetch('http://104.42.79.90:2990/auth/signin',{
+			method:'post',
+			header:{
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+			body:JSON.stringify({
+				email: userEmail,
+				password: userPassword
+			})
+			
+		})
+		.then((response) => response.json())
+		 .then((responseJson)=>{
+      Toast.show(JSON.stringify(responseJson))
+			//  if(responseJson == "ok"){
+			// 	 // redirect to profile page
+			// 	 alert("Successfully Login");
+			// 	 this.props.navigation.navigate("Profile");
+			//  }else{
+			// 	 alert("Wrong Login Details");
+			//  }
+		 });
+		}
+		
+		Keyboard.dismiss();
+	}
+    
+
 
 	render(){
 		return(
@@ -20,6 +77,7 @@ export default class LoginFrom extends Component {
                     selectionColor="#fff"
                     keyboardType="email-address"
                     onSubmitEditing={()=> this.password.focus()}
+                    onChangeText={userEmail => this.setState({userEmail})}
                 />
 
                 <TextInput style={styles.inputBox} 
@@ -28,9 +86,10 @@ export default class LoginFrom extends Component {
                     secureTextEntry={true}
                     placeholderTextColor = "#ffffff"
                     ref={(input) => this.password = input}
+                    onChangeText={userPassword => this.setState({userPassword})}
                 /> 
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={this.login}>
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
 

@@ -10,9 +10,8 @@ export default class Logo extends Component {
 	render(){
 		return(
 			<View style={styles.container}>
-				<Image  style={{width:40, height: 70}}
+				<Image  style={{width:400, height: 100}}
           			source={require('../images/MeetMe-logo.png')}/>
-          		<Text style={styles.logoText}>MeetMe</Text>	
   			</View>
 			)
 	}

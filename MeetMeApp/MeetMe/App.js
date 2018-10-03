@@ -10,7 +10,16 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
 import Routes from './src/routes';
 import Login from './src/pages/login';
-import Signup from './src/pages/signup';
+import Profile from './src/pages/profile';
+import { StackNavigator } from 'react-navigation';
+
+// const App = StackNavigator({
+// 	Login: { screen: Login },
+// 	Profile: {screen: Profile}
+	
+//  });
+
+//  export default App;
 
 export default class App extends Component{
   render()

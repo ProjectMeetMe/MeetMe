@@ -1,18 +1,26 @@
-//load bcrypt
+/* Passport strategies for authentication */
+
 var bCrypt = require('bcrypt-nodejs');
+var passportJWT = require('passport-jwt');
+var JWTStrategy = passportJWT.Strategy;
+var ExtractJWT = passportJWT.ExtractJwt;
+var moment = require('moment');
+
+
 
 module.exports = function(passport, user) {
 
     var User = user; // required for sequelize - treat user as a global class
     var LocalStrategy = require('passport-local').Strategy;
 
-
+    /*
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
-
+	*/
 
     /* Deserializes user - used for persistent sessions */
+    /*
     passport.deserializeUser(function(id, done) {
         User.findById(id).then(function(user) {
             if (user)
@@ -20,7 +28,7 @@ module.exports = function(passport, user) {
             else
                 done(user.errors, null);
         });
-    });
+    });*/
 
     /* LOCAL SIGNUP */
     passport.use('local-signup', new LocalStrategy({
@@ -48,20 +56,20 @@ module.exports = function(passport, user) {
                     });
                 } else {
                     var userPassword = generateHash(password);
-                    var data = {
+                    var userData = {
                         email: email,
                         password: userPassword,
                         firstname: req.body.firstname,
                         lastname: req.body.lastname
                     };
-                    console.log(JSON.stringify(data));
+                    console.log(JSON.stringify(userData));
                     //Creates a new entry in the database
-                    User.create(data).then(function(newUser, created) {
+                    User.create(userData).then(function(newUser, created) {
                         if (!newUser) {
                             return done(null, false); //failed
                         }
                         if (newUser) {
-                            return done(null, newUser);
+                            return done(null, newUser); //return new user object
                         }
                     });
                 }
@@ -102,6 +110,13 @@ module.exports = function(passport, user) {
                 var userinfo = user.get();
                 console.log("SUCCESSFUL LOGIN:")
                 console.log(JSON.stringify(userinfo));
+
+                //Update login time (for purposes of generating unique JWT each login)
+                user.update({
+                    last_login: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+                });
+                //console.log(JSON.stringify(moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')));
+
                 return done(null, userinfo);
             }).catch(function(err) {
                 console.log("Error:", err);
@@ -111,4 +126,27 @@ module.exports = function(passport, user) {
             });
         }
     ));
+
+    /* JSON WEB TOKEN AUTHENTICATION */
+    passport.use(new JWTStrategy({
+            jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+            secretOrKey: 'your_jwt_secret'
+        },
+        function(jwtPayload, cb) {
+
+            //Find the user in db
+            User.findOne({
+                    where: {
+                        id: jwtPayload.id
+                    }
+                })
+                .then(function(user) {
+                    var userinfo = user.get();
+                    return cb(null, userinfo);
+                })
+                .catch(function(err) {
+                    return cb(err);
+                })
+        }));
+
 }

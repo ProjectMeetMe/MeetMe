@@ -127,7 +127,7 @@ passport.use(new JWTStrategy({
                 }
                 console.log("TEST:");
                 console.log(JSON.stringify(user_found));
-                return cb(null, user_found);
+                return cb(null, user_found.get());
             })
             .catch(function(err) { //payload is nonsense
                 return cb(err);

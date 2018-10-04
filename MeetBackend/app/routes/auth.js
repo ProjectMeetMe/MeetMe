@@ -30,10 +30,6 @@ router.post('/signup', function(req, res, next) {
 });
 
 
-router.get('/logout', function(req, res) {
-    //need to destroy token?
-});
-
 
 router.post('/signin', function(req, res, next) {
     //Custom callback

@@ -24,7 +24,7 @@ router.post('/signup', function(req, res, next) {
         }
         return res.status(200).json({
             message: "Successful signup"
-        }); //send user object, may not be necessary
+        });
 
     })(req, res, next);
 });
@@ -67,7 +67,8 @@ router.post('/signin', function(req, res, next) {
             });
 
         });
-    })(req, res, next);
+
+    })(req, res);
 });
 
 module.exports = router;

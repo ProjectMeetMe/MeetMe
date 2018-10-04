@@ -7,7 +7,7 @@ var ExtractJWT = passportJWT.ExtractJwt;
 var moment = require('moment');
 var passport = require('passport');
 
-var user = require("../models").user; //important user model
+var user = require("../models/sequelize.js").user; //user model
 var LocalStrategy = require('passport-local').Strategy;
 
 /* LOCAL SIGNUP */
@@ -28,8 +28,8 @@ passport.use('local-signup', new LocalStrategy({
             where: {
                 email: email
             }
-        }).then(function(user) {
-            if (user) {
+        }).then(function(user_found) {
+            if (user_found) {
                 console.log("EMAIL TAKEN");
                 return done(null, false, {
                     message: 'That email is already taken'
@@ -42,13 +42,14 @@ passport.use('local-signup', new LocalStrategy({
                     firstname: req.body.firstname,
                     lastname: req.body.lastname
                 };
-                console.log(JSON.stringify(userData));
-                //Creates a new entry in the database
+
                 user.create(userData).then(function(newuser, created) {
+                    console.log("Entry should be created");
                     if (!newuser) {
+                        console.log("No new user - error");
                         return done(null, false); //failed
-                    }
-                    if (newuser) {
+                    } else {
+                        console.log("User created");
                         return done(null, newuser); //return new user object
                     }
                 });
@@ -74,29 +75,28 @@ passport.use('local-signin', new LocalStrategy({
             where: {
                 email: email
             }
-        }).then(function(user) {
-            if (!user) {
+        }).then(function(user_found) {
+            if (!user_found) { //no user found, wrong email
                 console.log("WRONG EMAIL");
                 return done(null, false, {
                     message: 'Email does not exist'
                 });
             }
-            if (!isValidPassword(user.password, password)) {
+            if (!isValidPassword(user_found.password, password)) { //user found but passwords dont match
                 console.log("WRONG PASSWORD");
                 return done(null, false, {
                     message: 'Incorrect password'
                 });
             }
-            var userinfo = user.get();
-            console.log("SUCCESSFUL LOGIN:")
-            console.log(JSON.stringify(userinfo));
 
             //Update login time
-            user.update({
+            user_found.update({
                 last_login: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-            });
+            }).then(function(updated_user){
+				return done(null, updated_user.get());
+			})
+			return null; //suppress warnings
 
-            return done(null, userinfo);
         }).catch(function(err) {
             console.log("Error:", err);
             return done(null, false, {
@@ -121,11 +121,13 @@ passport.use(new JWTStrategy({
                     last_login: jwtPayload.last_login //last login time must match or token is invalid
                 }
             })
-            .then(function(user) {
-                if (!user) { //no matching database entry - lastlogin invalid
+            .then(function(user_found) {
+                if (!user_found) { //no matching database entry - lastlogin invalid
                     return cb(null);
                 }
-                return cb(null, user);
+                console.log("TEST:");
+                console.log(JSON.stringify(user_found));
+                return cb(null, user_found);
             })
             .catch(function(err) { //payload is nonsense
                 return cb(err);

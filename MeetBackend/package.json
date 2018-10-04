@@ -18,7 +18,7 @@
     "sequelize": "^4.39.0"
   },
   "devDependencies": {},
-  "scripts": {},
+  "scripts": {"start": "node app.js"},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ProjectMeetMe/MeetBack.git"

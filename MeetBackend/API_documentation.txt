@@ -1,0 +1,33 @@
+POST to /auth/signup:
+
+request body format:
+{
+	email: <email>
+	password: <string>
+	firstname: <string>
+	lastname: <string>
+}
+Success: success message and account is added to database
+Failure: failure response
+
+================================================================================
+
+POST to /auth/signin:
+
+request body format:
+{
+	email: <email>
+	password: <string>
+}
+Success: json response:
+	{"user": user info,
+	"token": JSON web token for session authentication}
+Failure: failure response
+
+================================================================================
+
+GET to /user/profile
+
+requires authenticated JSON web token in "Bearer Token" field of request
+Responds with json response:
+	{"user": user info}

@@ -7,7 +7,7 @@ var ExtractJWT = passportJWT.ExtractJwt;
 var moment = require('moment');
 var passport = require('passport');
 
-var user = require("../models").user; //important user model
+var user = require("../models/sequelize.js").user; //user model
 var LocalStrategy = require('passport-local').Strategy;
 
 /* LOCAL SIGNUP */

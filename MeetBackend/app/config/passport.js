@@ -28,8 +28,8 @@ passport.use('local-signup', new LocalStrategy({
             where: {
                 email: email
             }
-        }).then(function(user_found) {
-            if (user_found) {
+        }).then(function(userFound) {
+            if (userFound) {
                 console.log("EMAIL TAKEN");
                 return done(null, false, {
                     message: 'That email is already taken'
@@ -52,7 +52,10 @@ passport.use('local-signup', new LocalStrategy({
                         console.log("db.user created");
                         return done(null, newuser); //return new user object
                     }
-                });
+                }).catch(function(error){
+					console.log(error);
+					return done(null, false, {message: 'Invalid email'}); //email invalid or some other creation error
+				});
             }
         });
     }
@@ -75,14 +78,14 @@ passport.use('local-signin', new LocalStrategy({
             where: {
                 email: email
             }
-        }).then(function(user_found) {
-            if (!user_found) { //no user found, wrong email
+        }).then(function(userFound) {
+            if (!userFound) { //no user found, wrong email
                 console.log("WRONG EMAIL");
                 return done(null, false, {
                     message: 'Email does not exist'
                 });
             }
-            if (!isValidPassword(user_found.password, password)) { //user found but passwords dont match
+            if (!isValidPassword(userFound.password, password)) { //user found but passwords dont match
                 console.log("WRONG PASSWORD");
                 return done(null, false, {
                     message: 'Incorrect password'
@@ -90,10 +93,10 @@ passport.use('local-signin', new LocalStrategy({
             }
 
             //Update login time
-            user_found.update({
+            userFound.update({
                 lastLogin: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-            }).then(function(updated_user){
-				return done(null, updated_user.get());
+            }).then(function(updatedUser){
+				return done(null, updatedUser.get());
 			})
 			return null; //suppress warnings
 
@@ -121,13 +124,13 @@ passport.use(new JWTStrategy({
                     lastLogin: jwtPayload.lastLogin //last login time must match or token is invalid
                 }
             })
-            .then(function(user_found) {
-                if (!user_found) { //no matching database entry - lastlogin invalid
+            .then(function(userFound) {
+                if (!userFound) { //no matching database entry - lastlogin invalid
                     return cb(null);
                 }
                 console.log("TEST:");
-                console.log(JSON.stringify(user_found));
-                return cb(null, user_found.get());
+                console.log(JSON.stringify(userFound));
+                return cb(null, userFound.get()); //pass on user object to next function
             })
             .catch(function(err) { //payload is nonsense
                 return cb(err);

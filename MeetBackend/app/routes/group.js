@@ -2,15 +2,17 @@ var express = require('express');
 var router = express.Router();
 var db = require("../models/sequelize.js"); //user model
 
+const maxUsersInGroup = 10; // Max allowed users per group
+
 /* POST new group */
 router.post('/createGroup', function(req, res, next) {
 
     db.group.create({
         groupName: req.body.groupName,
         leaderId: req.user.id, //current logged in user's id
-    }).then(function(newgroup) {
-        newgroup.addUser(req.user.id); //adds the lead user to this group
-        return res.status(200).json(newgroup.get());
+    }).then(function(newGroup) {
+        newGroup.addUser(req.user.id); //adds the lead user to this group
+        return res.status(200).json(newGroup.get());
     })
 })
 
@@ -30,29 +32,52 @@ router.get('/getGroups', function(req, res, next) {
         where: {
             id: req.user.id //user must belong to group
         }
-    }).then(function(user_groups) {
-        return res.status(200).json(user_groups.groups); //only return group info
+    }).then(function(userWithGroups) {
+        return res.status(200).json(userWithGroups.groups); //only return group info
     })
 })
 
 
-/* POST join logged in user to group */
+/* POST join logged in user to group by groupJoinToken */
 router.post('/joinGroup', function(req, res, next) {
 
-    const groupId = req.body.groupId
+    const joinToken = req.body.groupJoinToken
 
     db.group.findOne({
+        include: [{
+            model: db.user,
+            attributes: ['id'], //get user ids in that group
+            through: {
+                attributes: []
+            }
+        }],
         where: {
-            id: groupId
+            joinToken: joinToken
         }
-    }).then(function(group_found) {
-        if (!group_found) {
+    }).then(function(groupFound) {
+        if (!groupFound) {
             return res.status(400).json({
-                message: "Invalid group id - does not exist"
+                message: "Error: Invalid group join token"
             });
         }
-        group_found.addUser(req.user.id); //adds the user to this group
-        return res.status(200).json(group_found.get());
+        //Need to check that user is not currently in group
+        //Set a limit on # members / group here?
+        const usersInGroup = groupFound.users;
+        for (var i = 0; i < usersInGroup.length; i++) {
+            if (usersInGroup[i].id == req.user.id) { //user already exists in group
+                return res.status(400).json({
+                    message: "Error: User already in group"
+                });
+            }
+        }
+		if (groupFound.users == maxUsersInGroup){
+			return res.status(400).json({
+				message: "Error: Group already has maximum allowed number of users"
+			});
+		}
+
+        groupFound.addUser(req.user.id); //adds the user to this group
+        return res.status(200).json(groupFound.get()); //return with info about group
     });
 })
 

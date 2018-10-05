@@ -38,7 +38,11 @@ db.group.belongsToMany(db.user, {
 });
 
 //Sync models with database
-sequelize.sync()
+sequelize.sync(
+        /*{
+                force: true
+            }*/
+    )
     .then(() => {
         console.log(`Database & tables synced with models!`);
     })

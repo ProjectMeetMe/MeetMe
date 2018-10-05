@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   StyleSheet,
   Text,
   View,
@@ -8,6 +9,8 @@ import {
   Keyboard 
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
+import Home from '../pages/home';
+import {Actions} from 'react-native-router-flux';
 //import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 
 export default class LoginFrom extends Component {
@@ -16,13 +19,20 @@ export default class LoginFrom extends Component {
 		super(props)
 		this.state={
 			userEmail:'',
-			userPassword:''
+      userPassword:''
+      // userEmail:'12345678@hotmail.com',
+      // userPassword:'12345678',
     }
+  }
+
+  home() {
+		Actions.home()
   }
 
   login = () =>{
 		const {userEmail,userPassword} = this.state;
-		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    var loggedin = 0;
 		if(userEmail==""){
 		  Toast.show('Please enter your email address!', Toast.LONG);		
 		}
@@ -33,13 +43,14 @@ export default class LoginFrom extends Component {
 		  }
 
 		else if(userPassword==""){
-		this.setState({email:'Please enter your password'})
+      Toast.show('Please enter your password!', Toast.LONG);
 		}
 		else{
 		
-		fetch('http://104.42.79.90:2990/auth/signin',{
+    }
+    fetch('http://104.42.79.90:2990/auth/signin',{
 			method:'post',
-			header:{
+			headers:{
 				'Accept': 'application/json',
 				'Content-type': 'application/json'
 			},
@@ -51,21 +62,21 @@ export default class LoginFrom extends Component {
 		})
 		.then((response) => response.json())
 		 .then((responseJson)=>{
-      Toast.show(JSON.stringify(responseJson))
-			//  if(responseJson == "ok"){
-			// 	 // redirect to profile page
-			// 	 alert("Successfully Login");
-			// 	 this.props.navigation.navigate("Profile");
-			//  }else{
-			// 	 alert("Wrong Login Details");
-			//  }
-		 });
-		}
-		
-		Keyboard.dismiss();
-	}
+       if(responseJson.message != "Successful login")
+       {
+        Toast.show(responseJson.message, Toast.LONG);
+       }
+       else
+       {
+        Toast.show(JSON.stringify(responseJson), Toast.LONG)
+        console.log("Redirect");
+        this.home();
+       }
+     });
     
-
+    Keyboard.dismiss();
+  
+	}
 
 	render(){
 		return(
@@ -93,11 +104,11 @@ export default class LoginFrom extends Component {
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
 
-                {/* <GoogleSigninButton style={{ width: 48, height: 48 }}
+                {/* { <GoogleSigninButton style={{ width: 48, height: 48 }}
                       size={GoogleSigninButton.Size.Icon}
                       color={GoogleSigninButton.Color.Dark}
                       onPress={this._signIn}
-                      disabled={this.state.isSigninInProgress} />  */}
+                      disabled={this.state.isSigninInProgress} />  } */}
   		</View>
 			)
 	}

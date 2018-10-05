@@ -34,7 +34,20 @@ export default class SignupForm extends Component {
     //       + " userEmail: " + userEmail
     //       + " userPassword: " + userPassword);
 
-    //console.log('Before fetch method');
+    // Toast.show(JSON.stringify({
+    //   firstname : userFirstName,
+    //   lastname : userLastName,
+    //   email : userEmail,
+    //   password : userPassword
+    // }));
+
+    // console.log(JSON.stringify({
+    //   firstname : userFirstName,
+    //   lastname : userLastName,
+    //   email : userEmail,
+    //   password : userPassword
+    // }));
+
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 		if(userEmail==""){
 		  Toast.show('Please enter your Email address!', Toast.LONG);
@@ -58,23 +71,23 @@ export default class SignupForm extends Component {
     else
     {
       fetch('http://104.42.79.90:2990/auth/signup', {
-        method: 'post',
+        method: 'POST',
         //credentials: "include",
-        header:{
+        headers:{
         	'Accept': 'application/json',
         	'Content-type': 'application/json'
         },
         body:JSON.stringify({
-          "firstname": userFirstName,
-          "lastname": userLastName,
-          "email": userEmail,
-          "password": userPassword
+          firstname : userFirstName,
+          lastname : userLastName,
+          email : userEmail,
+          password : userPassword
         })
-        
+
       })
       .then((response) => response.json())
       .then((responseJson)=>{ 
-        Toast.show(JSON.stringify(responseJson))
+        Toast.show(responseJson.message, Toast.LONG);
       });
     }
   }

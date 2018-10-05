@@ -8,10 +8,14 @@ module.exports = function(sequelize, Sequelize) {
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        groupname: {
+        groupName: {
             type: Sequelize.STRING,
             notEmpty: true
-        }
+        },
+		leaderId: {
+			type: Sequelize.STRING,
+            notEmpty: true
+		}
     });
     return Group;
 }

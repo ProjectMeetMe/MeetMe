@@ -12,15 +12,15 @@ router.post('/signup', function(req, res, next) {
 		session:false
 	}, function(err, user, info) {
         if (err) {
-            return res.status(400).json({
+            return res.status(400).json({ //unknown error
                 message: "Some error encountered"
             });
         }
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(400).json({ //send relevant error message
                 message: info.message
-            }); //send relevant error message
+            });
         }
         return res.status(200).json({
             message: "Successful signup"
@@ -37,15 +37,15 @@ router.post('/signin', function(req, res, next) {
         session: false
     }, function(err, user, info) {
         if (err) {
-            return res.status(400).json({
+            return res.status(400).json({ //unknown error
                 message: "Some error encountered"
             });
         }
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(400).json({ //send relevant error message
                 message: info.message
-            }); //send relevant error message
+            });
         }
 
         req.login(user, {
@@ -59,7 +59,8 @@ router.post('/signin', function(req, res, next) {
             const token = jwt.sign(user, 'your_jwt_secret', {expiresIn: '1d'});
             return res.status(200).json({ //give out a valid jwt token to frontend
                 user,
-                token
+                token,
+				message: "Successful login"
             });
 
         });

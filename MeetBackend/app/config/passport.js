@@ -7,7 +7,7 @@ var ExtractJWT = passportJWT.ExtractJwt;
 var moment = require('moment');
 var passport = require('passport');
 
-var user = require("../models/sequelize.js").user; //user model
+var User = require("../models/sequelize.js").User; //user model
 var LocalStrategy = require('passport-local').Strategy;
 
 /* LOCAL SIGNUP */
@@ -24,7 +24,7 @@ passport.use('local-signup', new LocalStrategy({
         };
 
         //If sequelize finds matching email in DB ...
-        user.findOne({
+        User.findOne({
             where: {
                 email: email
             }
@@ -43,7 +43,7 @@ passport.use('local-signup', new LocalStrategy({
                     lastname: req.body.lastname
                 };
 
-                user.create(userData).then(function(newuser, created) {
+                User.create(userData).then(function(newuser, created) {
                     console.log("Entry should be created");
                     if (!newuser) {
                         console.log("No new user - error");
@@ -71,7 +71,7 @@ passport.use('local-signin', new LocalStrategy({
             return bCrypt.compareSync(password, userpass);
         }
         //If sequelize finds matching email in DB ...
-        user.findOne({
+        User.findOne({
             where: {
                 email: email
             }
@@ -91,7 +91,7 @@ passport.use('local-signin', new LocalStrategy({
 
             //Update login time
             user_found.update({
-                last_login: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+                lastLogin: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
             }).then(function(updated_user){
 				return done(null, updated_user.get());
 			})
@@ -114,11 +114,11 @@ passport.use(new JWTStrategy({
     function(jwtPayload, cb) { //jwtPayload contains user info unencrypted
 
         //Find the user in db
-        user.findOne({
+        User.findOne({
                 where: {
                     id: jwtPayload.id,
                     password: jwtPayload.password,
-                    last_login: jwtPayload.last_login //last login time must match or token is invalid
+                    lastLogin: jwtPayload.lastLogin //last login time must match or token is invalid
                 }
             })
             .then(function(user_found) {

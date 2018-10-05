@@ -16,13 +16,10 @@ app.use(passport.initialize());
 //load passport strategies
 require('./app/config/passport.js');
 
-//Route imports
-var authRoutes = require('./app/routes/auth.js');
-var userRoutes = require('./app/routes/user.js');
-
 //Load routes
-app.use('/auth', authRoutes);
-app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes); //use authentication middleware for user routes
+app.use('/auth', require('./app/routes/auth.js'));
+app.use('/user', passport.authenticate('jwt', {session: false}), require('./app/routes/user.js')); //use authentication middleware for user routes
+app.use('/group', passport.authenticate('jwt', {session: false}), require('./app/routes/group.js'));
 
 
 //Start server

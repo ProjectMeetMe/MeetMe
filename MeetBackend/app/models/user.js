@@ -26,7 +26,7 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.STRING,
             allowNull: false
         },
-        last_login: {
+        lastLogin: {
             type: Sequelize.DATE
         },
         status: {

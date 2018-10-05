@@ -7,7 +7,7 @@ var ExtractJWT = passportJWT.ExtractJwt;
 var moment = require('moment');
 var passport = require('passport');
 
-var User = require("../models/sequelize.js").User; //user model
+var db = require("../models/sequelize.js"); //load models
 var LocalStrategy = require('passport-local').Strategy;
 
 /* LOCAL SIGNUP */
@@ -24,7 +24,7 @@ passport.use('local-signup', new LocalStrategy({
         };
 
         //If sequelize finds matching email in DB ...
-        User.findOne({
+        db.user.findOne({
             where: {
                 email: email
             }
@@ -43,13 +43,13 @@ passport.use('local-signup', new LocalStrategy({
                     lastname: req.body.lastname
                 };
 
-                User.create(userData).then(function(newuser, created) {
+                db.user.create(userData).then(function(newuser) {
                     console.log("Entry should be created");
                     if (!newuser) {
                         console.log("No new user - error");
                         return done(null, false); //failed
                     } else {
-                        console.log("User created");
+                        console.log("db.user created");
                         return done(null, newuser); //return new user object
                     }
                 });
@@ -71,7 +71,7 @@ passport.use('local-signin', new LocalStrategy({
             return bCrypt.compareSync(password, userpass);
         }
         //If sequelize finds matching email in DB ...
-        User.findOne({
+        db.user.findOne({
             where: {
                 email: email
             }
@@ -114,7 +114,7 @@ passport.use(new JWTStrategy({
     function(jwtPayload, cb) { //jwtPayload contains user info unencrypted
 
         //Find the user in db
-        User.findOne({
+        db.user.findOne({
                 where: {
                     id: jwtPayload.id,
                     password: jwtPayload.password,

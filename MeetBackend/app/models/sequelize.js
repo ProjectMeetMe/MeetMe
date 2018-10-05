@@ -11,7 +11,7 @@ const Op = Sequelize.Op;
 const sequelize = new Sequelize(db_name, db_user, db_password, { //database username password
     host: db_host,
     dialect: db_dialect,
-	operatorsAliases: Op, //suppress warnings
+    operatorsAliases: Op, //suppress warnings
     pool: {
         max: 5,
         min: 0,
@@ -20,13 +20,22 @@ const sequelize = new Sequelize(db_name, db_user, db_password, { //database user
     },
 });
 
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
 //Defined models
-const User = require('./user.js')(sequelize, Sequelize);
-const Group = require('./group.js')(sequelize, Sequelize);
+db.user = require('./user.js')(sequelize, Sequelize);
+db.group = require('./group.js')(sequelize, Sequelize);
 
 //Defined relations
-//User.belongsTo(Group);
-Group.hasMany(User, {as: 'groupMembers'});
+db.user.belongsToMany(db.group, {
+    through: 'group_users'
+});
+db.group.belongsToMany(db.user, {
+    through: 'group_users'
+});
 
 //Sync models with database
 sequelize.sync()
@@ -34,7 +43,4 @@ sequelize.sync()
         console.log(`Database & tables synced with models!`);
     })
 
-module.exports = {
-    User,
-    Group
-}
+module.exports = db;

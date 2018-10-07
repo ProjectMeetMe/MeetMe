@@ -1,12 +1,13 @@
 POST to /auth/signup:
 
-request body format:
+Request body format:
 {
-	email: <email>
-	password: <string>
-	firstname: <string>
+	email: <email>,
+	password: <string>,
+	firstname: <string>,
 	lastname: <string>
 }
+
 Success: success message and account is added to database
 Failure: failure response
 
@@ -14,20 +15,108 @@ Failure: failure response
 
 POST to /auth/signin:
 
-request body format:
+Request body format:
 {
-	email: <email>
+	email: <email>,
 	password: <string>
 }
+
 Success: json response:
-	{"user": user info,
-	"token": JSON web token for session authentication}
+{
+	"user": <user info>,
+	"token": <JSON web token for session authentication>
+}
 Failure: failure response
 
 ================================================================================
 
 GET to /user/profile
 
-requires authenticated JSON web token in "Bearer Token" field of request
+Requires authenticated JSON web token in "Bearer Token" field of request
+
 Responds with json response:
-	{"user": user info}
+{
+    "id": 2,
+    "firstname": "Tester",
+    "lastname": "Test",
+    "email": "tester2@test.com",
+    "password": "$2a$08$48l7DIaOPcHTgyhpUMb/DOgcQ34VKgHJF4Dz8F0W4FHkun6tiZTee",
+    "lastLogin": "2018-10-06T01:39:09.000Z",
+    "status": "active",
+    "createdAt": "2018-10-05T22:22:51.000Z",
+    "updatedAt": "2018-10-06T01:39:09.000Z"
+}
+
+================================================================================
+
+POST to /group/createGroup
+
+requires authenticated JSON web token in "Bearer Token" field of request
+request body format:
+
+Request body format:
+{
+	groupName: <name of group>
+}
+
+Responds with json response AND creates entry for group (with information in response):
+{
+    "id": <group ID>,
+    "groupName": <group name>,
+    "leaderId": <group leader user id>,
+    "updatedAt": <time of last update>,
+    "createdAt": <time of creation>,
+    "joinToken": <token needed to join group>
+}
+
+================================================================================
+
+POST to /group/joinGroup
+
+requires authenticated JSON web token in "Bearer Token" field of request
+request body format:
+
+Request body format:
+{
+	groupJoinToken: <token needed to join group>
+}
+
+On success, responds with json response AND adds user to group:
+{
+    "id": <group ID>,
+    "groupName": <group name>,
+    "leaderId": <group leader user id>,
+    "updatedAt": "<time of last update>",
+    "createdAt": "<time of creation>",
+    "joinToken": "<token needed to join group>"
+}
+
+On failure, responds with failure message in json body (invalid user token, user already in group, too many members in group):
+{
+	"message": <Error message>
+}
+
+================================================================================
+
+GET to /group/getGroups
+
+requires authenticated JSON web token in "Bearer Token" field of request
+request body format:
+
+Request body format:
+{
+	groupJoinToken: <token needed to join group>
+}
+
+Responds with json array with the groups the current user belongs to:
+[
+    {
+        "id": <group id 1>,
+        "groupName": <group name 1>
+    },
+    {
+        "id": <group id 2>,
+        "groupName": <group name 2>
+    }
+	...
+]

@@ -16,7 +16,6 @@ router.post('/signup', function(req, res, next) {
                 message: "Some error encountered"
             });
         }
-
         if (!user) {
             return res.status(400).json({ //send relevant error message
                 message: info.message
@@ -57,7 +56,7 @@ router.post('/signin', function(req, res, next) {
             //successful login:
             //1st param = payload, 2nd param = secret(for encryption), 3rd param = expiry date for jwt
             const token = jwt.sign(user, 'your_jwt_secret', {expiresIn: '1d'});
-            return res.status(200).json({ //give out a valid jwt token to frontend
+            return res.status(200).json({ //give out a valid jwt token to frontend for authentication purposes
                 user,
                 token,
 				message: "Successful login"

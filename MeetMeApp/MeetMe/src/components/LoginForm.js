@@ -18,10 +18,10 @@ export default class LoginFrom extends Component {
   constructor(props){
 		super(props)
 		this.state={
-			userEmail:'',
-      userPassword:''
-      // userEmail:'12345678@hotmail.com',
-      // userPassword:'12345678',
+			// userEmail:'',
+      // userPassword:''
+      userEmail:'12345678@hotmail.com',
+      userPassword:'12345678',
     }
   }
 
@@ -32,22 +32,21 @@ export default class LoginFrom extends Component {
   login = () =>{
 		const {userEmail,userPassword} = this.state;
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    var loggedin = 0;
-		if(userEmail==""){
-		  Toast.show('Please enter your email address!', Toast.LONG);		
-		}
+		// if(userEmail==""){
+		//   Toast.show('Please enter your email address!', Toast.LONG);		
+		// }
 		
-		else if(reg.test(userEmail) === false)
-		{
-		  Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
-		  }
+		// else if(reg.test(userEmail) === false)
+		// {
+		//   Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
+		//   }
 
-		else if(userPassword==""){
-      Toast.show('Please enter your password!', Toast.LONG);
-		}
-		else{
+		// else if(userPassword==""){
+    //   Toast.show('Please enter your password!', Toast.LONG);
+		// }
+		// else{
 		
-    }
+    // }
     fetch('http://104.42.79.90:2990/auth/signin',{
 			method:'post',
 			headers:{
@@ -68,14 +67,13 @@ export default class LoginFrom extends Component {
        }
        else
        {
-        Toast.show(JSON.stringify(responseJson), Toast.LONG)
+        //Toast.show(JSON.stringify(responseJson), Toast.LONG)
         console.log("Redirect");
         this.home();
        }
      });
-    
+         
     Keyboard.dismiss();
-  
 	}
 
 	render(){

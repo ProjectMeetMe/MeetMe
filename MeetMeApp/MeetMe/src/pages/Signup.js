@@ -18,7 +18,6 @@ export default class Signup extends Component {
   goBack() {
       Actions.pop();
   }
-
   
 	render() {
 		return(
@@ -36,27 +35,26 @@ export default class Signup extends Component {
 
 const styles = StyleSheet.create({
   container : {
+    flexGrow: 1,
+    justifyContent:'center',
+    alignItems: 'center',
     backgroundColor:'#455a64',
-    flex: 1,
-    alignItems:'center',
-    justifyContent :'center'
   },
-  signupTextCont : {
-  	flexGrow: 1,
-    alignItems:'flex-end',
-    justifyContent :'center',
-    paddingVertical:16,
-    flexDirection:'row'
+
+  button: {
+    width:300,
+    backgroundColor:'#1c313a',
+     borderRadius: 25,
+      marginVertical: 10,
+      paddingVertical: 13
   },
-  signupText: {
-  	color:'rgba(255,255,255,0.6)',
-  	fontSize:16
-  },
-  signupButton: {
-  	color:'#ffffff',
-  	fontSize:16,
-  	fontWeight:'500'
+  Text: {
+    fontSize:16,
+    fontWeight:'500',
+    color:'#ffffff',
+    textAlign:'center'
   }
+  
 });
 
 AppRegistry.registerComponent('signup', () => signup);

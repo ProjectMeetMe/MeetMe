@@ -3,14 +3,14 @@ import { AppRegistry,View,Text,StyleSheet } from 'react-native';
 import NavBar from 'react-native-nav';
 import NavigationForm from '../components/navigationForm';
 
-export default class Home extends Component{
+export default class Setting extends Component{
 	
 	render(){
 		return(
       <View >
-      <NavigationForm type="Home"></NavigationForm>
+      <NavigationForm type="Setting"></NavigationForm>
 	  		<View style={styles.container}>	
-				<Text style={styles.Text}>I am home page.</Text>
+				<Text style={styles.Text}>I am setting page.</Text>
 			  </View>
       </View> 
 		);

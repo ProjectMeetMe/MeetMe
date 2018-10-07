@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry,View,Text,StyleSheet } from 'react-native';
+import { AsyncStorage, AppRegistry,View,Text,StyleSheet } from 'react-native';
 import NavBar from 'react-native-nav';
 import NavigationForm from '../components/navigationForm';
 

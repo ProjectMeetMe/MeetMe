@@ -25,6 +25,14 @@ export default class LoginFrom extends Component {
     }
   }
 
+  async saveToken(value) {
+    try {
+      await AsyncStorage.setItem('token', value);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
+  }
+
   home() {
 		Actions.home()
   }
@@ -32,6 +40,7 @@ export default class LoginFrom extends Component {
   login = () =>{
 		const {userEmail,userPassword} = this.state;
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    var token;
 		// if(userEmail==""){
 		//   Toast.show('Please enter your email address!', Toast.LONG);		
 		// }
@@ -69,10 +78,14 @@ export default class LoginFrom extends Component {
        {
         //Toast.show(JSON.stringify(responseJson), Toast.LONG)
         console.log("Redirect");
+        token = responseJson.token;
+
+        this.saveToken(token);
+
         this.home();
        }
      });
-         
+
     Keyboard.dismiss();
 	}
 

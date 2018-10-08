@@ -95,14 +95,16 @@ export default class Home extends Component{
           </List>
           <ActionButton buttonColor="rgba(231,76,60,1)">
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
-              titleBgColor = '#1c313a' titleColor ='#ffffff' 
+              textStyle = {styles.itemStyle}
+              textContainerStyle = {styles.itemStyle}
               onPress={() => {Toast.show("Create Group")}}>
-              <Icon name="md-create" style={styles.actionButtonIcon} />
+              {<Icon name="md-add" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"
-              titleBgColor = '#1c313a' titleColor ='#ffffff' 
+              textStyle = {styles.itemStyle} 
+              textContainerStyle = {styles.itemStyle}
               onPress={() => {Toast.show("Join Group")}}>
-              <Icon name="md-create" style={styles.actionButtonIcon} />
+              <Icon name="md-person-add" style={styles.actionButtonIcon} />
             </ActionButton.Item>
           </ActionButton>
         </View> 

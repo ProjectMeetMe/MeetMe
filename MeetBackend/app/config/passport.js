@@ -70,7 +70,7 @@ passport.use('local-signin', new LocalStrategy({
     },
 
     function(req, email, password, done) {
-        var isValidPassword = function(userpass, password) {
+        var isValidPassword = function(userpass, password) { //userpass = encrypted password
             return bCrypt.compareSync(password, userpass);
         }
         //If sequelize finds matching email in DB ...

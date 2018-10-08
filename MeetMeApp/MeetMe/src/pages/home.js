@@ -6,6 +6,7 @@ import {List, ListItem} from 'react-native-elements';
 import Toast from 'react-native-simple-toast';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Actions} from 'react-native-router-flux';
 
 export default class Home extends Component{
   
@@ -28,6 +29,9 @@ export default class Home extends Component{
     }).done();
   }
 
+  createGroup() {
+		Actions.createGroup()
+  }
 
 	render(){
 
@@ -60,7 +64,7 @@ export default class Home extends Component{
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Toast.show("Create Group")}}>
+              onPress={() => {Actions.createGroup()}}>
               {<Icon name="md-add" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"
@@ -97,7 +101,7 @@ export default class Home extends Component{
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Toast.show("Create Group")}}>
+              onPress={this.createGroup()}>
               {<Icon name="md-add" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"

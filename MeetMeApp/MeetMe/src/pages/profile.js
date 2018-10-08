@@ -11,25 +11,41 @@ export default class Profile extends Component{
     super();
 
     this.state = {
-      token: null,
+      token: '',
     };
 
     AsyncStorage.getItem("token").then((value) => {
-      if (value != null){
+      if (value != ''){
         this.setState({token: value});
       } else {
-        this.setState({token: null});
+        this.setState({token: ''});
       }
     }).done();
-
   }
 
 	render(){
     const {token} = this.state;
-    if(token != null)
+    var name = '';
+    var email = '';
+    var userId = '';
+
+    fetch('http://104.42.79.90:2990/user/profile', {
+      method: 'GET',
+      headers:{
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJson)=>{ 
+      name = responseJson.firstname + " " + responseJson.lastname;
+      email = responseJson.email;
+      userId = responseJson.id;
+    });
+
+    if(token != '')
     {
       return(
-        <View >
+        <View  style={{flex: 1}}>
         <NavigationForm type="Profile"></NavigationForm>
           <View style={styles.container}>	
           <Text style={styles.Text}>I am profile page.{'\n'}{'\n'}
@@ -63,13 +79,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  button: {
-    width:300,
-    backgroundColor:'#1c313a',
-     borderRadius: 25,
-      marginVertical: 10,
-      paddingVertical: 13
-  },
   Text: {
     fontSize:16,
     fontWeight:'500',

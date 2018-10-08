@@ -22,6 +22,8 @@ export default class LoginFrom extends Component {
       // userPassword:''
       userEmail:'12345678@hotmail.com',
       userPassword:'12345678',
+      // userEmail:'tester1@test.com',
+      // userPassword:'test',
     }
   }
 

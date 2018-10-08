@@ -7,7 +7,7 @@ export default class Setting extends Component{
 	
 	render(){
 		return(
-      <View >
+      <View style={{flex: 1}}>
       <NavigationForm type="Setting"></NavigationForm>
 	  		<View style={styles.container}>	
 				<Text style={styles.Text}>I am setting page.</Text>

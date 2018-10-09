@@ -37,7 +37,7 @@ export default class Home extends Component{
 
     const { groups, token } = this.state;
 
-    fetch('http://104.42.79.90:2990/user/group/getGroups', {
+    fetch('http://104.42.79.90:2990/group/getGroups', {
       method: 'GET',
       headers:{
         'Authorization': 'Bearer ' + token
@@ -45,17 +45,17 @@ export default class Home extends Component{
     })
     .then((response) => response.json())
     .then((responseJson)=>{ 
-      Toast.show(responseJson, Toast.LONG);
+      //Toast.show(responseJson.group, Toast.LONG);
       groups = responseJson;
     });
  
-    //Toast.show(JSON.stringify(groups), Toast.LONG);
+    Toast.show(JSON.stringify(groups.group), Toast.LONG);
 
     if(groups.length == 0)
     {
       return(
         <View  style={{flex: 1}}>
-          <NavigationForm type="Home"></NavigationForm>
+          <NavigationForm type="My Group"></NavigationForm>
           <View style={styles.container}>	
             <Text style={styles.Text}>You do not have any group yet.{'\n'}
                 You can create a group or join a group.</Text>
@@ -81,7 +81,7 @@ export default class Home extends Component{
     {
       return(
         <View style={{flex: 1}}>
-          <NavigationForm type="Home"></NavigationForm>
+          <NavigationForm type="My Group"></NavigationForm>
           <List styles={styles.scene}>
               <FlatList
                   data={groups}

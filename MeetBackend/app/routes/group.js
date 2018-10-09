@@ -33,7 +33,9 @@ router.get('/getGroups', function(req, res, next) {
             id: req.user.id //user must belong to group
         }
     }).then(function(userWithGroups) {
-        return res.status(200).json(userWithGroups.groups); //only return group info
+		var groups = {}
+		groups.group = userWithGroups.groups;
+        return res.status(200).json(groups); //only return group info
     })
 })
 

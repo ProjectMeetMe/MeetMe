@@ -18,10 +18,10 @@ export default class LoginFrom extends Component {
   constructor(props){
 		super(props)
 		this.state={
-			// userEmail:'',
-      // userPassword:''
-      userEmail:'12345678@hotmail.com',
-      userPassword:'12345678',
+			userEmail:'',
+      userPassword:''
+      // userEmail:'12345678@hotmail.com',
+      // userPassword:'12345678',
       // userEmail:'tester1@test.com',
       // userPassword:'test',
     }

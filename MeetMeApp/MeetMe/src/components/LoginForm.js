@@ -18,10 +18,10 @@ export default class LoginFrom extends Component {
   constructor(props){
 		super(props)
 		this.state={
-			userEmail:'',
-      userPassword:''
-      // userEmail:'12345678@hotmail.com',
-      // userPassword:'12345678',
+			// userEmail:'',
+      // userPassword:''
+      userEmail:'12345678@hotmail.com',
+      userPassword:'12345678',
       // userEmail:'tester1@test.com',
       // userPassword:'test',
     }
@@ -30,6 +30,14 @@ export default class LoginFrom extends Component {
   async saveToken(value) {
     try {
       await AsyncStorage.setItem('token', value);
+    } catch (error) {
+      console.log("Error saving data" + error);
+    }
+  }
+
+  async saveProfile(value) {
+    try {
+      await AsyncStorage.setItem('profile', value);
     } catch (error) {
       console.log("Error saving data" + error);
     }
@@ -83,6 +91,18 @@ export default class LoginFrom extends Component {
         token = responseJson.token;
 
         this.saveToken(token);
+
+        fetch('http://104.42.79.90:2990/user/profile', {
+          method: 'GET',
+          headers:{
+            'Authorization': 'Bearer ' + token
+          }
+        })
+        .then((response) => response.json())
+        .then((responseJson)=>{ 
+            this.saveProfile(responseJson);
+            //Toast.show(JSON.stringify(responseJson), Toast.LONG)
+        });
 
         this.home();
        }

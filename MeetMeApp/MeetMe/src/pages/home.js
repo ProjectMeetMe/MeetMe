@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { AsyncStorage, AppRegistry,View,Text,StyleSheet,FlatList } from 'react-native';
+import { AsyncStorage, AppRegistry,View,Text,StyleSheet,FlatList, ActivityIndicator  } from 'react-native';
 import NavBar from 'react-native-nav';
 import NavigationForm from '../components/navigationForm';
-import {List, ListItem} from 'react-native-elements';
+import {List, ListItem, SearchBar } from 'react-native-elements';
 import Toast from 'react-native-simple-toast';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,15 +17,13 @@ export default class Home extends Component{
     this.state = {
       token: '',
       groups: [],
-      isRefreshing: false,
+      refreshing: false,
+      loading: false,
+      seed: 1,
     };
 
     AsyncStorage.getItem("token").then((value) => {
-      if (value != ''){
         this.setState({token: value});
-      } else {
-        this.setState({token: ''});
-      }
     }).done();
   }
 
@@ -33,24 +31,96 @@ export default class Home extends Component{
 		Actions.createGroup()
   }
 
-	render(){
+  componentDidMount() {
+    this.makeRemoteRequest();
+  }
 
+  makeRemoteRequest = () => {
     const { groups, token } = this.state;
+    this.setState({ loading: true });
 
     fetch('http://104.42.79.90:2990/group/getGroups', {
-      method: 'GET',
+      method: 'get',
       headers:{
         'Authorization': 'Bearer ' + token
       }
     })
     .then((response) => response.json())
     .then((responseJson)=>{ 
-      //Toast.show(responseJson.group, Toast.LONG);
-      groups = responseJson;
+      this.setState({
+        groups: responseJson.group,
+        loading: false,
+        refreshing: false,
+      });
     });
- 
-    Toast.show(JSON.stringify(groups.group), Toast.LONG);
+  };
 
+  handleRefresh = () => {
+    this.setState(
+      {
+        page: 1,
+        seed: this.state.seed,
+        refreshing: true
+      },
+      () => {
+        this.makeRemoteRequest();
+      }
+    );
+  };
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "14%"
+        }}
+      />
+    );
+  };
+
+  renderHeader = () => {
+    return <SearchBar placeholder="Type Here..." lightTheme round />;
+  };
+
+  renderFooter = () => {
+    if (!this.state.loading) 
+        return null;
+
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE"
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
+
+	render(){
+
+    const { groups, token } = this.state;
+    //Toast.show(token, Toast.LONG);
+    //Toast.show(groups, Toast.LONG);
+    // fetch('http://104.42.79.90:2990/group/getGroups', {
+    //   method: 'get',
+    //   headers:{
+    //     'Authorization': 'Bearer ' + token
+    //   }
+    // })
+    // .then((response) => response.json())
+    // .then((responseJson)=>{ 
+    //   this.setState({
+    //     isRefreshing: false,
+    //     groups: responseJson.group
+    //   });
+    // });
+    //if(token == '')
     if(groups.length == 0)
     {
       return(
@@ -82,21 +152,28 @@ export default class Home extends Component{
       return(
         <View style={{flex: 1}}>
           <NavigationForm type="My Group"></NavigationForm>
-          <List styles={styles.scene}>
-              <FlatList
-                  data={groups}
-                      renderItem={({item}) => (
-                          <ListItem
-                              roundAvatar
-                              title={item.groupName}
-                              subtitle={item.id}
-                              //avatar={{uri: item.picture.thumbnail}}
-                          />
-                      )}
-                      keyExtractor={i => i.id}
-                      onEndThreshold={0}
-                      />
-          </List>
+          <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+          <FlatList
+            data={this.state.groups}
+            renderItem={({ item }) => (
+              <ListItem
+                roundAvatar
+                title={item.groupName}
+                subtitle={item.id}
+                //avatar={{ uri: item.picture.thumbnail }}
+                containerStyle={{ borderBottomWidth: 0 }}
+              />
+            )}
+            keyExtractor={item => item.groupName}
+            ItemSeparatorComponent={this.renderSeparator}
+            ListHeaderComponent={this.renderHeader}
+            ListFooterComponent={this.renderFooter}
+            onRefresh={this.handleRefresh}
+            refreshing={this.state.refreshing}
+            onEndReached={this.handleLoadMore}
+            onEndReachedThreshold={50}
+          />
+        </List>
           <ActionButton buttonColor="rgba(231,76,60,1)">
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
               textStyle = {styles.itemStyle}

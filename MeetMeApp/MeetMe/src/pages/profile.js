@@ -18,19 +18,6 @@ export default class Profile extends Component{
       isLoading: false,
     };
 
-    // AsyncStorage.getItem("token").then((value) => {
-    //     this.setState({
-    //         token: value,
-    //         isTokenrdy: true,
-    //       });
-    //       Toast.show("Token is received form asyncstraoge, set frag to treu", Toast.LONG);
-    // }).done();
-
-  //   AsyncStorage.getItem("profile").then((value) => {
-  //     this.setState({profile: value});
-  // }).done();
-
-  //getToken();
   }
 
   async getProfile() {
@@ -41,31 +28,6 @@ export default class Profile extends Component{
     }
   }
 
-  // async getToken() {
-  //   try {
-  //       const {profile, token} = this.state;
-  //       await AsyncStorage.getItem("token").then((value) => {
-  //       this.setState({token: value});
-  //   }).done();
-  //   } catch (error) {
-  //     console.log("Error saving data" + error);
-  //   }
-  // }
-
-  // getToken = async() => {
-  //   try {
-  //     await AsyncStorage.getItem("token").then((value) => {
-  //             this.setState({
-  //                 token: value,
-  //                 isTokenrdy: true,
-  //               });
-  //               Toast.show("Token is received form asyncstraoge, set frag to treu", Toast.LONG);
-  //         }).done();
-  //   } catch (error) {
-  //     // Error retrieving data
-  //     console.log(error.message);
-  //   }
-  // };
 
   componentDidMount() {
     const {profile, token, isTokenrdy, isProfilerdy, isLoading} 
@@ -91,12 +53,13 @@ export default class Profile extends Component{
 
     //this.makeRemoteRequest();
 
-    this.fuckyou();
+    this.getProfile();
   }
 
-  async fuckyou()
+  async getProfile()
   {
     const usertoken = await AsyncStorage.getItem("token");
+
     Toast.show(usertoken, Toast.LONG);
     console.log("usertoken:  " + usertoken);
     var userprofile = await fetch('http://104.42.79.90:2990/user/profile', {
@@ -114,6 +77,11 @@ export default class Profile extends Component{
     console.log("JSON.stringify(userprofile):  " + JSON.stringify(userprofile));
     console.log("JSON.stringify(profile):  " + JSON.stringify(profile));
    // Toast.show(userprofile.toString(), Toast.LONG);
+
+    this.setState({
+      token: usertoken,
+      profile: JSON.stringify(userprofile),
+    });
   }
 
   makeRemoteRequest = () => {
@@ -121,9 +89,7 @@ export default class Profile extends Component{
             = this.state;
 
     console.log("token:  " + token);
-    //Toast.show(token, Toast.LONG);
 
-    Toast.show("Token is ready", Toast.LONG);
     fetch('http://104.42.79.90:2990/user/profile', {
       method: 'GET',
       headers:{

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import {Actions} from 'react-native-router-flux';
+import NavigationForm from '../components/navigationForm';
 
 export default class GroupProfile extends Component {
 
@@ -73,32 +74,17 @@ export default class GroupProfile extends Component {
 
 	render(){
 		return(
-			<View style={styles.container}>
-                <TextInput style={styles.inputBox} 
-                    underlineColorAndroid='rgba(0,0,0,0)' 
-                    placeholder="Your Group Name"
-                    placeholderTextColor = "#ffffff"
-                    selectionColor="#fff"
-                    keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
-                    onChangeText={newGroupName => this.setState({newGroupName})}
-                />
-
-
-                <TouchableOpacity style={styles.button} onPress={this.newGroup}>
-                    <Text style={styles.buttonText}>{this.props.type}</Text>
-                </TouchableOpacity>    
-  		</View>
-			)
+      <View style={{flex: 1}}>
+      <NavigationForm type="Setting"></NavigationForm>
+	  		<View style={styles.container}>	
+				<Text style={styles.Text}>I am group profile page.</Text>
+			  </View>
+      </View> 
+		);
 	}
 }
 
 const styles = StyleSheet.create({
-  container : {
-    flexGrow: 1,
-    justifyContent:'center',
-    alignItems: 'center'
-  },
 
   inputBox: {
     width:300,
@@ -117,6 +103,29 @@ const styles = StyleSheet.create({
       paddingVertical: 13
   },
   buttonText: {
+    fontSize:16,
+    fontWeight:'500',
+    color:'#ffffff',
+    textAlign:'center'
+  },
+
+  container : {
+    flexGrow: 1,
+    justifyContent:'center',
+    alignItems: 'center',
+    backgroundColor:'#455a64',
+    flexDirection: 'row',
+  },
+  
+  button: {
+    width:300,
+    backgroundColor:'#1c313a',
+    borderRadius: 25,
+    marginVertical: 10,
+    paddingVertical: 13
+  },
+
+  Text: {
     fontSize:16,
     fontWeight:'500',
     color:'#ffffff',

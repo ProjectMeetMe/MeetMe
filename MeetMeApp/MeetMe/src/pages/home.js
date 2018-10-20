@@ -23,12 +23,12 @@ export default class Home extends Component{
     };
   }
 
-  createGroup() {
-		Actions.createGroup()
+  creategroup() {
+		Actions.creategroup()
   }
 
-  openGroup() {
-		Actions.openGroup()
+  groupprofile() {
+		Actions.groupprofile()
   }
 
   componentDidMount() {
@@ -109,7 +109,7 @@ export default class Home extends Component{
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Actions.createGroup()}}>
+              onPress={() => {Actions.creategroup()}}>
               {<Icon name="md-add" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"
@@ -137,7 +137,8 @@ export default class Home extends Component{
                 subtitle={item.id}
                 //avatar={{ uri: item.picture.thumbnail }}
                 containerStyle={{ borderBottomWidth: 0 }}
-              />
+                onPress={() => {Actions.groupprofile()}}>
+              </ListItem>
             )}
             keyExtractor={item => item.groupName}
             ItemSeparatorComponent={this.renderSeparator}
@@ -152,7 +153,7 @@ export default class Home extends Component{
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Actions.createGroup()}}>
+              onPress={() => {Actions.creategroup()}}>
               {<Icon name="md-add" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"

@@ -2,6 +2,32 @@ var express = require('express');
 var router = express.Router();
 var db = require("../models/sequelize.js"); //user model
 
+/* GET events for some group*/
+router.get('/getEvents', function(req, res, next) {
+    var curUserId = req.user.id;
+	var targetGroupId = req.query.groupId;
+
+    db.group.findOne({
+        where: {
+            id: targetGroupId
+        }
+    }).then(function(groupFound) {
+		if (!groupFound){ //Could not find target group
+			return res.status(400).json({
+				message: "Error: Target group ID invalid"
+			});
+		}
+		groupFound.getEvents().then(function(eventsInGroup){
+			var events = {}
+			events = eventsInGroup;
+			return res.status(200).json({
+				events,
+				message: "Successful event retrieval"
+			}); //only return group info
+		})
+    })
+})
+
 /* POST add event */
 router.post('/addEvent', function(req, res, next) {
 
@@ -48,5 +74,9 @@ router.post('/addEvent', function(req, res, next) {
         }
     });
 })
+
+//TODO: PUT to edit events
+
+//TODO: DELETE to remove events
 
 module.exports = router;

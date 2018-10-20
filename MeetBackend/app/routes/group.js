@@ -31,7 +31,7 @@ router.post('/createGroup', function(req, res, next) {
 /* PUT (edit) existing group info (currently can only change group name) */
 router.put('/editGroup', function(req, res, next) {
     //req must contain group ID + event
-    var targetGroupId = req.body.groupId
+    var targetGroupId = req.body.groupId;
     var newGroupName = req.body.groupName;
     var curUser = req.user.id;
 
@@ -72,7 +72,7 @@ router.put('/editGroup', function(req, res, next) {
 
 /* PUT request to remove group member */
 //TODO: Needs testing
-router.put('/removeMember', function(req, res, next) {
+router.delete('/removeMember', function(req, res, next) {
     //req must contain group ID + event
     var targetGroupId = req.body.groupId
     var targetUserId = req.body.userId;
@@ -112,7 +112,7 @@ router.put('/removeMember', function(req, res, next) {
 })
 
 
-/* GET user groups */
+/* GET groups that curr user belongs to */
 router.get('/getGroups', function(req, res, next) {
     var curUserId = req.user.id;
 
@@ -129,7 +129,33 @@ router.get('/getGroups', function(req, res, next) {
         }
     }).then(function(userWithGroups) {
         var groups = {}
-        groups.group = userWithGroups.groups;
+        groups = userWithGroups.groups;
+        return res.status(200).json({
+            groups,
+            message: "Successful group retrieval"
+        }); //only return group info
+    })
+})
+
+
+/* GET detailed group info */
+router.get('/getGroupInfo', function(req, res, next) {
+
+var targetGroupId = req.query.groupId;
+    db.user.findOne({
+        include: [{
+            model: db.group,
+            attributes: ['id', 'groupName'], //elements of the group that we want
+            through: {
+                attributes: []
+            }
+        }],
+        where: {
+            id: curUserId //user must belong to group
+        }
+    }).then(function(userWithGroups) {
+        var groups = {}
+        groups = userWithGroups.groups;
         return res.status(200).json({
             groups,
             message: "Successful group retrieval"

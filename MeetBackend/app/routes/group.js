@@ -7,19 +7,29 @@ const maxUsersInGroup = 10; // Max allowed users per group
 /* POST new group */
 router.post('/createGroup', function(req, res, next) {
 
+    var curUserId = req.user.id; //current logged in user's id
+
     db.group.create({
         groupName: req.body.groupName,
-        leaderId: req.user.id, //current logged in user's id
+        leaderId: curUserId,
     }).then(function(newGroup) {
-        newGroup.addUser(req.user.id); //adds the lead user to this group
-        return res.status(200).json(newGroup.get());
+        newGroup.addUser(curUserId);
+        var newGroupInfo = newGroup.get();
+        return res.status(200).json({
+            newGroupInfo,
+            message: "Successful group creation"
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Invalid group creation parameters"
+        });
     })
 })
 
 
 /* GET user groups */
 router.get('/getGroups', function(req, res, next) {
-    console.log(req.user.id);
+    var curUserId = req.user.id;
 
     db.user.findOne({
         include: [{
@@ -30,12 +40,15 @@ router.get('/getGroups', function(req, res, next) {
             }
         }],
         where: {
-            id: req.user.id //user must belong to group
+            id: curUserId //user must belong to group
         }
     }).then(function(userWithGroups) {
-		var groups = {}
-		groups.group = userWithGroups.groups;
-        return res.status(200).json(groups); //only return group info
+        var groups = {}
+        groups.group = userWithGroups.groups;
+        return res.status(200).json({
+            groups,
+            message: "Successful group retrieval"
+        }); //only return group info
     })
 })
 
@@ -43,12 +56,15 @@ router.get('/getGroups', function(req, res, next) {
 /* POST join logged in user to group by groupJoinToken */
 router.post('/joinGroup', function(req, res, next) {
 
-    const joinToken = req.body.groupJoinToken
+    //req must contain group join token
+    const joinToken = req.body.groupJoinToken;
+    var curUserId = req.user.id;
 
+    //Find group with corresponding group token
     db.group.findOne({
-        include: [{
+        include: [{ //attach user ids in that group
             model: db.user,
-            attributes: ['id'], //get user ids in that group
+            attributes: ['id'],
             through: {
                 attributes: []
             }
@@ -72,14 +88,65 @@ router.post('/joinGroup', function(req, res, next) {
                 });
             }
         }
-		if (groupFound.users == maxUsersInGroup){
-			return res.status(400).json({
-				message: "Error: Group already has maximum allowed number of users"
-			});
-		}
+        if (usersInGroup.length == maxUsersInGroup) {
+            return res.status(400).json({
+                message: "Error: Group already has maximum allowed number of users"
+            });
+        }
+        groupFound.addUser(curUserId); //adds the user to this group
+        var joinedGroupInfo = groupFound.get();
+        return res.status(200).json({
+            joinedGroupInfo,
+            message: "Successful group join"
+        }); //return with info about group
+    });
+})
 
-        groupFound.addUser(req.user.id); //adds the user to this group
-        return res.status(200).json(groupFound.get()); //return with info about group
+
+/* POST add event */
+router.post('/addEvent', function(req, res, next) {
+
+    //req must contain group ID + event
+    var targetGroupId = req.body.groupId
+    var curUser = req.user.id;
+
+    //Find group with corresponding group id
+    db.group.findOne({
+        where: {
+            id: targetGroupId
+        }
+    }).then(function(groupFound) {
+        if (!groupFound) {
+            return res.status(400).json({
+                message: "Error: Invalid group id"
+            });
+        }
+        //verify that curr user is leader
+        else if (curUser != groupFound.leaderId) {
+            return res.status(400).json({
+                message: "Error: Invalid permissions to add event"
+            });
+        } else {
+            //Create the event
+            var event = {
+                eventName: req.body.eventName,
+                description: req.body.description,
+                startTime: req.body.startTime,
+                endTime: req.body.endTime,
+                groupId: req.body.groupId
+            };
+            db.event.create(event).then(function(newEvent) {
+                var newEventInfo = newEvent.get();
+                return res.status(200).json({
+                    newEventInfo,
+                    message: "Successful event add"
+                });
+            }).catch(function(err) {
+                return res.status(400).json({
+                    message: "Error: Invalid event creation parameters"
+                });
+            })
+        }
     });
 })
 

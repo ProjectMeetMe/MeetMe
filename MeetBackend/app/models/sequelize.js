@@ -28,6 +28,7 @@ db.sequelize = sequelize;
 //Defined models
 db.user = require('./user.js')(sequelize, Sequelize);
 db.group = require('./group.js')(sequelize, Sequelize);
+db.event = require('./event.js')(sequelize, Sequelize);
 
 //Defined relations
 db.user.belongsToMany(db.group, {
@@ -37,8 +38,14 @@ db.group.belongsToMany(db.user, {
     through: 'group_users'
 });
 
+db.event.belongsTo(db.group);
+db.group.hasMany(db.event, {
+    as: 'events'
+});
+
 //Sync models with database
 sequelize.sync(
+        // Enable to reset database
         /*{
                 force: true
             }*/

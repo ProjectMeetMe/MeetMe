@@ -30,9 +30,8 @@ passport.use('local-signup', new LocalStrategy({
             }
         }).then(function(userFound) {
             if (userFound) {
-                console.log("EMAIL TAKEN");
                 return done(null, false, {
-                    message: 'That email is already taken'
+                    message: "Error: That email is already taken"
                 });
             } else {
                 var userPassword = generateHash(password);
@@ -44,18 +43,16 @@ passport.use('local-signup', new LocalStrategy({
                 };
 
                 db.user.create(userData).then(function(newuser) {
-                    console.log("Entry should be created");
                     if (!newuser) {
-                        console.log("No new user - error");
                         return done(null, false); //failed
                     } else {
-                        console.log("db.user created");
                         return done(null, newuser); //return new user object
                     }
-                }).catch(function(error){
-					console.log(error);
-					return done(null, false, {message: 'Invalid email'}); //email invalid or some other creation error
-				});
+                }).catch(function(error) {
+                    return done(null, false, {
+                        message: "Error: Invalid email format"
+                    }); //email invalid or some other creation error
+                });
             }
         });
     }
@@ -80,13 +77,11 @@ passport.use('local-signin', new LocalStrategy({
             }
         }).then(function(userFound) {
             if (!userFound) { //no user found, wrong email
-                console.log("WRONG EMAIL");
                 return done(null, false, {
                     message: 'Email does not exist'
                 });
             }
             if (!isValidPassword(userFound.password, password)) { //user found but passwords dont match
-                console.log("WRONG PASSWORD");
                 return done(null, false, {
                     message: 'Incorrect password'
                 });
@@ -95,15 +90,14 @@ passport.use('local-signin', new LocalStrategy({
             //Update login time
             userFound.update({
                 lastLogin: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-            }).then(function(updatedUser){
-				return done(null, updatedUser.get());
-			})
-			return null; //suppress warnings
+            }).then(function(updatedUser) {
+                return done(null, updatedUser.get());
+            })
+            return null; //suppress warnings
 
         }).catch(function(err) {
-            console.log("Error:", err);
             return done(null, false, {
-                message: 'Something went wrong with your signin'
+                message: "Error: Something went wrong with your signin"
             });
         });
     }
@@ -128,8 +122,6 @@ passport.use(new JWTStrategy({
                 if (!userFound) { //no matching database entry - lastlogin invalid
                     return cb(null);
                 }
-                console.log("TEST:");
-                console.log(JSON.stringify(userFound));
                 return cb(null, userFound.get()); //pass on user object to next function
             })
             .catch(function(err) { //payload is nonsense

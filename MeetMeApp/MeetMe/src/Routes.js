@@ -6,7 +6,8 @@ import Signup from './pages/signup';
 import Home from './pages/home';
 import Profile from './pages/profile';
 import Setting from './pages/setting';
-import CreateGroup from './pages/createGroup';
+import CreateGroup from './pages/creategroup';
+import GroupProfile from './pages/groupprofile';
 
 export default class Routes extends Component{
 	render() {
@@ -17,8 +18,10 @@ export default class Routes extends Component{
 			      <Scene key="signup" component={Signup} title="Register"/>
 				  <Scene key="home" component={Home} title="HomePage"/>
 				  <Scene key="profile" component={Profile} title="ProfilePage"/>
-				  <Scene key="createGroup" component={CreateGroup} title="CreateGroup"/>
+				  <Scene key="creategroup" component={CreateGroup} title="CreateGroup"/>
+				  <Scene key="groupprofile" component={GroupProfile} title="GroupProfile"/>
 				  <Scene key="setting" component={Setting} title="SettingPage"/>
+				  
 			    </Stack>
 			 </Router>
 			)

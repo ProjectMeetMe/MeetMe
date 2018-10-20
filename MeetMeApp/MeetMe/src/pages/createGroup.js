@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {AppRegistry, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import NewGroupForm from '../components/newGroupForm';
+import NewGroupForm from '../components/newgroupForm';
 
 export default class CreateGroup extends Component {
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { AsyncStorage, AppRegistry,View,Text,StyleSheet,FlatList, ActivityIndicator  } from 'react-native';
+import { AsyncStorage, AppRegistry,View,Text,StyleSheet,
+    FlatList, ActivityIndicator, ScrollView } from 'react-native';
 import NavBar from 'react-native-nav';
 import NavigationForm from '../components/navigationForm';
 import {List, ListItem, SearchBar } from 'react-native-elements';
@@ -19,65 +20,59 @@ export default class Home extends Component{
       groups: [],
       refreshing: false,
       loading: false,
-      seed: 1,
     };
-
-    AsyncStorage.getItem("token").then((value) => {
-        this.setState({token: value});
-    }).done();
   }
 
   createGroup() {
 		Actions.createGroup()
   }
 
-  componentDidMount() {
-    this.makeRemoteRequest();
+  openGroup() {
+		Actions.openGroup()
   }
 
-  makeRemoteRequest = () => {
-    const { groups, token } = this.state;
-    this.setState({ loading: true });
+  componentDidMount() {
+    this.getProfile();
+  }
 
-    fetch('http://104.42.79.90:2990/group/getGroups', {
-      method: 'get',
-      headers:{
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    .then((response) => response.json())
-    .then((responseJson)=>{ 
-      this.setState({
-        groups: responseJson.group,
-        loading: false,
-        refreshing: false,
-      });
+  async getProfile()
+  {
+    const { groups, token, loading, refreshing } = this.state;
+    const usertoken = await AsyncStorage.getItem("token");
+
+    console.log("usertoken:  " + usertoken);
+
+    var usergroups = await fetch('http://104.42.79.90:2990/group/getGroups', {
+          method: 'get',
+          headers:{
+            'Authorization': 'Bearer ' + usertoken
+          }
+        });
+
+    const usergroup = await usergroups.json();
+
+    this.setState({
+      token: usertoken,
+      groups: usergroup.group,
+      loading: false,
+      refreshing: false,
     });
-  };
+  }
 
   handleRefresh = () => {
     this.setState(
       {
-        page: 1,
-        seed: this.state.seed,
         refreshing: true
       },
       () => {
-        this.makeRemoteRequest();
+        this.getProfile();
       }
     );
   };
 
   renderSeparator = () => {
     return (
-      <View
-        style={{
-          height: 1,
-          width: "86%",
-          backgroundColor: "#CED0CE",
-          marginLeft: "14%"
-        }}
-      />
+      <View style={styles.renderSeparator}/>
     );
   };
 
@@ -90,13 +85,7 @@ export default class Home extends Component{
         return null;
 
     return (
-      <View
-        style={{
-          paddingVertical: 20,
-          borderTopWidth: 1,
-          borderColor: "#CED0CE"
-        }}
-      >
+      <View style={styles.renderFooter}>
         <ActivityIndicator animating size="large" />
       </View>
     );
@@ -105,23 +94,9 @@ export default class Home extends Component{
 	render(){
 
     const { groups, token } = this.state;
-    //Toast.show(token, Toast.LONG);
-    //Toast.show(groups, Toast.LONG);
-    // fetch('http://104.42.79.90:2990/group/getGroups', {
-    //   method: 'get',
-    //   headers:{
-    //     'Authorization': 'Bearer ' + token
-    //   }
-    // })
-    // .then((response) => response.json())
-    // .then((responseJson)=>{ 
-    //   this.setState({
-    //     isRefreshing: false,
-    //     groups: responseJson.group
-    //   });
-    // });
-    //if(token == '')
-    if(groups.length == 0)
+
+    // if(groups.length == 0)
+    if(groups == [])
     {
       return(
         <View  style={{flex: 1}}>
@@ -152,7 +127,7 @@ export default class Home extends Component{
       return(
         <View style={{flex: 1}}>
           <NavigationForm type="My Group"></NavigationForm>
-          <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+
           <FlatList
             data={this.state.groups}
             renderItem={({ item }) => (
@@ -173,12 +148,11 @@ export default class Home extends Component{
             onEndReached={this.handleLoadMore}
             onEndReachedThreshold={50}
           />
-        </List>
           <ActionButton buttonColor="rgba(231,76,60,1)">
             <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
-              onPress={this.createGroup()}>
+              onPress={() => {Actions.createGroup()}}>
               {<Icon name="md-add" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"
@@ -191,7 +165,6 @@ export default class Home extends Component{
         </View> 
       );
     }
-
 	}
 }
 
@@ -208,6 +181,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 22,
     color: '#1c313a',
+  },
+
+  renderFooter:
+  {
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderColor: "#CED0CE",
+  },
+
+  renderSeparator:
+  {
+    height: 1,
+    width: "86%",
+    backgroundColor: "#CED0CE",
+    marginLeft: "14%",
   },
 
   button: {

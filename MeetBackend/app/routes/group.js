@@ -8,9 +8,10 @@ const maxUsersInGroup = 10; // Max allowed users per group
 router.post('/createGroup', function(req, res, next) {
 
     var curUserId = req.user.id; //current logged in user's id
+    var groupName = req.body.groupName;
 
     db.group.create({
-        groupName: req.body.groupName,
+        groupName: groupName,
         leaderId: curUserId,
     }).then(function(newGroup) {
         newGroup.addUser(curUserId);
@@ -24,6 +25,90 @@ router.post('/createGroup', function(req, res, next) {
             message: "Error: Invalid group creation parameters"
         });
     })
+})
+
+
+/* PUT (edit) existing group info (currently can only change group name) */
+router.put('/editGroup', function(req, res, next) {
+    //req must contain group ID + event
+    var targetGroupId = req.body.groupId
+    var newGroupName = req.body.groupName;
+    var curUser = req.user.id;
+
+    //Find group with corresponding group id
+    db.group.findOne({
+        where: {
+            id: targetGroupId
+        }
+    }).then(function(groupFound) {
+        if (!groupFound) {
+            return res.status(400).json({
+                message: "Error: Invalid group id"
+            });
+        }
+        //verify that curr user is leader
+        else if (curUser != groupFound.leaderId) {
+            return res.status(400).json({
+                message: "Error: Invalid permissions to add event"
+            });
+        } else {
+            groupFound.update({ //this executes but goes to catch anyways
+                groupName: newGroupName
+            }).then(function(updatedGroup) {
+                var newGroupInfo = updatedGroup.get();
+                return res.status(200).json({
+                    newGroupInfo,
+                    message: "Successful group name change"
+                });
+            }).catch(function(err) {
+                return res.status(400).json({
+                    message: "Error: Invalid group edit parameters"
+                });
+            });
+        }
+    });
+})
+
+
+/* PUT request to remove group member */
+//TODO: Needs testing
+router.put('/removeMember', function(req, res, next) {
+    //req must contain group ID + event
+    var targetGroupId = req.body.groupId
+    var targetUserId = req.body.userId;
+    var curUser = req.user.id;
+
+	if (targetUserId == curUser){
+		return res.status(400).json({
+			message: "Error: Cannot remove self"
+		});
+	}
+
+    //Find group with corresponding group id
+    db.group.findOne({
+        where: {
+            id: targetGroupId
+        }
+    }).then(function(groupFound) {
+        if (!groupFound) {
+            return res.status(400).json({
+                message: "Error: Invalid group id"
+            });
+        }
+        //verify that curr user is leader
+        else if (curUser != groupFound.leaderId) {
+            return res.status(400).json({
+                message: "Error: Invalid permissions to add event"
+            });
+        } else {
+            groupFound.removeUser(targetUserId);
+			var groupInfo = groupFound.get();
+	        return res.status(200).json({
+	            groupInfo,
+	            message: "Successful member remove"
+	        });
+        }
+    });
 })
 
 
@@ -99,54 +184,6 @@ router.post('/joinGroup', function(req, res, next) {
             joinedGroupInfo,
             message: "Successful group join"
         }); //return with info about group
-    });
-})
-
-
-/* POST add event */
-router.post('/addEvent', function(req, res, next) {
-
-    //req must contain group ID + event
-    var targetGroupId = req.body.groupId
-    var curUser = req.user.id;
-
-    //Find group with corresponding group id
-    db.group.findOne({
-        where: {
-            id: targetGroupId
-        }
-    }).then(function(groupFound) {
-        if (!groupFound) {
-            return res.status(400).json({
-                message: "Error: Invalid group id"
-            });
-        }
-        //verify that curr user is leader
-        else if (curUser != groupFound.leaderId) {
-            return res.status(400).json({
-                message: "Error: Invalid permissions to add event"
-            });
-        } else {
-            //Create the event
-            var event = {
-                eventName: req.body.eventName,
-                description: req.body.description,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
-                groupId: req.body.groupId
-            };
-            db.event.create(event).then(function(newEvent) {
-                var newEventInfo = newEvent.get();
-                return res.status(200).json({
-                    newEventInfo,
-                    message: "Successful event add"
-                });
-            }).catch(function(err) {
-                return res.status(400).json({
-                    message: "Error: Invalid event creation parameters"
-                });
-            })
-        }
     });
 })
 

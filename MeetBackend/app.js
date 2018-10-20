@@ -20,6 +20,7 @@ require('./app/config/passport.js');
 app.use('/auth', require('./app/routes/auth.js'));
 app.use('/user', passport.authenticate('jwt', {session: false}), require('./app/routes/user.js')); //use authentication middleware for user routes
 app.use('/group', passport.authenticate('jwt', {session: false}), require('./app/routes/group.js'));
+app.use('/event', passport.authenticate('jwt', {session: false}), require('./app/routes/event.js'));
 
 
 //Start server

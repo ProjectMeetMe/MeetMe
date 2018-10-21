@@ -92,18 +92,6 @@ export default class LoginFrom extends Component {
 
         this.saveToken(token);
 
-        fetch('http://104.42.79.90:2990/user/profile', {
-          method: 'GET',
-          headers:{
-            'Authorization': 'Bearer ' + token
-          }
-        })
-        .then((response) => response.json())
-        .then((responseJson)=>{ 
-            this.saveProfile(responseJson);
-            //Toast.show(JSON.stringify(responseJson), Toast.LONG)
-        });
-
         this.home();
        }
      });

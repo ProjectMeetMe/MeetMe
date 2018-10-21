@@ -12,11 +12,11 @@ router.get('/getEvents', function(req, res, next) {
             id: targetGroupId
         }
     }).then(function(groupFound) {
-        if (!groupFound) { //Could not find target group
-            return res.status(400).json({
-                message: "Error: Target group ID invalid"
-            });
-        }
+        // if (!groupFound) { //Could not find target group
+        //     return res.status(400).json({
+        //         message: "Error: Target group ID invalid"
+        //     });
+        // }
         groupFound.getEvents().then(function(eventsInGroup) {
             var events = eventsInGroup;
             return res.status(200).json({

@@ -53,7 +53,7 @@ export default class Home extends Component{
 
     this.setState({
       token: usertoken,
-      groups: usergroup.group,
+      groups: usergroup.groups,
       loading: false,
       refreshing: false,
     });
@@ -136,7 +136,7 @@ export default class Home extends Component{
                 subtitle={item.id}
                 //avatar={{ uri: item.picture.thumbnail }}
                 containerStyle={{ borderBottomWidth: 0 }}
-                onPress={() => {Actions.groupprofile({groupID: item.id})}}>
+                onPress={() => {Actions.groupprofile({groupID: item.id, groupName:item.groupName})}}>
               </ListItem>
             )}
             keyExtractor={item => item.groupName}

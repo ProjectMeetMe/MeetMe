@@ -131,7 +131,7 @@ router.get('/getGroups', function(req, res, next) {
         var groups = userWithGroups.groups;
         return res.status(200).json({
             groups,
-            //message: "Successful group retrieval"
+            message: "Successful group retrieval"
         }); //only return group info
     })
 })

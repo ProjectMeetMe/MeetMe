@@ -19,7 +19,7 @@ export default class GroupProfile extends Component {
 		super(props)
 		this.state={
             
-        events:'',
+        events:[],
         token: '',
     }
   }
@@ -32,8 +32,11 @@ export default class GroupProfile extends Component {
   {
     const { events, token} = this.state;
     const usertoken = await AsyncStorage.getItem("token");
+    console.log("usertoken:  " + usertoken);
 
-    var userevents = await fetch('http://104.42.79.90:2990/group/getGroups', {
+    groupId = this.props.groupID;
+
+    var userevents = await fetch('http://104.42.79.90:2990/event/getEvents?groupId=${encodeURIComponent(groupId)}', {
           method: 'get',
           headers:{
             'Authorization': 'Bearer ' + usertoken
@@ -42,16 +45,20 @@ export default class GroupProfile extends Component {
 
     const userevent = await userevents.json();
 
+    console.log("userevent:  " + userevent);
+    console.log("userevent.toString:  " + userevent.toString);
+    console.log("JSON.stringify(userevent):  " + JSON.stringify(userevent));
+    
     this.setState({
       token: usertoken,
-      groups: userevent.group,
+      events: userevent.events,
     });
   }
 
 	render(){
 		return(
       <View style={{flex: 1}}>
-      <NavigationForm type="Setting"></NavigationForm>
+      <NavigationForm type={this.props.groupName}></NavigationForm>
 	  		<View style={styles.container}>	
 				<Text style={styles.Text}>I am group profile page for group {this.props.groupID}.</Text>
 			  </View>

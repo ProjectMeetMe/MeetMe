@@ -13,19 +13,22 @@ export default class Profile extends Component{
     this.state = {
       token: '',
       profile: '',
+      name: '',
+      email: '',
+      id:  '',
     };
 
   }
 
   componentDidMount() {
-    const {profile, token, isTokenrdy, isProfilerdy, isLoading} 
-              = this.state;
-
     this.getProfile();
   }
 
   async getProfile()
   {
+
+    const {profile, token, name, email, id} = this.state;
+
     const usertoken = await AsyncStorage.getItem("token");
 
     var userprofile = await fetch('http://104.42.79.90:2990/user/profile', {
@@ -35,27 +38,30 @@ export default class Profile extends Component{
       }
     });
 
-    var profile = userprofile.json();
+    var profilejson = await userprofile.json();
+    console.log('profilejson:', profilejson);
 
     this.setState({
       token: usertoken,
-      profile: profile,
+      profile: profilejson,
+      name: profilejson.firstname +"  " + profilejson.lastname,
+      email: profilejson.email,
+      id:  profilejson.id,
     });
   }
 
 	render(){
-    const {profile, token, isProfilerdy} = this.state;
+    const {profile, token, name, email, id} = this.state;
     //Toast.show(profile, Toast.LONG);
       return(
         <View  style={{flex: 1}}>
         <NavigationForm type="Profile"></NavigationForm>
           <View style={styles.container}>	
           <Text style={styles.Text}>I am profile page.{'\n'}{'\n'}
-          {this.state.profile}{'\n'}{'\n'}
-          {this.state.profile.name}{'\n'}{'\n'}
-          {this.state.profile.email}{'\n'}{'\n'}
-          {this.state.profile.id}{'\n'}{'\n'}
-          {this.state.token}</Text>
+          {this.state.name}{'\n'}{'\n'}
+          {this.state.email}{'\n'}{'\n'}
+          {this.state.id}
+          </Text>
           </View>
         </View> 
       );

@@ -127,6 +127,25 @@ Responds with json array with the groups the current user belongs to:
 
 ================================================================================
 
+GET to /group/getGroup - get group info for one group
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Queury format:
+{
+	groupId: <target group id>
+}
+
+Responds with group info + users in group:
+{
+	"groupInfo": {
+
+	}
+	"message": <Success message>
+}
+
+================================================================================
+
 GET to /group/getUsersInGroup - get list of users in target group
 
 requires authenticated JSON web token in "Bearer Token" field of request

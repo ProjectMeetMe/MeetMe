@@ -137,6 +137,28 @@ router.get('/getGroups', function(req, res, next) {
 })
 
 
+/* GET information for one group */
+router.get('/getGroup', function(req, res, next) {
+	var targetGroupId = req.query.groupId;
+    db.group.findOne({
+        where: {
+            id: targetGroupId //user must belong to group
+        }
+    }).then(function(groupFound) {
+		if (!groupFound){
+			return res.status(400).json({
+				message: "Error: Invalid target group ID"
+			});
+		}
+		var groupInfo = groupFound.get();
+        return res.status(200).json({
+            groupInfo,
+            message: "Successful group retrieval"
+        }); //only return group info
+    })
+})
+
+
 /* GET users in group */
 router.get('/getUsersInGroup', function(req, res, next) {
     var targetGroupId = req.query.groupId;
@@ -168,8 +190,7 @@ router.get('/getUsersInGroup', function(req, res, next) {
 /* POST join logged in user to group by groupJoinToken */
 router.post('/joinGroup', function(req, res, next) {
 
-    //req must contain group join token
-    const joinToken = req.body.groupJoinToken;
+    var groupId = req.body.groupId;
     var curUserId = req.user.id;
 
     //Find group with corresponding group token
@@ -182,7 +203,7 @@ router.post('/joinGroup', function(req, res, next) {
             }
         }],
         where: {
-            joinToken: joinToken
+            groupId: groupId
         }
     }).then(function(groupFound) {
         if (!groupFound) {

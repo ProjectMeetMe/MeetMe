@@ -54,18 +54,10 @@ export default class NewGroupForm extends Component {
 		})
 		.then((response) => response.json())
 		 .then((responseJson)=>{
-    //    if(responseJson.message != "Successful create")
-    //    {
-    //     Toast.show(responseJson.message, Toast.LONG);
-    //    }
-            if(responseJson.groupName != "")
-            {
-                Toast.show(responseJson.groupName, Toast.LONG);
-            }
-            else
-            {
-                Toast.show("Failed to create a new group :(", Toast.LONG)
-            }
+          if(responseJson.message != "")
+          {
+              Toast.show(responseJson.message, Toast.LONG);
+          }
      });
     }
     Keyboard.dismiss();

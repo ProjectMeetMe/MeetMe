@@ -13,21 +13,9 @@ export default class Profile extends Component{
     this.state = {
       token: '',
       profile: '',
-      isTokenrdy: false,
-      isProfilerdy: false,
-      isLoading: false,
     };
 
   }
-
-  async getProfile() {
-    try {
-      return await AsyncStorage.getItem('profile');
-    } catch (error) {
-      console.log("Error saving data" + error);
-    }
-  }
-
 
   componentDidMount() {
     const {profile, token, isTokenrdy, isProfilerdy, isLoading} 
@@ -40,8 +28,6 @@ export default class Profile extends Component{
   {
     const usertoken = await AsyncStorage.getItem("token");
 
-    Toast.show(usertoken, Toast.LONG);
-    console.log("usertoken:  " + usertoken);
     var userprofile = await fetch('http://104.42.79.90:2990/user/profile', {
       method: 'GET',
       headers:{
@@ -50,47 +36,16 @@ export default class Profile extends Component{
     });
 
     var profile = userprofile.json();
-    console.log("userprofile:  " + userprofile);
-    console.log("profile:  " + profile);
-    console.log("userprofile.toString():  " + userprofile.toString());
-    console.log("profile.toString():  " + profile.toString());
-    console.log("JSON.stringify(userprofile):  " + JSON.stringify(userprofile));
-    console.log("JSON.stringify(profile):  " + JSON.stringify(profile));
-   // Toast.show(userprofile.toString(), Toast.LONG);
 
     this.setState({
       token: usertoken,
-      profile: JSON.stringify(userprofile),
+      profile: profile,
     });
   }
-
-  makeRemoteRequest = () => {
-    const {profile, token, isTokenrdy, isProfilerdy, isLoading} 
-            = this.state;
-
-    console.log("token:  " + token);
-
-    fetch('http://104.42.79.90:2990/user/profile', {
-      method: 'GET',
-      headers:{
-        'Authorization': 'Bearer ' + token
-      }
-    })
-    .then((response) => response.json())
-    .then((responseJson)=>{ 
-      this.setState({
-        profile: responseJson,
-        isProfilerdy: true,
-      });
-    });
-  };
 
 	render(){
     const {profile, token, isProfilerdy} = this.state;
     //Toast.show(profile, Toast.LONG);
-
-    if(isProfilerdy == false)
-    {
       return(
         <View  style={{flex: 1}}>
         <NavigationForm type="Profile"></NavigationForm>
@@ -105,19 +60,7 @@ export default class Profile extends Component{
         </View> 
       );
     }
-    else
-    {
-      return(
-        <View  style={{flex: 1}}>
-        <NavigationForm type="Profile"></NavigationForm>
-          <View style={styles.container}>	
-          <Text style={styles.Text}>Loading your profile...</Text>
-          </View>
-        </View> 
-      );
-    }
 	}
-}
 
 const styles = StyleSheet.create({
   container : {

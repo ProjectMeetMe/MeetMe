@@ -19,7 +19,7 @@ export default class Home extends Component{
       token: '',
       groups: [],
       refreshing: false,
-      loading: false,
+      loading: true,
     };
   }
 
@@ -41,6 +41,9 @@ export default class Home extends Component{
 
   async getGroups()
   {
+    // this.setState({
+    //   loading: true
+    // });
     const { groups, token, loading, refreshing } = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
@@ -74,6 +77,14 @@ export default class Home extends Component{
     );
   };
 
+  handleSearch = text => {
+    const formatQuery = text.toLowerCase();
+    const data = _.filter(this.state.fullData, user => {
+      return contains(user, formatQuery);
+    })
+    this.setState({ query: formatQuery, data});
+  };
+
   renderSeparator = () => {
     return (
       <View style={styles.renderSeparator}/>
@@ -102,6 +113,29 @@ export default class Home extends Component{
     );
   };
 
+  renderEmptyList = () => {
+    if (this.state.loading)
+      return null;
+
+    return (
+      <View style={styles.container}>
+        <Text style={styles.Text}>You do not have any groups yet.{'\n'}
+            You can create a group or join a group.</Text>
+      </View>
+    );
+  };
+ //     return null;
+ //   };
+  //   return (
+  //     <View style={backgroundColor}>
+  //         <Text>
+  //         style={styles.Text}>You do not have any group yet.{'\n'}
+  //         You can create a group or join a group.
+  //         </Text>
+  //     </View>
+  //   );
+  // };
+
 	render(){
 
     const { groups, token } = this.state;
@@ -109,7 +143,7 @@ export default class Home extends Component{
     if(groups == [""])
     {
       return(
-        <View  style={{flex: 1}}>
+        <View style={{flex: 1}}>
           <NavigationForm type="My Groups"></NavigationForm>
           <View style={styles.container}>	
             <Text style={styles.Text}>You do not have any group yet.{'\n'}
@@ -158,6 +192,7 @@ export default class Home extends Component{
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}
+            ListEmptyComponent={this.renderEmptyList}
             onRefresh={this.handleRefresh}
             refreshing={this.state.refreshing}
             onEndReached={this.handleLoadMore}
@@ -202,7 +237,7 @@ const styles = StyleSheet.create({
   {
     paddingVertical: 20,
     borderTopWidth: 1,
-    borderColor: "#CED0CE",
+    borderColor: '#455a64',
   },
 
   renderSeparator:
@@ -224,7 +259,7 @@ const styles = StyleSheet.create({
     fontSize:16,
     fontWeight:'500',
     color:'#ffffff',
-    textAlign:'center'
+    textAlign:'center',
   },
   titleText: {
     color:'#ffffff',

@@ -49,10 +49,9 @@ Responds with json response:
 
 ================================================================================
 
-POST to /group/createGroup
+POST to /group/createGroup - creates a new group
 
 requires authenticated JSON web token in "Bearer Token" field of request
-request body format:
 
 Request body format:
 {
@@ -61,55 +60,58 @@ Request body format:
 
 Responds with json response AND creates entry for group (with information in response):
 {
-    "id": <group ID>,
-    "groupName": <group name>,
-    "leaderId": <group leader user id>,
-    "updatedAt": <time of last update>,
-    "createdAt": <time of creation>,
-    "joinToken": <token needed to join group>
+	"newGroupInfo":
+	{
+    	"id": <group ID>,
+    	"groupName": <group name>,
+    	"leaderId": <group leader user id>,
+    	"updatedAt": <time of last update>,
+    	"createdAt": <time of creation>,
+    	"joinToken": <token needed to join group>
+	}
+	"message:" <success message>
 }
 
 ================================================================================
 
-POST to /group/joinGroup
+PUT to /group/editGroup - edits target group info (currently only changes name)
 
 requires authenticated JSON web token in "Bearer Token" field of request
-request body format:
 
 Request body format:
 {
-	groupJoinToken: <token needed to join group>
+	groupId: <target group id to edit>
+	groupName: <new name of group>
 }
 
-On success, responds with json response AND adds user to group:
+On success, responds with json response AND edits group name:
 {
-    "id": <group ID>,
-    "groupName": <group name>,
-    "leaderId": <group leader user id>,
-    "updatedAt": "<time of last update>",
-    "createdAt": "<time of creation>",
-    "joinToken": "<token needed to join group>"
+	"newGroupInfo":
+	{
+    	"id": <group ID>,
+    	"groupName": <group name>,   <---updated
+    	"leaderId": <group leader user id>,
+    	"updatedAt": "<time of last update>",
+    	"createdAt": "<time of creation>",
+    	"joinToken": "<token needed to join group>"
+	}
+	"message": <Success message>
 }
 
-On failure, responds with failure message in json body (invalid user token, user already in group, too many members in group):
+On failure, responds with failure message in json body (invalid group id, invalid permissions):
 {
 	"message": <Error message>
 }
 
 ================================================================================
 
-GET to /group/getGroups
+GET to /group/getGroups - get list of groups user belongs to
 
 requires authenticated JSON web token in "Bearer Token" field of request
-request body format:
-
-Request body format:
-{
-	groupJoinToken: <token needed to join group>
-}
 
 Responds with json array with the groups the current user belongs to:
-[
+{
+	"groups": [
     {
         "id": <group id 1>,
         "groupName": <group name 1>
@@ -119,4 +121,190 @@ Responds with json array with the groups the current user belongs to:
         "groupName": <group name 2>
     }
 	...
-]
+	]
+	"message": <Success message>
+}
+
+================================================================================
+
+GET to /group/getUsersInGroup - get list of users in target group
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Queury format:
+{
+	groupId: <target group id>
+}
+
+Responds with group info + users in group:
+{
+	"groupWithUsers": {
+		...
+		"users": [
+			{
+				"id": <user id>
+				"firstname": <user firstname>
+				"lastname": <user lastname>
+				"email": <user email>
+			}
+			...
+		]
+	}
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /group/joinGroup - adds current user to target group
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Request body format:
+{
+	groupJoinToken: <token needed to join group>
+}
+
+On success, responds with json response AND adds user to group:
+{
+	"joinedGroupInfo": {
+    	"id": <group ID>,
+    	"groupName": <group name>,
+    	"leaderId": <group leader user id>,
+    	"updatedAt": "<time of last update>",
+    	"createdAt": "<time of creation>",
+    	"joinToken": "<token needed to join group>"
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body (invalid user token, user already in group, too many members in group):
+{
+	"message": <Error message>
+}
+
+
+================================================================================
+
+GET to /event/getEvents - gets list of events in target group
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Queury format:
+{
+	groupId: <target group id>
+}
+
+Responds with list of events in group:
+{
+	"events":
+	[
+		{
+			"id": <user id>
+			"eventName": <event name>
+			"description": <event description>
+			"startTime": <start time for eventl>
+			"endTime": <end time for event>
+			"groupId": <group that owns this event>
+		}
+		...
+	]
+
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /event/addEvent - adds event to target group
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Body format:
+{
+	groupId: <target group id>
+	eventName:
+	description:
+	startTime:
+	endTime:
+	groupId:
+}
+
+On success, responds with json response AND adds event to group:
+{
+	"newEventInfo": {
+		"id": <user id>
+		"eventName": <event name>
+		"description": <event description>
+		"startTime": <start time for event>
+		"endTime": <end time for event>
+		"groupId": <group that owns this event>
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body:
+{
+	"message": <Error message>
+}
+
+================================================================================
+
+PUT to /event/editEvent - edits target event
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Body format:
+{
+	eventId: <target event id>
+	eventName:
+	description:
+	startTime:
+	endTime:
+	groupId:
+}
+
+On success, responds with json response AND edits event in group:
+{
+	"newEventInfo": {
+		"id": <user id>
+		"eventName": <event name>
+		"description": <event description>
+		"startTime": <start time for event>
+		"endTime": <end time for event>
+		"groupId": <group that owns this event>
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body:
+{
+	"message": <Error message>
+}
+
+================================================================================
+
+DELETE to /event/deleteEvent - deletes target event
+
+requires authenticated JSON web token in "Bearer Token" field of request
+
+Body format:
+{
+	eventId: <target event id>
+}
+
+On success, responds with json response AND deletes event from group:
+{
+	"newEventInfo": {
+		"id": <user id>
+		"eventName": <event name>
+		"description": <event description>
+		"startTime": <start time for event>
+		"endTime": <end time for event>
+		"groupId": <group that owns this event>
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body (invalid permissions, invalid event id, etc.):
+{
+	"message": <Error message>
+}

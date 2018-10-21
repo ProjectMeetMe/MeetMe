@@ -49,7 +49,7 @@ router.put('/editGroup', function(req, res, next) {
         //verify that curr user is leader
         else if (curUser != groupFound.leaderId) {
             return res.status(400).json({
-                message: "Error: Invalid permissions to add event"
+                message: "Error: Invalid permissions edit group"
             });
         } else {
             groupFound.update({ //this executes but goes to catch anyways
@@ -72,17 +72,17 @@ router.put('/editGroup', function(req, res, next) {
 
 /* PUT request to remove group member */
 //TODO: Needs testing
-router.delete('/removeMember', function(req, res, next) {
+router.put('/removeMember', function(req, res, next) {
     //req must contain group ID + event
     var targetGroupId = req.body.groupId
     var targetUserId = req.body.userId;
     var curUser = req.user.id;
 
-	if (targetUserId == curUser){
-		return res.status(400).json({
-			message: "Error: Cannot remove self"
-		});
-	}
+    if (targetUserId == curUser) {
+        return res.status(400).json({
+            message: "Error: Cannot remove self"
+        });
+    }
 
     //Find group with corresponding group id
     db.group.findOne({
@@ -102,11 +102,11 @@ router.delete('/removeMember', function(req, res, next) {
             });
         } else {
             groupFound.removeUser(targetUserId);
-			var groupInfo = groupFound.get();
-	        return res.status(200).json({
-	            groupInfo,
-	            message: "Successful member remove"
-	        });
+            var groupInfo = groupFound.get();
+            return res.status(200).json({
+                groupInfo,
+                message: "Successful member remove"
+            });
         }
     });
 })
@@ -128,8 +128,7 @@ router.get('/getGroups', function(req, res, next) {
             id: curUserId //user must belong to group
         }
     }).then(function(userWithGroups) {
-        var groups = {}
-        groups = userWithGroups.groups;
+        var groups = userWithGroups.groups;
         return res.status(200).json({
             groups,
             message: "Successful group retrieval"
@@ -138,26 +137,28 @@ router.get('/getGroups', function(req, res, next) {
 })
 
 
-/* GET detailed group info */
-router.get('/getGroupInfo', function(req, res, next) {
-
-var targetGroupId = req.query.groupId;
-    db.user.findOne({
+/* GET users in group */
+router.get('/getUsersInGroup', function(req, res, next) {
+    var targetGroupId = req.query.groupId;
+    db.group.findOne({
         include: [{
-            model: db.group,
-            attributes: ['id', 'groupName'], //elements of the group that we want
+            model: db.user,
+            attributes: ['id', 'firstname', 'lastname', 'email'], //elements of the group that we want
             through: {
                 attributes: []
             }
         }],
         where: {
-            id: curUserId //user must belong to group
+            id: targetGroupId //user must belong to group
         }
-    }).then(function(userWithGroups) {
-        var groups = {}
-        groups = userWithGroups.groups;
+    }).then(function(groupWithUsers) {
+		if (!groupWithUsers){
+			return res.status(400).json({
+				message: "Error: Invalid target group ID"
+			});
+		}
         return res.status(200).json({
-            groups,
+            groupWithUsers,
             message: "Successful group retrieval"
         }); //only return group info
     })

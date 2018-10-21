@@ -25,6 +25,7 @@ export default class GroupProfile extends Component {
         token: '',
         userid: '',
         groupinfo: '',
+        groupID: 0,
     }
   }
 
@@ -32,7 +33,7 @@ export default class GroupProfile extends Component {
     this.getEvents();
     this.getGroupInfo();
   }
-
+  
   async getEvents()
   {
     const { events, token} = this.state;
@@ -63,7 +64,9 @@ export default class GroupProfile extends Component {
 
     groupId = this.props.groupID;
 
-    var groupInfos = await fetch('http://104.42.79.90:2990/group/getGroup?groupId=${encodeURIComponent(groupId)}', {
+    console.log("groupId:  " + groupId);
+
+    var groupInfos = await fetch('http://104.42.79.90:2990/group/getGroup?groupId=' + groupId, {
           method: 'get',
           headers:{
             'Authorization': 'Bearer ' + usertoken
@@ -71,41 +74,53 @@ export default class GroupProfile extends Component {
         });
 
     const groupinfojson = await groupInfos.json();
-
-    console.log("current user id:  " + userid);
-    console.log("group owner id:  " + groupinfojson.groupInfo);
+    
+    console.log("current user id:  " + curuserid);
+    console.log("group owner id:  " + groupinfojson.groupInfo.leaderId);
     
     this.setState({
       token: usertoken,
       groupinfo: groupinfojson.groupInfo,
       userid: curuserid,
+      groupID: groupId,
     });
   }
 
+  renderCreateEvent(){
+    if(this.state.userid == this.state.groupinfo.leaderId)
+    {
+      return(
+        <ActionButton.Item buttonColor='#3498db' title="Create Event"
+        textStyle = {styles.itemStyle} 
+        textContainerStyle = {styles.itemStyle}
+        onPress={() => {Actions.createevent({groupID: 4})}}>
+        <Icon name="pluscircleo" style={styles.actionButtonIcon} />
+      </ActionButton.Item>
+      );          
+    }
+  }
+
 	render(){
-		return(
-      <View style={{flex: 1}}>
-      <NavigationForm type={this.props.groupName}></NavigationForm>
-	  		<View style={styles.container}>	
-				<Text style={styles.Text}>I am group profile page for group {this.props.groupID}.</Text>
-			  </View>
-        <ActionButton buttonColor="rgba(231,76,60,1)">
-            <ActionButton.Item buttonColor='#9b59b6' title="Group Chat" 
-              textStyle = {styles.itemStyle}
-              textContainerStyle = {styles.itemStyle}
-              onPress={() => {Toast.show("Group Chat")}}>
-              {<Icon name="message1" style={styles.actionButtonIcon} />}
-            </ActionButton.Item>
-            <ActionButton.Item buttonColor='#3498db' title="Create Event"
-              textStyle = {styles.itemStyle} 
-              textContainerStyle = {styles.itemStyle}
-              onPress={() => {Toast.show("Create Event")}}>
-              <Icon name="pluscircleo" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-          </ActionButton>
-      </View> 
-		);
-	}
+    const { events, token, userid, groupinfo, groupID} = this.state;
+
+      return(
+        <View style={{flex: 1}}>
+        <NavigationForm type={this.props.groupName}></NavigationForm>
+          <View style={styles.container}>	
+          <Text style={styles.Text}>I am group profile page for group {this.state.groupID}.</Text>
+          </View>
+          <ActionButton buttonColor="rgba(231,76,60,1)">
+              <ActionButton.Item buttonColor='#9b59b6' title="Group Chat" 
+                textStyle = {styles.itemStyle}
+                textContainerStyle = {styles.itemStyle}
+                onPress={() => {Toast.show("Group Chat")}}>
+                {<Icon name="message1" style={styles.actionButtonIcon} />}
+              </ActionButton.Item>
+              { this.renderCreateEvent() }
+            </ActionButton>
+        </View> 
+      );
+    }
 }
 
 const styles = StyleSheet.create({

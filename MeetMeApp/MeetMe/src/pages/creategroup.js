@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import {AppRegistry, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import NewGroupForm from '../components/newgroupForm';
+import NavigationForm from '../components/navigationForm';
 
 export default class CreateGroup extends Component {
 
 	render() {
 		return(
-			<View style={styles.container}>
+			<View style={{flex: 1}}>
+      <NavigationForm type="Create New Group"></NavigationForm>
+      <View style={styles.container}>
 				<NewGroupForm type="Create Group"/>
 			</View>	
+      </View>
 			)
 	}
 }
@@ -37,5 +41,3 @@ const styles = StyleSheet.create({
   	fontWeight:'500'
   }
 });
-
-AppRegistry.registerComponent('creategroup', () => creategroup);

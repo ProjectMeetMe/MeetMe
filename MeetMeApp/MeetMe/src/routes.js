@@ -9,6 +9,7 @@ import Setting from './pages/setting';
 import CreateGroup from './pages/creategroup';
 import JoinGroup from './pages/joingroup';
 import GroupProfile from './pages/groupprofile';
+import CreateEvent from './pages/createevent';
 
 export default class Routes extends Component{
 	render() {
@@ -22,6 +23,7 @@ export default class Routes extends Component{
 				  <Scene key="creategroup" component={CreateGroup} title="CreateGroup"/>
 				  <Scene key="joingroup" component={JoinGroup} title="JoinGroup"/>
 				  <Scene key="groupprofile" component={GroupProfile} title="GroupProfile"/>
+				  <Scene key="createevent" component={CreateEvent} title="CreateEvent"/>
 				  <Scene key="setting" component={Setting} title="SettingPage"/>
 				  
 			    </Stack>

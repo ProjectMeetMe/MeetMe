@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import {AppRegistry, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import JoinGroupForm from '../components/joingroupForm';
+import NavigationForm from '../components/navigationForm';
 
 export default class JoinGroup extends Component {
 
 	render() {
 		return(
-			<View style={styles.container}>
+			<View style={{flex: 1}}>
+      <NavigationForm type="Join A Group"></NavigationForm>
+      <View style={styles.container}>
 				<JoinGroupForm type="Join Group"/>
+        </View>
 			</View>	
 			)
 	}

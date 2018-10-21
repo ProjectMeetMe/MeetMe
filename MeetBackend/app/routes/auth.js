@@ -40,13 +40,11 @@ router.post('/signin', function(req, res, next) {
                 message: "Some error encountered"
             });
         }
-
         if (!user) {
-            return res.status(400).json({ //send relevant error message
+            return res.status(400).json({ //send relevant for invalid user info
                 message: info.message
             });
         }
-
         req.login(user, {
             session: false
         }, function(err) {

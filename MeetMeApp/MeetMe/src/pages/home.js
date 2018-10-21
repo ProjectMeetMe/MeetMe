@@ -77,7 +77,14 @@ export default class Home extends Component{
   };
 
   renderHeader = () => {
-    return <SearchBar placeholder="Type Here..." lightTheme round />;
+    return <SearchBar 
+            platform={'android'}
+            clearIcon={{ color: 'grey' }}
+            placeholder="Search Here..." 
+            inputContainerStyle={styles.container} 
+            //containerStyle={styles.container}
+            round
+            />;
   };
 
   renderFooter = () => {
@@ -99,7 +106,7 @@ export default class Home extends Component{
     {
       return(
         <View  style={{flex: 1}}>
-          <NavigationForm type="My Group"></NavigationForm>
+          <NavigationForm type="My Groups"></NavigationForm>
           <View style={styles.container}>	
             <Text style={styles.Text}>You do not have any group yet.{'\n'}
                 You can create a group or join a group.</Text>
@@ -124,18 +131,22 @@ export default class Home extends Component{
     else
     {
       return(
-        <View style={{flex: 1}}>
-          <NavigationForm type="My Group"></NavigationForm>
+        <View style={{flex: 1, backgroundColor: '#455a64'}}>
+          
+          <NavigationForm type="My Groups"></NavigationForm>
 
           <FlatList
             data={this.state.groups}
             renderItem={({ item }) => (
-              <ListItem
+              <ListItem 
+                containerStyle={{backgroundColor: '#455a64', borderBottomWidth: 0}}
                 roundAvatar
+                titleStyle={styles.titleText}
                 title={item.groupName}
-                subtitle={item.id}
+                subtitleStyle={styles.subtitleText}
+                subtitle={'Group ID: ' + item.id}
                 //avatar={{ uri: item.picture.thumbnail }}
-                containerStyle={{ borderBottomWidth: 0 }}
+                //containerStyle={{ borderBottomWidth: 0 }}
                 onPress={() => {Actions.groupprofile({groupID: item.id, groupName:item.groupName})}}>
               </ListItem>
             )}
@@ -193,9 +204,9 @@ const styles = StyleSheet.create({
   renderSeparator:
   {
     height: 1,
-    width: "86%",
-    backgroundColor: "#CED0CE",
-    marginLeft: "14%",
+    width: "95%",
+    backgroundColor: "grey",
+    marginLeft: "2.5%",
   },
 
   button: {
@@ -210,6 +221,16 @@ const styles = StyleSheet.create({
     fontWeight:'500',
     color:'#ffffff',
     textAlign:'center'
+  },
+  titleText: {
+    color:'#ffffff',
+    fontWeight: '300',
+  	fontSize:18
+  },
+  subtitleText: {
+  	color:'#ced0ce',
+    fontSize:14,
+    fontWeight: '100'
   },
 
 scene: {

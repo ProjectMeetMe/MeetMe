@@ -14,6 +14,7 @@
     "react-native-calendars": "^1.21.0",
     "react-native-elements": "^0.19.1",
     "react-native-google-signin": "^1.0.0-rc6",
+    "react-native-modal-datetime-picker": "^6.0.0",
     "react-native-nav": "^2.0.2",
     "react-native-router-flux": "^4.0.5",
     "react-native-simple-toast": "0.0.8",

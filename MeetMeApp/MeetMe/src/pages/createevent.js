@@ -13,6 +13,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import {Actions} from 'react-native-router-flux';
 import NavigationForm from '../components/navigationForm';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 export default class CreateEvent extends Component {
 
@@ -26,6 +27,8 @@ export default class CreateEvent extends Component {
             startTime: '',
             endTime: '',
             groupId: this.props.groupID,
+            startDateTimePickerVisible: false,
+            endDateTimePickerVisible: false,
     }
 
     AsyncStorage.getItem("token").then((value) => {
@@ -71,12 +74,57 @@ export default class CreateEvent extends Component {
         Keyboard.dismiss();
 }
 
+showStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: true });
+
+hideStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: false });
+
+handleStartDatePicked  = (date) => {
+  console.log('Start Time has been picked: ', date);
+  this.setState({startTime: date});
+  this.hideStartDateTimePicker();
+};
+
+showEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: true });
+
+hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false });
+
+handleEndDatePicked  = (date) => {
+  console.log('End Time has been picked: ', date);
+  this.setState({endTime: date});
+  this.hideEndDateTimePicker();
+};
+
+renderStartTime()
+{
+    if(this.state.startTime == '')
+    {
+      return("Start Time");
+    }
+    else
+    {
+      return(this.state.startTime.toString());
+    } 
+}
+
+renderEndTime()
+{
+    if(this.state.endTime == '')
+    {
+      return("End Time");
+    }
+    else
+    {
+      return(this.state.endTime.toString());
+    } 
+}
+
 	render(){
 		return(
       <View style={{flex: 1, backgroundColor: '#455a64'}}>
       <NavigationForm type="Create New Event"></NavigationForm>
       <ScrollView contentContainerStyle={styles.contentContainer}>
 			<View style={styles.container}>
+
                     <TextInput style={styles.inputBox} 
                     underlineColorAndroid='rgba(0,0,0,0)' 
                     placeholder="Event Name"
@@ -88,14 +136,28 @@ export default class CreateEvent extends Component {
                     />
                     
                     <TouchableOpacity style={styles.datebutton} 
-                      onPress={ console.log("Start Time Clicked ")}>
-                    <Text style={styles.datebuttonText}>{"Start Time"}</Text>
+                      onPress={ this.showStartDateTimePicker }>
+                    <Text style={styles.datebuttonText}>{this.renderStartTime()}
+                    </Text>
                     </TouchableOpacity>   
+                    <DateTimePicker 
+                        mode="datetime"
+                        isVisible={this.state.startDateTimePickerVisible}
+                        onConfirm={this.handleStartDatePicked }
+                        onCancel={this.hideStartDateTimePicker }
+                    />
 
-                     <TouchableOpacity style={styles.datebutton} 
-                      onPress={ console.log("End Time Clicked ")}>
-                    <Text style={styles.datebuttonText}>{"End Time"}</Text>
-                    </TouchableOpacity>  
+                    <TouchableOpacity style={styles.datebutton} 
+                      onPress={ this.showEndDateTimePicker }>
+                    <Text style={styles.datebuttonText}>{this.renderEndTime()}
+                    </Text>
+                    </TouchableOpacity> 
+                    <DateTimePicker 
+                        mode="datetime"
+                        isVisible={this.state.endDateTimePickerVisible}
+                        onConfirm={this.handleEndDatePicked }
+                        onCancel={this.hideEndDateTimePicker}
+                    /> 
 
                     <TextInput style={styles.longInputBox} 
                     multiline={true}
@@ -108,7 +170,6 @@ export default class CreateEvent extends Component {
                     onSubmitEditing={()=> this.password.focus()}
                     onChangeText={description => this.setState({description})}
                 />
-
 
                 <TouchableOpacity style={styles.button} onPress={this.addEvent}>
                     <Text style={styles.buttonText}>{"Create Event"}</Text>

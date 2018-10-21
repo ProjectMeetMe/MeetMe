@@ -11,6 +11,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import {Actions} from 'react-native-router-flux';
 import NavigationForm from '../components/navigationForm';
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 
 export default class GroupProfile extends Component {
 
@@ -18,66 +19,41 @@ export default class GroupProfile extends Component {
 		super(props)
 		this.state={
             
-            newGroupName:'',
-            token: '',
+        events:'',
+        token: '',
     }
-
-    AsyncStorage.getItem("token").then((value) => {
-        if (value != ''){
-          this.setState({token: value});
-        } else {
-          this.setState({token: ''});
-        }
-      }).done();
   }
 
-  newGroup = () =>{
-		const {newGroupName, token} = this.state;
-        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-		if(newGroupName==""){
-		  Toast.show('Please enter the group name!', Toast.LONG);		
-		}
-        else if(newGroupName.length < 5 || newGroupName.length > 32){
-            Toast.show('Your password must be between 5 to 32 characters!', Toast.LONG);
-          }
+  componentDidMount() {
+    this.getEvents();
+  }
 
-		 else{
-		    fetch('http://104.42.79.90:2990/group/createGroup',{
-			method:'post',
-			headers:{
-				'Accept': 'application/json',
-                'Content-type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-			},
-			body:JSON.stringify({
-				groupName: newGroupName,
-			})			
-		})
-		.then((response) => response.json())
-		 .then((responseJson)=>{
-    //    if(responseJson.message != "Successful create")
-    //    {
-    //     Toast.show(responseJson.message, Toast.LONG);
-    //    }
-            if(responseJson.groupName != "")
-            {
-                Toast.show(responseJson.groupName, Toast.LONG);
-            }
-            else
-            {
-                Toast.show("Failed to create a new group :(", Toast.LONG)
-            }
-     });
-    }
-    Keyboard.dismiss();
-	}
+  async getEvents()
+  {
+    const { events, token} = this.state;
+    const usertoken = await AsyncStorage.getItem("token");
+
+    var userevents = await fetch('http://104.42.79.90:2990/group/getGroups', {
+          method: 'get',
+          headers:{
+            'Authorization': 'Bearer ' + usertoken
+          }
+        });
+
+    const userevent = await userevents.json();
+
+    this.setState({
+      token: usertoken,
+      groups: userevent.group,
+    });
+  }
 
 	render(){
 		return(
       <View style={{flex: 1}}>
       <NavigationForm type="Setting"></NavigationForm>
 	  		<View style={styles.container}>	
-				<Text style={styles.Text}>I am group profile page.</Text>
+				<Text style={styles.Text}>I am group profile page for group {this.props.groupID}.</Text>
 			  </View>
       </View> 
 		);

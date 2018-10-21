@@ -33,26 +33,6 @@ export default class Profile extends Component{
     const {profile, token, isTokenrdy, isProfilerdy, isLoading} 
               = this.state;
 
-    // AsyncStorage.getItem("token").then((value) => {
-    //     this.setState({
-    //         token: value,
-    //         isTokenrdy: true,
-    //     });
-    //   Toast.show("Token is received form asyncstraoge, set frag to treu", Toast.LONG);
-    // }).done();
-
-    //this.getToken();
-    
-    //var gettoken = this.getToken();
-    //var getprofile = this.getProfile();
-
-    // this.setState({
-    //   token: gettoken,
-    //   profile: getprofile,
-    // });
-
-    //this.makeRemoteRequest();
-
     this.getProfile();
   }
 

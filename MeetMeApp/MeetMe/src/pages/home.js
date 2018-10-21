@@ -32,10 +32,10 @@ export default class Home extends Component{
   }
 
   componentDidMount() {
-    this.getProfile();
+    this.getGroups();
   }
 
-  async getProfile()
+  async getGroups()
   {
     const { groups, token, loading, refreshing } = this.state;
     const usertoken = await AsyncStorage.getItem("token");
@@ -65,7 +65,7 @@ export default class Home extends Component{
         refreshing: true
       },
       () => {
-        this.getProfile();
+        this.getGroups();
       }
     );
   };
@@ -95,8 +95,7 @@ export default class Home extends Component{
 
     const { groups, token } = this.state;
 
-    // if(groups.length == 0)
-    if(groups == [])
+    if(groups == [""])
     {
       return(
         <View  style={{flex: 1}}>
@@ -137,7 +136,7 @@ export default class Home extends Component{
                 subtitle={item.id}
                 //avatar={{ uri: item.picture.thumbnail }}
                 containerStyle={{ borderBottomWidth: 0 }}
-                onPress={() => {Actions.groupprofile()}}>
+                onPress={() => {Actions.groupprofile({groupID: item.id})}}>
               </ListItem>
             )}
             keyExtractor={item => item.groupName}

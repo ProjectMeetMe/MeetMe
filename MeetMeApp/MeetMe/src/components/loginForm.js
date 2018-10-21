@@ -35,9 +35,9 @@ export default class LoginFrom extends Component {
     }
   }
 
-  async saveProfile(value) {
+  async saveUserID(value) {
     try {
-      await AsyncStorage.setItem('profile', value);
+      await AsyncStorage.setItem('userid', value.toString());
     } catch (error) {
       console.log("Error saving data" + error);
     }
@@ -87,10 +87,24 @@ export default class LoginFrom extends Component {
        else
        {
         //Toast.show(JSON.stringify(responseJson), Toast.LONG)
-        console.log("Redirect");
+        //console.log("Redirect");
         token = responseJson.token;
 
         this.saveToken(token);
+        
+        //save user id to asyncstorage
+        fetch('http://104.42.79.90:2990/user/profile',{
+          method: 'GET',
+          headers:{
+            'Authorization': 'Bearer ' + token
+          }
+        })
+		      .then((response) => response.json())
+		      .then((responseJson)=>{
+              userid = responseJson.id;
+              //console.log(userid);
+              this.saveUserID(userid);
+        });
 
         this.home();
        }

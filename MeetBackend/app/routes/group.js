@@ -203,7 +203,7 @@ router.post('/joinGroup', function(req, res, next) {
             }
         }],
         where: {
-            groupId: groupId
+            id: groupId
         }
     }).then(function(groupFound) {
         if (!groupFound) {

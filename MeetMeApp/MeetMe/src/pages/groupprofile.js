@@ -12,6 +12,8 @@ import Toast from 'react-native-simple-toast';
 import {Actions} from 'react-native-router-flux';
 import NavigationForm from '../components/navigationForm';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 export default class GroupProfile extends Component {
 
@@ -21,18 +23,20 @@ export default class GroupProfile extends Component {
             
         events:[],
         token: '',
+        userid: '',
+        groupinfo: '',
     }
   }
 
   componentDidMount() {
     this.getEvents();
+    this.getGroupInfo();
   }
 
   async getEvents()
   {
     const { events, token} = this.state;
     const usertoken = await AsyncStorage.getItem("token");
-    console.log("usertoken:  " + usertoken);
 
     groupId = this.props.groupID;
 
@@ -45,13 +49,36 @@ export default class GroupProfile extends Component {
 
     const userevent = await userevents.json();
 
-    console.log("userevent:  " + userevent);
-    console.log("userevent.toString:  " + userevent.toString);
-    console.log("JSON.stringify(userevent):  " + JSON.stringify(userevent));
-    
     this.setState({
       token: usertoken,
       events: userevent.events,
+    });
+  }
+
+  async getGroupInfo()
+  {
+    const { events, token, userid} = this.state;
+    const usertoken = await AsyncStorage.getItem("token");
+    const curuserid = await AsyncStorage.getItem("userid");
+
+    groupId = this.props.groupID;
+
+    var groupInfos = await fetch('http://104.42.79.90:2990/group/getGroup?groupId=${encodeURIComponent(groupId)}', {
+          method: 'get',
+          headers:{
+            'Authorization': 'Bearer ' + usertoken
+          }
+        });
+
+    const groupinfojson = await groupInfos.json();
+
+    console.log("current user id:  " + userid);
+    console.log("group owner id:  " + groupinfojson.groupInfo);
+    
+    this.setState({
+      token: usertoken,
+      groupinfo: groupinfojson.groupInfo,
+      userid: curuserid,
     });
   }
 
@@ -62,6 +89,20 @@ export default class GroupProfile extends Component {
 	  		<View style={styles.container}>	
 				<Text style={styles.Text}>I am group profile page for group {this.props.groupID}.</Text>
 			  </View>
+        <ActionButton buttonColor="rgba(231,76,60,1)">
+            <ActionButton.Item buttonColor='#9b59b6' title="Group Chat" 
+              textStyle = {styles.itemStyle}
+              textContainerStyle = {styles.itemStyle}
+              onPress={() => {Toast.show("Group Chat")}}>
+              {<Icon name="message1" style={styles.actionButtonIcon} />}
+            </ActionButton.Item>
+            <ActionButton.Item buttonColor='#3498db' title="Create Event"
+              textStyle = {styles.itemStyle} 
+              textContainerStyle = {styles.itemStyle}
+              onPress={() => {Toast.show("Create Event")}}>
+              <Icon name="pluscircleo" style={styles.actionButtonIcon} />
+            </ActionButton.Item>
+          </ActionButton>
       </View> 
 		);
 	}
@@ -78,6 +119,13 @@ const styles = StyleSheet.create({
     color:'#ffffff',
     marginVertical: 10
   },
+
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: '#1c313a',
+  },
+  
   button: {
     width:300,
     backgroundColor:'#1c313a',
@@ -113,6 +161,11 @@ const styles = StyleSheet.create({
     fontWeight:'500',
     color:'#ffffff',
     textAlign:'center'
+  },
+
+  itemStyle: {
+    backgroundColor: '#1c313a',
+    color: '#ffffff'
   }
   
 });

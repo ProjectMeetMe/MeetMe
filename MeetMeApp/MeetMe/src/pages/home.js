@@ -6,7 +6,7 @@ import NavigationForm from '../components/navigationForm';
 import {List, ListItem, SearchBar } from 'react-native-elements';
 import Toast from 'react-native-simple-toast';
 import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {Actions} from 'react-native-router-flux';
 
 export default class Home extends Component{
@@ -25,6 +25,10 @@ export default class Home extends Component{
 
   creategroup() {
 		Actions.creategroup()
+  }
+
+  joingroup() {
+		Actions.joingroup()
   }
 
   groupprofile() {
@@ -121,7 +125,7 @@ export default class Home extends Component{
             <ActionButton.Item buttonColor='#3498db' title="Join Group"
               textStyle = {styles.itemStyle} 
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Toast.show("Join Group")}}>
+              onPress={() => {Actions.joingroup()}}>
               <Icon name="md-person-add" style={styles.actionButtonIcon} />
             </ActionButton.Item>
           </ActionButton>
@@ -164,13 +168,13 @@ export default class Home extends Component{
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
               onPress={() => {Actions.creategroup()}}>
-              {<Icon name="md-add" style={styles.actionButtonIcon} />}
+              {<Icon name="pluscircleo" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor='#3498db' title="Join Group"
               textStyle = {styles.itemStyle} 
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Toast.show("Join Group")}}>
-              <Icon name="md-person-add" style={styles.actionButtonIcon} />
+              onPress={() => {Actions.joingroup()}}>
+              <Icon name="pluscircle" style={styles.actionButtonIcon} />
             </ActionButton.Item>
           </ActionButton>
         </View> 

@@ -11,72 +11,74 @@ import {
 import Toast from 'react-native-simple-toast';
 import {Actions} from 'react-native-router-flux';
 
-export default class NewGroupForm extends Component {
+export default class JoinGroupForm extends Component {
 
   constructor(props){
 		super(props)
 		this.state={
             
-            newGroupName:'',
+            joinGroupID:'',
             token: '',
+            userid: '',
     }
 
     AsyncStorage.getItem("token").then((value) => {
-        if (value != ''){
           this.setState({token: value});
-        } else {
-          this.setState({token: ''});
-        }
       }).done();
+
+      AsyncStorage.getItem("userid").then((value) => {
+        this.setState({userid: value});
+    }).done();
   }
 
-  newGroup = () =>{
-		const {newGroupName, token} = this.state;
-		if(newGroupName==""){
-		  Toast.show('Please enter the group name!', Toast.LONG);		
-		}
-        else if(newGroupName.length < 5 || newGroupName.length > 32){
-            Toast.show('Your password must be between 5 to 32 characters!', Toast.LONG);
-          }
+  joinGroup = () =>{
+    const {joinGroupID, token, userid} = this.state;
+    
+    console.log("userid    " + userid);
 
-		 else{
-		    fetch('http://104.42.79.90:2990/group/createGroup',{
-			method:'post',
-			headers:{
-				'Accept': 'application/json',
-                'Content-type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-			},
-			body:JSON.stringify({
-				groupName: newGroupName,
-			})			
-		})
-		.then((response) => response.json())
-		 .then((responseJson)=>{
-          if(responseJson.message != "")
-          {
-              Toast.show(responseJson.message, Toast.LONG);
-          }
-     });
+		if(joinGroupID==""){
+		  Toast.show('Please enter the group id!', Toast.LONG);		
     }
-    Keyboard.dismiss();
-	}
+    
+		else{
+		    fetch('http://104.42.79.90:2990/group/joinGroup',{
+			      method:'post',
+			      headers:{
+				              'Accept': 'application/json',
+                      'Content-type': 'application/json',
+                      'Authorization': 'Bearer ' + token,
+			              },
+			      body:JSON.stringify({
+                      groupId: joinGroupID,
+                      id:      userid, 
+			      })			
+		      })
+		        .then((response) => response.json())
+		        .then((responseJson)=>{
+                  if(responseJson.message != "")
+                  {
+                      Toast.show(responseJson.message, Toast.LONG);
+                  }
+            });
+    }
+        Keyboard.dismiss();
+}
 
 	render(){
 		return(
 			<View style={styles.container}>
                 <TextInput style={styles.inputBox} 
                     underlineColorAndroid='rgba(0,0,0,0)' 
-                    placeholder="Your Group Name"
+                    placeholder="Group ID"
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
                     onSubmitEditing={()=> this.password.focus()}
-                    onChangeText={newGroupName => this.setState({newGroupName})}
+                    onChangeText={joinGroupID => this.setState({joinGroupID})}
                 />
 
 
-                <TouchableOpacity style={styles.button} onPress={this.newGroup}>
+                <TouchableOpacity style={styles.button} onPress={this.joinGroup}>
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
   		</View>

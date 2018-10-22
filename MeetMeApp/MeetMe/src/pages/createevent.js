@@ -44,9 +44,35 @@ export default class CreateEvent extends Component {
 
     // var groupId = this.props.groupID;		
     console.log("groupId:  " + this.state.groupId);
+    
+    // String manipulation to compare start and end times
+    var startDay, startMonth, startYear, endDay, endMonth, endYear;
+    var startHour, startMin, endHour, endMin;
+    var startArrTotal = startTime.split(" ");
+    var endArrTotal = endTime.split(" ");
+    var startDateArr = startArrTotal[0].split("-");
+    var endDateArr = endArrTotal[0].split("-");
+    var startHrMin = startArrTotal[1].split(":");
+    var endHrMin = endArrTotal[1].split(":");
+    startHour = parseInt(startHrMin[0]), startMin = parseInt(startHrMin[1]);
+    endHour = parseInt(endHrMin[0]), endMin = parseInt(endHrMin[1]);
+    startYear = parseInt(startDateArr[0]); startMonth = parseInt(startDateArr[1]); startDay = parseInt(startDateArr[2]);
+    endYear = parseInt(endDateArr[0]); endMonth = parseInt(endDateArr[1]); endDay = parseInt(endDateArr[2]);
+    
+    var badInput = false;
+    
+    if(endYear < startYear ||
+       (endMonth < startMonth && endYear == startYear) ||
+       (endDay < startDay && endMonth == startMonth && endYear == startYear) ||
+       (endHour < startHour && endDay == startDay && endMonth == startMonth && endYear == startYear) ||
+       (endMin < startMin && endHour == startHour && endDay == startDay && endMonth == startMonth && endYear == startYear)
+       ) {
+         badInput = true;
+       }
+    
 
-		if(groupId=="111"){
-		  Toast.show('Please enter the group id!', Toast.LONG);		
+		if(badInput){
+		  Toast.show('Bad input. Double check start and end times.', Toast.LONG);		
         }
     
 		else{

@@ -26,11 +26,15 @@ export default class GroupProfile extends Component {
         userid: '',
         groupinfo: '',
         groupID: 0,
+        curDate: '',
+        items: {},
     }
   }
 
   componentDidMount() {
+    this.getDate();
     this.getEvents();
+    this.getItems();
     this.getGroupInfo();
   }
   
@@ -41,6 +45,11 @@ export default class GroupProfile extends Component {
 
     groupId = this.props.groupID;
 
+    this.setState({
+      token: this.usertoken,
+    });
+
+    console.log("token in getEvents:  " + token);
     var userevents = await fetch('http://104.42.79.90:2990/event/getEvents?groupId=${encodeURIComponent(groupId)}', {
           method: 'get',
           headers:{
@@ -51,19 +60,46 @@ export default class GroupProfile extends Component {
     const userevent = await userevents.json();
 
     this.setState({
-      token: usertoken,
       events: userevent.events,
+    });
+  }
+
+  async getItems()
+  {
+    const { events } = this.state;
+    console.log("events.length:  " + events.length);
+    console.log("events:  " + events.toString);
+
+  //   for (var i in events) {
+  //     events[i].forEach(function(elem, index) {
+  //         console.log(elem, index);
+  //     });
+  // }
+  }
+
+  getDate()
+  {
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+
+    var curDate = year + '-' + month + '-' + date;
+    console.log("curDate:  " + curDate);
+
+    this.setState({
+      curDate: curDate,
     });
   }
 
   async getGroupInfo()
   {
     const { events, token, userid} = this.state;
-    const usertoken = await AsyncStorage.getItem("token");
     const curuserid = await AsyncStorage.getItem("userid");
+    const usertoken = await AsyncStorage.getItem("token");
 
     groupId = this.props.groupID;
 
+    console.log("token in getGroupInfo:  " + usertoken);
     console.log("groupId:  " + groupId);
 
     var groupInfos = await fetch('http://104.42.79.90:2990/group/getGroup?groupId=' + groupId, {
@@ -79,7 +115,6 @@ export default class GroupProfile extends Component {
     console.log("group owner id:  " + groupinfojson.groupInfo.leaderId);
     
     this.setState({
-      token: usertoken,
       groupinfo: groupinfojson.groupInfo,
       userid: curuserid,
       groupID: groupId,
@@ -100,15 +135,81 @@ export default class GroupProfile extends Component {
     }
   }
 
+  loadItems(day) {
+    setTimeout(() => {
+      for (let i = -15; i < 85; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = this.timeToString(time);
+        if (!this.state.items[strTime]) {
+          this.state.items[strTime] = [];
+          const numItems = Math.floor(Math.random() * 5);
+          for (let j = 0; j < numItems; j++) {
+            this.state.items[strTime].push({
+              name: 'Item for ' + strTime,
+              height: Math.max(50, Math.floor(Math.random() * 150))
+            });
+          }
+        }
+      }
+      //console.log(this.state.items);
+      const newItems = {};
+      Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
+      this.setState({
+        items: newItems
+      });
+    }, 1000);
+    // console.log(`Load Items for ${day.year}-${day.month}`);
+  }
+
+  renderItem(item) {
+    return (
+      <View style={[styles.item, {height: item.height}]}><Text>{item.name}</Text></View>
+    );
+  }
+
+  renderEmptyDate() {
+    return (
+      <View style={styles.emptyDate}><Text>This is empty date!</Text></View>
+    );
+  }
+
+  rowHasChanged(r1, r2) {
+    return r1.name !== r2.name;
+  }
+
+  timeToString(time) {
+    const date = new Date(time);
+    return date.toISOString().split('T')[0];
+  }
+
 	render(){
-    const { events, token, userid, groupinfo, groupID} = this.state;
+    const { events, token, userid, groupinfo, groupID, curDate} = this.state;
+
+    const event1 = {key:'CPEN 321 MVP', color: 'red'};
+    const event2 = {key:'ELEC 221 Lecture', color: 'blue'};
+    const event3 = {key:'CPEN 321 Lecture', color: 'green'};
+    const event4 = {key:'ELEC 221 Quiz', color: 'red'};
+    const event5 = {key:'CPEN 311 Midterm', color: 'blue'};
 
       return(
         <View style={{flex: 1}}>
         <NavigationForm type={this.props.groupName}></NavigationForm>
-          <View style={styles.container}>	
-          <Text style={styles.Text}>I am group profile page for group {this.state.groupID}.</Text>
-          </View>
+          <Agenda
+              items={this.state.items}
+              loadItemsForMonth={this.loadItems.bind(this)}
+              selected={curDate}
+              renderItem={this.renderItem.bind(this)}
+              renderEmptyDate={this.renderEmptyDate.bind(this)}
+              rowHasChanged={this.rowHasChanged.bind(this)}
+              markingType={'multi-dot'}
+              markedDates={{
+                '2018-10-22': {dots: [event1, event2, event3]},
+                '2018-10-23': {dots: [event4, event5]},
+              }}
+              monthFormat={'yyyy'}
+              theme={{calendarBackground: '#758d9f', agendaKnobColor: "#679fad"}}
+              renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
+          />
           <ActionButton buttonColor="rgba(231,76,60,1)">
               <ActionButton.Item buttonColor='#9b59b6' title="Group Chat" 
                 textStyle = {styles.itemStyle}
@@ -181,6 +282,20 @@ const styles = StyleSheet.create({
   itemStyle: {
     backgroundColor: '#1c313a',
     color: '#ffffff'
+  },  
+  
+  item: {
+    backgroundColor: 'white',
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17
+  },
+  emptyDate: {
+    height: 15,
+    flex:1,
+    paddingTop: 30
   }
   
 });

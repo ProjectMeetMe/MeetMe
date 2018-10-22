@@ -72,7 +72,7 @@ export default class CreateEvent extends Component {
     
 
 		if(badInput){
-		  Toast.show('Bad input. Double check start and end times.', Toast.LONG);		
+		  Toast.show('Please double check your start and end times.', Toast.LONG);		
         }
     
 		else{
@@ -86,16 +86,16 @@ export default class CreateEvent extends Component {
 			      body:JSON.stringify({
                       groupId:         groupId,
                       eventName:       eventName, 
-                      description:     "We together are working on this group mvp",
-                      startTime:       "2018-10-21 11:00:00",
-                      endTime:         "2018-10-21 12:30:00",
+                      description:     description,
+                      startTime:       startTime,
+                      endTime:         endTime,
 			      })			
 		      })
 		        .then((response) => response.json())
 		        .then((responseJson)=>{
                     console.log("responseJson:  " + responseJson);
                     console.log("responseJson.message:  " + responseJson.message);
-                    Toast.show('responseJson.message:   ' + responseJson.message, Toast.LONG);		
+                    Toast.show(responseJson.message, Toast.LONG);		
             });
     }
         Keyboard.dismiss();

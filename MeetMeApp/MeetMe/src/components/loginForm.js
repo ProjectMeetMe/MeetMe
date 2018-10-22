@@ -18,10 +18,10 @@ export default class LoginFrom extends Component {
   constructor(props){
 		super(props)
 		this.state={
-			// userEmail:'',
-      // userPassword:''
-      userEmail:'12345678@hotmail.com',
-      userPassword:'12345678',
+			userEmail:'',
+      userPassword:''
+      // userEmail:'12345678@hotmail.com',
+      // userPassword:'12345678',
       // userEmail:'tester1@test.com',
       // userPassword:'test',
     }
@@ -51,64 +51,63 @@ export default class LoginFrom extends Component {
 		const {userEmail,userPassword} = this.state;
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     var token;
-		// if(userEmail==""){
-		//   Toast.show('Please enter your email address!', Toast.LONG);		
-		// }
+		if(userEmail==""){
+		  Toast.show('Please enter your email address!', Toast.LONG);		
+		}
 		
-		// else if(reg.test(userEmail) === false)
-		// {
-		//   Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
-		//   }
+		else if(reg.test(userEmail) === false)
+		{
+		  Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
+		  }
 
-		// else if(userPassword==""){
-    //   Toast.show('Please enter your password!', Toast.LONG);
-		// }
-		// else{
-		
-    // }
-    fetch('http://104.42.79.90:2990/auth/signin',{
-			method:'post',
-			headers:{
-				'Accept': 'application/json',
-				'Content-type': 'application/json'
-			},
-			body:JSON.stringify({
-				email: userEmail,
-				password: userPassword
-			})
-			
-		})
-		.then((response) => response.json())
-		 .then((responseJson)=>{
-       if(responseJson.message != "Successful login")
-       {
-        Toast.show(responseJson.message, Toast.LONG);
-       }
-       else
-       {
-        //Toast.show(JSON.stringify(responseJson), Toast.LONG)
-        //console.log("Redirect");
-        token = responseJson.token;
-
-        this.saveToken(token);
-        
-        //save user id to asyncstorage
-        fetch('http://104.42.79.90:2990/user/profile',{
-          method: 'GET',
-          headers:{
-            'Authorization': 'Bearer ' + token
-          }
+		else if(userPassword==""){
+      Toast.show('Please enter your password!', Toast.LONG);
+		}
+		else{
+      fetch('http://104.42.79.90:2990/auth/signin',{
+        method:'post',
+        headers:{
+          'Accept': 'application/json',
+          'Content-type': 'application/json'
+        },
+        body:JSON.stringify({
+          email: userEmail,
+          password: userPassword
         })
-		      .then((response) => response.json())
-		      .then((responseJson)=>{
-              userid = responseJson.id;
-              //console.log(userid);
-              this.saveUserID(userid);
-        });
-
-        this.home();
-       }
-     });
+        
+      })
+      .then((response) => response.json())
+       .then((responseJson)=>{
+         if(responseJson.message != "Successful login")
+         {
+          Toast.show(responseJson.message, Toast.LONG);
+         }
+         else
+         {
+          //Toast.show(JSON.stringify(responseJson), Toast.LONG)
+          //console.log("Redirect");
+          token = responseJson.token;
+  
+          this.saveToken(token);
+          
+          //save user id to asyncstorage
+          fetch('http://104.42.79.90:2990/user/profile',{
+            method: 'GET',
+            headers:{
+              'Authorization': 'Bearer ' + token
+            }
+          })
+            .then((response) => response.json())
+            .then((responseJson)=>{
+                userid = responseJson.id;
+                //console.log(userid);
+                this.saveUserID(userid);
+          });
+  
+          this.home();
+         }
+       });
+    }
 
     Keyboard.dismiss();
 	}

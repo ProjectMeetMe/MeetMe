@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  String,
   TextInput,
   TouchableOpacity,
   Keyboard ,
@@ -59,7 +60,7 @@ export default class CreateEvent extends Component {
 			      body:JSON.stringify({
                       groupId:         groupId,
                       eventName:       eventName, 
-                      description:     "We together are working on this fucking group mvp",
+                      description:     "We together are working on this group mvp",
                       startTime:       "2018-10-21 11:00:00",
                       endTime:         "2018-10-21 12:30:00",
 			      })			
@@ -80,7 +81,57 @@ hideStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: fal
 
 handleStartDatePicked  = (date) => {
   console.log('Start Time has been picked: ', date);
-  this.setState({startTime: date});
+  var dateString = date.toString();
+  // E.G: dateString = Sun Oct 21 2018 17:38:00 GMT-700 (PDT)
+  var dateStringArray = dateString.split(" ",5);
+  var day = dateStringArray[2];
+  var month;
+  var year = dateStringArray[3];
+  var time = dateStringArray[4];
+  var dateOutString
+      switch(dateStringArray[1]) {
+        case "Jan":
+          month = 1;
+          break;
+        case "Feb":
+          month = 2;
+          break;
+        case "Mar":
+          month = 3;
+          break;
+        case "Apr":
+          month = 4;
+          break;
+        case "May":
+          month = 5;
+          break;
+        case "Jun":
+          month = 6;
+          break;
+        case "Jul":
+          month = 7;
+          break;
+        case "Aug":
+          month = 8;
+          break;
+        case "Sep":
+          month = 9;
+          break;
+        case "Oct":
+          month = 10;
+          break;
+        case "Nov":
+          month = 11;
+          break;
+        case "Dec":
+          month = 12;
+          break;
+        // In case of ERROR
+        default:
+          month = 13;
+      }
+  dateOutString = year + "-" + month + "-" + day + " " + time;
+  this.setState({startTime: dateOutString});
   this.hideStartDateTimePicker();
 };
 
@@ -90,7 +141,58 @@ hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false }
 
 handleEndDatePicked  = (date) => {
   console.log('End Time has been picked: ', date);
-  this.setState({endTime: date});
+  var dateString = date.toString();
+  //[0] = dayName; [1] = month; [2] = dayNum; [3] yearNum, [4] time
+  var dateStringArray = dateString.split(" ",5);
+  var day = dateStringArray[2];
+  var month;
+  var year = dateStringArray[3];
+  var time = dateStringArray[4];
+  var dateOutString
+      switch(dateStringArray[1]) {
+        case "Jan":
+          month = 1;
+          break;
+        case "Feb":
+          month = 2;
+          break;
+        case "Mar":
+          month = 3;
+          break;
+        case "Apr":
+          month = 4;
+          break;
+        case "May":
+          month = 5;
+          break;
+        case "Jun":
+          month = 6;
+          break;
+        case "Jul":
+          month = 7;
+          break;
+        case "Aug":
+          month = 8;
+          break;
+        case "Sep":
+          month = 9;
+          break;
+        case "Oct":
+          month = 10;
+          break;
+        case "Nov":
+          month = 11;
+          break;
+        case "Dec":
+          month = 12;
+          break;
+        // In case of ERROR
+        default:
+          month = 13;
+      }
+  dateOutString = year + "-" + month + "-" + day + " " + time;
+
+  this.setState({endTime: dateOutString});
   this.hideEndDateTimePicker();
 };
 

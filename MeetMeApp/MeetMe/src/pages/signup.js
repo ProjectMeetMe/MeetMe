@@ -18,7 +18,7 @@ export default class Signup extends Component {
   goBack() {
       Actions.pop();
   }
-  
+  //TODO: implement return to login screen after creaing account successfully
 	render() {
 		return(
 			<View style={styles.container}>

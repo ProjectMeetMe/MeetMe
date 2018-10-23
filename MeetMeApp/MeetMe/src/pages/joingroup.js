@@ -5,6 +5,7 @@ import NavigationForm from '../components/navigationForm';
 
 export default class JoinGroup extends Component {
 
+  //TODO: return to homepage and refresh upon successful join
 	render() {
 		return(
 			<View style={{flex: 1}}>

@@ -5,6 +5,7 @@ import NavigationForm from '../components/navigationForm';
 
 export default class CreateGroup extends Component {
 
+  //TODO: return to homepage and refresh on return upon successful group creation
 	render() {
 		return(
 			<View style={{flex: 1}}>

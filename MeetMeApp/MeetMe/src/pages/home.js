@@ -41,9 +41,6 @@ export default class Home extends Component{
 
   async getGroups()
   {
-    // this.setState({
-    //   loading: true
-    // });
     const { groups, token, loading, refreshing } = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
@@ -66,6 +63,7 @@ export default class Home extends Component{
     });
   }
 
+  // Pull-down refresh
   handleRefresh = () => {
     this.setState(
       {
@@ -77,6 +75,7 @@ export default class Home extends Component{
     );
   };
 
+  // TODO: Implement searchbar functionality
   handleSearch = text => {
     const formatQuery = text.toLowerCase();
     const data = _.filter(this.state.fullData, user => {
@@ -91,17 +90,18 @@ export default class Home extends Component{
     );
   };
 
+  // Display searchbar
   renderHeader = () => {
     return <SearchBar 
             platform={'android'}
             clearIcon={{ color: 'grey' }}
             placeholder="Search Here..." 
             inputContainerStyle={styles.container} 
-            //containerStyle={styles.container}
             round
             />;
   };
 
+  // Display loading icon
   renderFooter = () => {
     if (!this.state.loading) 
         return null;
@@ -113,6 +113,7 @@ export default class Home extends Component{
     );
   };
 
+  // Display empty group list text
   renderEmptyList = () => {
     if (this.state.loading)
       return null;
@@ -124,55 +125,16 @@ export default class Home extends Component{
       </View>
     );
   };
- //     return null;
- //   };
-  //   return (
-  //     <View style={backgroundColor}>
-  //         <Text>
-  //         style={styles.Text}>You do not have any group yet.{'\n'}
-  //         You can create a group or join a group.
-  //         </Text>
-  //     </View>
-  //   );
-  // };
 
 	render(){
 
     const { groups, token } = this.state;
-
-    if(groups == [""])
-    {
-      return(
-        <View style={{flex: 1}}>
-          <NavigationForm type="My Groups"></NavigationForm>
-          <View style={styles.container}>	
-            <Text style={styles.Text}>You do not have any group yet.{'\n'}
-                You can create a group or join a group.</Text>
-          </View>
-          <ActionButton buttonColor="rgba(231,76,60,1)">
-            <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
-              textStyle = {styles.itemStyle}
-              textContainerStyle = {styles.itemStyle}
-              onPress={() => {Actions.creategroup()}}>
-              {<Icon name="md-add" style={styles.actionButtonIcon} />}
-            </ActionButton.Item>
-            <ActionButton.Item buttonColor='#3498db' title="Join Group"
-              textStyle = {styles.itemStyle} 
-              textContainerStyle = {styles.itemStyle}
-              onPress={() => {Actions.joingroup()}}>
-              <Icon name="md-person-add" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-          </ActionButton>
-        </View>
-      );
-    }
-    else
-    {
       return(
         <View style={{flex: 1, backgroundColor: '#455a64'}}>
           
           <NavigationForm type="My Groups"></NavigationForm>
 
+        
           <FlatList
             data={this.state.groups}
             renderItem={({ item }) => (
@@ -183,8 +145,6 @@ export default class Home extends Component{
                 title={item.groupName}
                 subtitleStyle={styles.subtitleText}
                 subtitle={'Group ID: ' + item.id}
-                //avatar={{ uri: item.picture.thumbnail }}
-                //containerStyle={{ borderBottomWidth: 0 }}
                 onPress={() => {Actions.groupprofile({groupID: item.id, groupName:item.groupName})}}>
               </ListItem>
             )}
@@ -192,6 +152,7 @@ export default class Home extends Component{
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}
+            //TODO: Format the text to appear in center of page
             ListEmptyComponent={this.renderEmptyList}
             onRefresh={this.handleRefresh}
             refreshing={this.state.refreshing}
@@ -214,10 +175,11 @@ export default class Home extends Component{
           </ActionButton>
         </View> 
       );
-    }
+    
 	}
 }
 
+// Style definitions
 const styles = StyleSheet.create({
   container : {
     flexGrow: 1,

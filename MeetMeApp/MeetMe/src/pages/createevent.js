@@ -45,7 +45,7 @@ export default class CreateEvent extends Component {
     // var groupId = this.props.groupID;		
     console.log("groupId:  " + this.state.groupId);
     
-    // String manipulation to compare start and end times
+    // String manipulation to compare start and end times and check for bad input
     var startDay, startMonth, startYear, endDay, endMonth, endYear;
     var startHour, startMin, endHour, endMin;
     var startArrTotal = startTime.split(" ");
@@ -60,7 +60,7 @@ export default class CreateEvent extends Component {
     endYear = parseInt(endDateArr[0]); endMonth = parseInt(endDateArr[1]); endDay = parseInt(endDateArr[2]);
     
     var badInput = false;
-    
+
     if(endYear < startYear ||
        (endMonth < startMonth && endYear == startYear) ||
        (endDay < startDay && endMonth == startMonth && endYear == startYear) ||
@@ -70,11 +70,11 @@ export default class CreateEvent extends Component {
          badInput = true;
        }
     
-
 		if(badInput){
 		  Toast.show('Please double check your start and end times.', Toast.LONG);		
         }
     
+    // Create event on good input
 		else{
 		    fetch('http://104.42.79.90:2990/event/addEvent',{
 			      method:'post',
@@ -105,6 +105,7 @@ showStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: tru
 
 hideStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: false });
 
+// Interpret start date
 handleStartDatePicked  = (date) => {
   console.log('Start Time has been picked: ', date);
   var dateString = date.toString();
@@ -165,6 +166,7 @@ showEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: true })
 
 hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false });
 
+// Interpret end date
 handleEndDatePicked  = (date) => {
   console.log('End Time has been picked: ', date);
   var dateString = date.toString();
@@ -309,6 +311,7 @@ renderEndTime()
 	}
 }
 
+// Styles definition
 const styles = StyleSheet.create({
   container : {
     backgroundColor:'#455a64',

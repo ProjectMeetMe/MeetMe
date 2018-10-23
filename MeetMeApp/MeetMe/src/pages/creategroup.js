@@ -17,6 +17,7 @@ export default class CreateGroup extends Component {
 	}
 }
 
+// Style definitions
 const styles = StyleSheet.create({
   container : {
     backgroundColor:'#455a64',

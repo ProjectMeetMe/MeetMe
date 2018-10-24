@@ -10,20 +10,27 @@ import {
   TouchableOpacity 
 } from 'react-native';
 
+//This function generate the navigation bar that display at
+//the top of this app
 export default class NavigationForm extends Component {
 
   constructor(props){
     super(props);
     }
 
+  //redirect this app to profile page
   profile() {
 	  Actions.profile()
   }
 
+  //redirect this app to seeting page
   setting() {
     Actions.setting()
 }
 
+  //notice that this app will not open a new page if 
+  //user click profile icon in profile page or user
+  //click setting icon in setting page
   render() {
     if(this.props.type == "Profile")
     {

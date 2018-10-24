@@ -18,15 +18,16 @@ export default class LoginFrom extends Component {
   constructor(props){
 		super(props)
 		this.state={
-			userEmail:'',
-      userPassword:''
-      // userEmail:'12345678@hotmail.com',
-      // userPassword:'12345678',
-      // userEmail:'tester1@test.com',
-      // userPassword:'test',
+			// userEmail:'',
+      // userPassword:''
+
+      // This is for test purpose
+      userEmail:'12345678@hotmail.com',
+      userPassword:'12345678',
     }
   }
 
+  //Save user token into AsyncStorage
   async saveToken(value) {
     try {
       await AsyncStorage.setItem('token', value);
@@ -35,6 +36,7 @@ export default class LoginFrom extends Component {
     }
   }
 
+  //Save user ID into AsyncStorage
   async saveUserID(value) {
     try {
       await AsyncStorage.setItem('userid', value.toString());
@@ -43,27 +45,35 @@ export default class LoginFrom extends Component {
     }
   }
 
+  //Redirect app to home page
   home() {
 		Actions.home()
   }
 
+
+  //Call signin post API to achieve user login
   login = () =>{
 		const {userEmail,userPassword} = this.state;
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     var token;
-		if(userEmail==""){
-		  Toast.show('Please enter your email address!', Toast.LONG);		
-		}
-		
-		else if(reg.test(userEmail) === false)
-		{
-		  Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
-		  }
 
-		else if(userPassword==""){
-      Toast.show('Please enter your password!', Toast.LONG);
-		}
-		else{
+    // verify that the user has entered valid input
+		// if(userEmail==""){
+		//   Toast.show('Please enter your email address!', Toast.LONG);		
+		// }
+		
+		// else if(reg.test(userEmail) === false)
+		// {
+		//   Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
+		//   }
+
+		// else if(userPassword==""){
+    //   Toast.show('Please enter your password!', Toast.LONG);
+		// }
+		// else{
+
+      //Call joinGroup API, send user email and password
+      //as key value pair in the post API call
       fetch('http://104.42.79.90:2990/auth/signin',{
         method:'post',
         headers:{
@@ -78,16 +88,17 @@ export default class LoginFrom extends Component {
       })
       .then((response) => response.json())
        .then((responseJson)=>{
+         //Display the reason why login failed if failed,
+         //Otherwise app keep finishing log in
          if(responseJson.message != "Successful login")
          {
           Toast.show(responseJson.message, Toast.LONG);
          }
          else
          {
-          //Toast.show(JSON.stringify(responseJson), Toast.LONG)
-          //console.log("Redirect");
           token = responseJson.token;
   
+          //save token to asyncstorage 
           this.saveToken(token);
           
           //save user id to asyncstorage
@@ -104,10 +115,11 @@ export default class LoginFrom extends Component {
                 this.saveUserID(userid);
           });
   
+          //Login success, redirect view to home page
           this.home();
          }
        });
-    }
+    //}
 
     Keyboard.dismiss();
 	}

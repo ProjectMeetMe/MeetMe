@@ -32,12 +32,16 @@ export default class CreateEvent extends Component {
             endDateTimePickerVisible: false,
     }
 
+    //retrieve token from AsyncStorage
     AsyncStorage.getItem("token").then((value) => {
           this.setState({token: value});
       }).done();
 
   }
 
+  //Call addEvent API, send groupId, eventName, description
+  //startTime and endTime as key value pair in the post API 
+  //call and allow user to sign up a new account
   addEvent = () =>{
     const {token, eventName, description, startTime, 
             endTime, groupId} = this.state;
@@ -70,6 +74,7 @@ export default class CreateEvent extends Component {
          badInput = true;
        }
     
+    //test whether use has a valid input or not
 		if(badInput){
 		  Toast.show('Please double check your start and end times.', Toast.LONG);		
         }
@@ -224,6 +229,8 @@ handleEndDatePicked  = (date) => {
   this.hideEndDateTimePicker();
 };
 
+//if user has input a start time, then use the user input to 
+//display, otherwise, display "Start Time"
 renderStartTime()
 {
     if(this.state.startTime == '')
@@ -236,6 +243,8 @@ renderStartTime()
     } 
 }
 
+//if user has input a end time, then use the user input to 
+//display, otherwise, display "end Time"
 renderEndTime()
 {
     if(this.state.endTime == '')

@@ -22,6 +22,7 @@ export default class JoinGroupForm extends Component {
             userid: '',
     }
 
+    //load token and userid from AsyncStorage
     AsyncStorage.getItem("token").then((value) => {
           this.setState({token: value});
       }).done();
@@ -31,6 +32,7 @@ export default class JoinGroupForm extends Component {
     }).done();
   }
 
+  //Call joinGroup post API to join a exist group
   joinGroup = () =>{
     const {joinGroupID, token, userid} = this.state;
     
@@ -41,6 +43,8 @@ export default class JoinGroupForm extends Component {
     }
     
 		else{
+        //Call joinGroup API, send the group the user want to 
+        //and the user id as key value pair in the post API call
 		    fetch('http://104.42.79.90:2990/group/joinGroup',{
 			      method:'post',
 			      headers:{
@@ -57,6 +61,7 @@ export default class JoinGroupForm extends Component {
 		        .then((responseJson)=>{
                   if(responseJson.message != "")
                   {
+                      //Display success / fail message
                       Toast.show(responseJson.message, Toast.LONG);
                   }
             });

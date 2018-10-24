@@ -6,6 +6,7 @@ import {
    Image 
 } from 'react-native';
 
+//this function render the logo of our app
 export default class Logo extends Component {
 	render(){
 		return(

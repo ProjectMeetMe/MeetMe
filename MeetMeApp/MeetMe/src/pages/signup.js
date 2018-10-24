@@ -15,6 +15,7 @@ import {Actions} from 'react-native-router-flux';
 
 export default class Signup extends Component {
 
+  //Redirect page to signin view
   goBack() {
       Actions.pop();
   }
@@ -58,4 +59,3 @@ const styles = StyleSheet.create({
   }
 });
 
-AppRegistry.registerComponent('signup', () => signup);

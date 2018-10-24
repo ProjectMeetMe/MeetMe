@@ -21,33 +21,17 @@ export default class SignupForm extends Component {
 		}
   }
 
+  //Call signup API, send userFirstName, userLastName, userEmail
+  //and userPassword as key value pair in the post API call and 
+  //allow user to sign up a new account
   userSignup = () =>{
 		
     const {userFirstName} = this.state;
     const {userLastName} = this.state;
 		const {userEmail} = this.state;
 		const {userPassword} = this.state;
-    
-    // Toast.show('This is a toast.' 
-    //       + " userFirstName: " + userFirstName 
-    //       + " userLastName: " + userLastName 
-    //       + " userEmail: " + userEmail
-    //       + " userPassword: " + userPassword);
 
-    // Toast.show(JSON.stringify({
-    //   firstname : userFirstName,
-    //   lastname : userLastName,
-    //   email : userEmail,
-    //   password : userPassword
-    // }));
-
-    // console.log(JSON.stringify({
-    //   firstname : userFirstName,
-    //   lastname : userLastName,
-    //   email : userEmail,
-    //   password : userPassword
-    // }));
-
+    //verify that user entered valid inputs
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 		if(userEmail==""){
 		  Toast.show('Please enter your Email address!', Toast.LONG);
@@ -87,6 +71,7 @@ export default class SignupForm extends Component {
       })
       .then((response) => response.json())
       .then((responseJson)=>{ 
+        //display success / fail message
         Toast.show(responseJson.message, Toast.LONG);
       });
     }

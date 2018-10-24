@@ -21,6 +21,8 @@ export default class NewGroupForm extends Component {
             token: '',
     }
 
+    //Retrieve token from AsyncStorage and store token into 
+    //global variable 
     AsyncStorage.getItem("token").then((value) => {
         if (value != ''){
           this.setState({token: value});
@@ -30,29 +32,33 @@ export default class NewGroupForm extends Component {
       }).done();
   }
 
+  //Call newGroup API, send groupName as key value pair 
+  //in the post API call and allow user to join a group
   newGroup = () =>{
-		const {newGroupName, token} = this.state;
+    const {newGroupName, token} = this.state;
+    
+    //verify that user entered a valid group name
 		if(newGroupName==""){
 		  Toast.show('Please enter the group name!', Toast.LONG);		
 		}
-        else if(newGroupName.length < 5 || newGroupName.length > 32){
-            Toast.show('Your password must be between 5 to 32 characters!', Toast.LONG);
-          }
-
-		 else{
-		    fetch('http://104.42.79.90:2990/group/createGroup',{
-			method:'post',
-			headers:{
-				'Accept': 'application/json',
+    else if(newGroupName.length < 5 || newGroupName.length > 32){
+      Toast.show('Your password must be between 5 to 32 characters!', Toast.LONG);
+    }
+    else{
+		  fetch('http://104.42.79.90:2990/group/createGroup',{
+			  method:'post',
+			  headers:{
+				        'Accept': 'application/json',
                 'Content-type': 'application/json',
                 'Authorization': 'Bearer ' + token,
-			},
-			body:JSON.stringify({
-				groupName: newGroupName,
-			})			
-		})
-		.then((response) => response.json())
-		 .then((responseJson)=>{
+			  },
+			  body:JSON.stringify({
+				    groupName: newGroupName,
+			  })			
+		  })
+		    .then((response) => response.json())
+		    .then((responseJson)=>{
+          //display success / fail message
           if(responseJson.message != "")
           {
               Toast.show(responseJson.message, Toast.LONG);

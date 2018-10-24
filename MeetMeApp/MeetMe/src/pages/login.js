@@ -8,6 +8,7 @@ import {Actions} from 'react-native-router-flux';
 
 export default class Login extends Component {
 
+	//Redirect page to signup view
 	signup() {
 		Actions.signup()
 	}

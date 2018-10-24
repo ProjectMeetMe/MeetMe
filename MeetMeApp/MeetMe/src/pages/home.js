@@ -23,22 +23,28 @@ export default class Home extends Component{
     };
   }
 
+  //Redirect page to creategroup view
   creategroup() {
 		Actions.creategroup()
   }
 
+  //Redirect page to joingroup view
   joingroup() {
 		Actions.joingroup()
   }
 
+  //Redirect page to groupprofile view
   groupprofile() {
 		Actions.groupprofile()
   }
 
+  //at the begining of this page execute below functions
   componentDidMount() {
     this.getGroups();
   }
 
+  //Call getGroups API, get all the groups the user has 
+  //joined
   async getGroups()
   {
     const { groups, token, loading, refreshing } = this.state;

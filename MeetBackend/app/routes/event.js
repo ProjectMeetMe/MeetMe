@@ -18,11 +18,12 @@ router.get('/getEvents', function(req, res, next) {
             });
         }
         groupFound.getEvents().then(function(eventsInGroup) {
+			//TODO: sort events by order
             var events = eventsInGroup;
             return res.status(200).json({
                 events,
                 message: "Successful event retrieval"
-            }); //only return group info
+            });
         })
     })
 })
@@ -30,9 +31,15 @@ router.get('/getEvents', function(req, res, next) {
 /* POST add event */
 router.post('/addEvent', function(req, res, next) {
 
-    //req must contain group ID + event
+    //req must contain group ID + event info
     var targetGroupId = req.body.groupId
     var curUser = req.user.id;
+
+    var eventName = req.body.eventName;
+    var description = req.body.description;
+    var startTime = req.body.startTime;
+    var endTime = req.body.endTime;
+    var groupId = req.body.groupId;
 
     //Find group with corresponding group id
     db.group.findOne({
@@ -53,11 +60,11 @@ router.post('/addEvent', function(req, res, next) {
         } else {
             //Create the event
             var event = {
-                eventName: req.body.eventName,
-                description: req.body.description,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
-                groupId: req.body.groupId
+                eventName: eventName,
+                description: description,
+                startTime: startTime,
+                endTime: endTime,
+                groupId: groupId
             };
             db.event.create(event).then(function(newEvent) {
                 var newEventInfo = newEvent.get();
@@ -73,6 +80,7 @@ router.post('/addEvent', function(req, res, next) {
         }
     });
 })
+
 
 /* PUT to edit events */
 router.put('/editEvent', function(req, res, next) {
@@ -150,13 +158,14 @@ router.delete('/deleteEvent', function(req, res, next) {
                         message: "Error: Invalid permissions to delete event"
                     });
                 } else {
-                    eventFound.destroy().then(function(deletedEventRecord) {                   return res.status(200).json({
+                    eventFound.destroy().then(function(deletedEventRecord) {
+                        return res.status(200).json({
                             deletedEventRecord,
                             message: "Successful event deletion"
                         });
                     }).catch(function(err) {
                         return res.status(400).json({
-                            message: "Error: something went wrong"
+                            message: "Error: something went wrong with deletion"
                         });
                     });
                 }

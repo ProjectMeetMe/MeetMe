@@ -24,7 +24,6 @@ router.post('/signup', function(req, res, next) {
         return res.status(200).json({
             message: "Successful signup"
         });
-
     })(req, res, next);
 });
 
@@ -59,9 +58,7 @@ router.post('/signin', function(req, res, next) {
                 token,
 				message: "Successful login"
             });
-
         });
-
     })(req, res);
 });
 

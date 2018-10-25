@@ -1,13 +1,13 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var db = require("../models/sequelize.js"); //user model
+var db = require("../models/sequelize.js"); //includes all models
 
-const maxUsersInGroup = 10; // Max allowed users per group
+const MAX_GROUP_USERS = 10; // Max allowed users per group
 
 /* POST new group */
-router.post('/createGroup', function(req, res, next) {
+router.post("/createGroup", function(req, res, next) {
 
-    var curUserId = req.user.id; //current logged in user's id
+    var curUserId = req.user.id; //current logged in user"s id
     var groupName = req.body.groupName;
 
     db.group.create({
@@ -24,12 +24,12 @@ router.post('/createGroup', function(req, res, next) {
         return res.status(400).json({
             message: "Error: Invalid group creation parameters"
         });
-    })
+    });
 })
 
 
 /* PUT (edit) existing group info (currently can only change group name) */
-router.put('/editGroup', function(req, res, next) {
+router.put("/editGroup", function(req, res, next) {
     //req must contain group ID + event
     var targetGroupId = req.body.groupId;
     var newGroupName = req.body.groupName;
@@ -47,7 +47,7 @@ router.put('/editGroup', function(req, res, next) {
             });
         }
         //verify that curr user is leader
-        else if (curUser != groupFound.leaderId) {
+        else if (curUser !== groupFound.leaderId) {
             return res.status(400).json({
                 message: "Error: Invalid permissions edit group"
             });
@@ -60,9 +60,10 @@ router.put('/editGroup', function(req, res, next) {
                     newGroupInfo,
                     message: "Successful group name change"
                 });
-            }).catch(function(err) {
+            }).catch(function(err) { //unable to update
                 return res.status(400).json({
-                    message: "Error: Invalid group edit parameters"
+                    message: "Some error occured",
+					error: err
                 });
             });
         }
@@ -72,13 +73,13 @@ router.put('/editGroup', function(req, res, next) {
 
 /* PUT request to remove group member */
 //TODO: Needs testing
-router.put('/removeMember', function(req, res, next) {
+router.put("/removeMember", function(req, res, next) {
     //req must contain group ID + event
-    var targetGroupId = req.body.groupId
+    var targetGroupId = req.body.groupId;
     var targetUserId = req.body.userId;
     var curUser = req.user.id;
 
-    if (targetUserId == curUser) {
+    if (targetUserId === curUser) {
         return res.status(400).json({
             message: "Error: Cannot remove self"
         });
@@ -96,12 +97,12 @@ router.put('/removeMember', function(req, res, next) {
             });
         }
         //verify that curr user is leader
-        else if (curUser != groupFound.leaderId) {
+        else if (curUser !== groupFound.leaderId) {
             return res.status(400).json({
-                message: "Error: Invalid permissions to add event"
+                message: "Error: Invalid permissions to remove member"
             });
         } else {
-            groupFound.removeUser(targetUserId);
+            groupFound.removeUser(targetUserId); //TODO: add failure case
             var groupInfo = groupFound.get();
             return res.status(200).json({
                 groupInfo,
@@ -113,13 +114,13 @@ router.put('/removeMember', function(req, res, next) {
 
 
 /* GET groups that curr user belongs to */
-router.get('/getGroups', function(req, res, next) {
+router.get("/getGroups", function(req, res, next) {
     var curUserId = req.user.id;
 
     db.user.findOne({
         include: [{
             model: db.group,
-            attributes: ['id', 'groupName'], //elements of the group that we want
+            attributes: ["id", "groupName"], //elements of the group that we want
             through: {
                 attributes: []
             }
@@ -138,8 +139,9 @@ router.get('/getGroups', function(req, res, next) {
 
 
 /* GET information for one group */
-router.get('/getGroup', function(req, res, next) {
+router.get("/getGroup", function(req, res, next) {
 	var targetGroupId = req.query.groupId;
+
     db.group.findOne({
         where: {
             id: targetGroupId //user must belong to group
@@ -160,12 +162,12 @@ router.get('/getGroup', function(req, res, next) {
 
 
 /* GET users in group */
-router.get('/getUsersInGroup', function(req, res, next) {
+router.get("/getUsersInGroup", function(req, res, next) {
     var targetGroupId = req.query.groupId;
     db.group.findOne({
         include: [{
             model: db.user,
-            attributes: ['id', 'firstname', 'lastname', 'email'], //elements of the group that we want
+            attributes: ["id", "firstname", "lastname", "email"], //elements of the group that we want
             through: {
                 attributes: []
             }
@@ -188,7 +190,7 @@ router.get('/getUsersInGroup', function(req, res, next) {
 
 
 /* POST join logged in user to group by groupJoinToken */
-router.post('/joinGroup', function(req, res, next) {
+router.post("/joinGroup", function(req, res, next) {
 
     var groupId = req.body.groupId;
     var curUserId = req.user.id;
@@ -197,7 +199,7 @@ router.post('/joinGroup', function(req, res, next) {
     db.group.findOne({
         include: [{ //attach user ids in that group
             model: db.user,
-            attributes: ['id'],
+            attributes: ["id"],
             through: {
                 attributes: []
             }
@@ -214,14 +216,15 @@ router.post('/joinGroup', function(req, res, next) {
         //Need to check that user is not currently in group
         //Set a limit on # members / group here?
         const usersInGroup = groupFound.users;
+		//TODO: change for loop to for each
         for (var i = 0; i < usersInGroup.length; i++) {
-            if (usersInGroup[i].id == req.user.id) { //user already exists in group
+            if (usersInGroup[i].id === req.user.id) { //user already exists in group
                 return res.status(400).json({
                     message: "Error: User already in group"
                 });
             }
         }
-        if (usersInGroup.length == maxUsersInGroup) {
+        if (usersInGroup.length === MAX_GROUP_USERS) {
             return res.status(400).json({
                 message: "Error: Group already has maximum allowed number of users"
             });

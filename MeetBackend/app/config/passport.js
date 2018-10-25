@@ -48,10 +48,10 @@ passport.use('local-signup', new LocalStrategy({
                     } else {
                         return done(null, newuser); //return new user object
                     }
-                }).catch(function(error) {
+                }).catch(function(error) { //email invalid or some other creation error
                     return done(null, false, {
-                        message: "Error: Invalid email format"
-                    }); //email invalid or some other creation error
+                        message: "Error: Invalid email format",
+                    });
                 });
             }
         });

@@ -1,20 +1,20 @@
 /* Passport strategies for authentication */
 
-var bCrypt = require('bcrypt-nodejs');
-var passportJWT = require('passport-jwt');
+var bCrypt = require("bcrypt-nodejs");
+var passportJWT = require("passport-jwt");
 var JWTStrategy = passportJWT.Strategy;
 var ExtractJWT = passportJWT.ExtractJwt;
-var moment = require('moment');
-var passport = require('passport');
+var moment = require("moment");
+var passport = require("passport");
 
 var db = require("../models/sequelize.js"); //load models
-var LocalStrategy = require('passport-local').Strategy;
+var LocalStrategy = require("passport-local").Strategy;
 
 /* LOCAL SIGNUP */
-passport.use('local-signup', new LocalStrategy({
+passport.use("local-signup", new LocalStrategy({
         //Override regular required fields
-        usernameField: 'email',
-        passwordField: 'password',
+        usernameField: "email",
+        passwordField: "password",
         passReqToCallback: true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
@@ -59,10 +59,10 @@ passport.use('local-signup', new LocalStrategy({
 ));
 
 /* LOCAL SIGNIN */
-passport.use('local-signin', new LocalStrategy({
+passport.use("local-signin", new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
-        usernameField: 'email',
-        passwordField: 'password',
+        usernameField: "email",
+        passwordField: "password",
         passReqToCallback: true // allows us to pass back the entire request to the callback
     },
 
@@ -78,18 +78,18 @@ passport.use('local-signin', new LocalStrategy({
         }).then(function(userFound) {
             if (!userFound) { //no user found, wrong email
                 return done(null, false, {
-                    message: 'Email does not exist'
+                    message: "Email does not exist"
                 });
             }
             if (!isValidPassword(userFound.password, password)) { //user found but passwords dont match
                 return done(null, false, {
-                    message: 'Incorrect password'
+                    message: "Incorrect password"
                 });
             }
 
             //Update login time
             userFound.update({
-                lastLogin: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+                lastLogin: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
             }).then(function(updatedUser) {
                 return done(null, updatedUser.get());
             })
@@ -106,7 +106,7 @@ passport.use('local-signin', new LocalStrategy({
 /* JSON WEB TOKEN AUTHENTICATION */
 passport.use(new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: 'your_jwt_secret'
+        secretOrKey: "your_jwt_secret"
     },
     function(jwtPayload, cb) { //jwtPayload contains user info unencrypted
 

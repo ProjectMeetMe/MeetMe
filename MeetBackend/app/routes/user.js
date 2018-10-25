@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var db = require("../models/sequelize.js"); //includes all models
 
+var groupController = require("../controllers/group.js");
+var userController = require("../controllers/user.js");
+var eventController = require("../controllers/event.js");
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     res.send('This is the root page');
@@ -19,31 +23,11 @@ router.get('/logout', function(req, res, next) {
     return res.status(200).json(req.user);
 });
 
+/* GET groups that curr user belongs to */
+router.get("/getGroups", userController.getGroups);
+
 /* POST update user schedule */
-router.put('/editSchedule', function(req, res, next) {
-    var newSchedule = req.body.schedule;
-    var curUser = req.user.id;
-    db.user.update({
-        schedule: newSchedule
-    }, {
-        where: {
-            id: curUser
-        }
-    }).then(function(updatedUser) {
-        if (!updatedUser)
-            return res.status(400).json({
-                message: "Invalid user ID"
-            });
-        else
-            return res.status(200).json({
-                message: "Successful schedule update"
-            });
-    }).catch(function(err){
-		return res.status(400).json({
-			message: "Some error occured",
-			error: err
-		})
-	})
-});
+//Body header: {schedule: <JSON object>}
+router.put('/editSchedule', userController.editSchedule);
 
 module.exports = router;

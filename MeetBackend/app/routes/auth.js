@@ -1,14 +1,14 @@
 /* Routes related to account creation/login -> does NOT require a JSON web token for authentication */
 
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var jwt = require('jsonwebtoken');
+var jwt = require("jsonwebtoken");
 var passport = require("passport");
 
 
-router.post('/signup', function(req, res, next) {
+router.post("/signup", function(req, res, next) {
     //Custom callback
-    passport.authenticate('local-signup', {
+    passport.authenticate("local-signup", {
 		session:false
 	}, function(err, user, info) {
         if (err) {
@@ -29,9 +29,9 @@ router.post('/signup', function(req, res, next) {
 
 
 
-router.post('/signin', function(req, res, next) {
+router.post("/signin", function(req, res, next) {
     //Custom callback
-    passport.authenticate('local-signin', {
+    passport.authenticate("local-signin", {
         session: false
     }, function(err, user, info) {
         if (err) {
@@ -52,7 +52,7 @@ router.post('/signin', function(req, res, next) {
             }
             //successful login:
             //1st param = payload, 2nd param = secret(for encryption), 3rd param = expiry date for jwt
-            const token = jwt.sign(user, 'your_jwt_secret', {expiresIn: '1d'});
+            const token = jwt.sign(user, "your_jwt_secret", {expiresIn: "1d"});
             return res.status(200).json({ //give out a valid jwt token to frontend for authentication purposes
                 user,
                 token,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AsyncStorage,
   StyleSheet,
@@ -7,9 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard 
-} from 'react-native';
-import Toast from 'react-native-simple-toast';
-import {Actions} from 'react-native-router-flux';
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import {Actions} from "react-native-router-flux";
 
 export default class JoinGroupForm extends Component {
 
@@ -17,9 +17,9 @@ export default class JoinGroupForm extends Component {
 		super(props)
 		this.state={
             
-            joinGroupID:'',
-            token: '',
-            userid: '',
+            joinGroupID:"",
+            token: "",
+            userid: "",
     }
 
     //load token and userid from AsyncStorage
@@ -39,25 +39,25 @@ export default class JoinGroupForm extends Component {
     console.log("userid    " + userid);
 
 		if(joinGroupID==""){
-		  Toast.show('Please enter the group id!', Toast.LONG);		
+		  Toast.show("Please enter the group id!", Toast.LONG);		
     }
     
 		else{
         //Call joinGroup API, send the group the user want to 
         //and the user id as key value pair in the post API call
-		    fetch('http://104.42.79.90:2990/group/joinGroup',{
-			      method:'post',
+		    fetch("http://104.42.79.90:2990/group/joinGroup",{
+			      method:"post",
 			      headers:{
-				              'Accept': 'application/json',
-                      'Content-type': 'application/json',
-                      'Authorization': 'Bearer ' + token,
+				              "Accept": "application/json",
+                      "Content-type": "application/json",
+                      "Authorization": "Bearer " + token,
 			              },
 			      body:JSON.stringify({
                       groupId: joinGroupID,
                       id:      userid, 
 			      })			
-		      })
-		        .then((response) => response.json())
+          })
+            .then((response) => response.json())
 		        .then((responseJson)=>{
                   if(responseJson.message != "")
                   {
@@ -73,12 +73,12 @@ export default class JoinGroupForm extends Component {
 		return(
 			<View style={styles.container}>
                 <TextInput style={styles.inputBox} 
-                    underlineColorAndroid='rgba(0,0,0,0)' 
+                    underlineColorAndroid="rgba(0,0,0,0)" 
                     placeholder="Group ID"
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
+                    onSubmitEditing={() => this.password.focus()}
                     onChangeText={joinGroupID => this.setState({joinGroupID})}
                 />
 
@@ -94,31 +94,31 @@ export default class JoinGroupForm extends Component {
 const styles = StyleSheet.create({
   container : {
     flexGrow: 1,
-    justifyContent:'center',
-    alignItems: 'center'
+    justifyContent:"center",
+    alignItems: "center"
   },
 
   inputBox: {
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     paddingHorizontal:16,
     fontSize:16,
-    color:'#ffffff',
+    color:"#ffffff",
     marginVertical: 10
   },
   button: {
     width:300,
-    backgroundColor:'#1c313a',
+    backgroundColor:"#1c313a",
      borderRadius: 25,
       marginVertical: 10,
       paddingVertical: 13
   },
   buttonText: {
     fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center'
+    fontWeight:"500",
+    color:"#ffffff",
+    textAlign:"center"
   }
   
 });

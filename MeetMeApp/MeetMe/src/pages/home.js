@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { AsyncStorage, AppRegistry,View,Text,StyleSheet,
-    FlatList, ActivityIndicator, ScrollView } from 'react-native';
-import NavBar from 'react-native-nav';
-import NavigationForm from '../components/navigationForm';
-import {List, ListItem, SearchBar } from 'react-native-elements';
-import Toast from 'react-native-simple-toast';
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/AntDesign';
-import {Actions} from 'react-native-router-flux';
+    FlatList, ActivityIndicator, ScrollView } from "react-native";
+import NavBar from "react-native-nav";
+import NavigationForm from "../components/navigationForm";
+import {List, ListItem, SearchBar } from "react-native-elements";
+import Toast from "react-native-simple-toast";
+import ActionButton from "react-native-action-button";
+import Icon from "react-native-vector-icons/AntDesign";
+import {Actions} from "react-native-router-flux";
 
 export default class Home extends Component{
   
@@ -16,7 +16,7 @@ export default class Home extends Component{
     super();
 
     this.state = {
-      token: '',
+      token: "",
       groups: [],
       refreshing: false,
       loading: true,
@@ -25,17 +25,17 @@ export default class Home extends Component{
 
   //Redirect page to creategroup view
   creategroup() {
-		Actions.creategroup()
+		Actions.creategroup();
   }
 
   //Redirect page to joingroup view
   joingroup() {
-		Actions.joingroup()
+		Actions.joingroup();
   }
 
   //Redirect page to groupprofile view
   groupprofile() {
-		Actions.groupprofile()
+		Actions.groupprofile();
   }
 
   //at the begining of this page execute below functions
@@ -52,10 +52,10 @@ export default class Home extends Component{
 
     console.log("usertoken:  " + usertoken);
 
-    var usergroups = await fetch('http://104.42.79.90:2990/group/getGroups', {
-          method: 'get',
+    var usergroups = await fetch("http://104.42.79.90:2990/group/getGroups", {
+          method: "get",
           headers:{
-            'Authorization': 'Bearer ' + usertoken
+            "Authorization": "Bearer " + usertoken
           }
         });
 
@@ -82,13 +82,15 @@ export default class Home extends Component{
   };
 
   // TODO: Implement searchbar functionality
-  handleSearch = text => {
+  /*
+  handleSearch = (text) => {
     const formatQuery = text.toLowerCase();
-    const data = _.filter(this.state.fullData, user => {
+    const data = _.filter(this.state.fullData, (user) => {
       return contains(user, formatQuery);
     })
     this.setState({ query: formatQuery, data});
   };
+  */
 
   renderSeparator = () => {
     return (
@@ -99,8 +101,8 @@ export default class Home extends Component{
   // Display searchbar
   renderHeader = () => {
     return <SearchBar 
-            platform={'android'}
-            clearIcon={{ color: 'grey' }}
+            platform={"android"}
+            clearIcon={{ color: "grey" }}
             placeholder="Search Here..." 
             inputContainerStyle={styles.container} 
             round
@@ -126,7 +128,7 @@ export default class Home extends Component{
 
     return (
       <View style={styles.container}>
-        <Text style={styles.Text}>You do not have any groups yet.{'\n'}
+        <Text style={styles.Text}>You do not have any groups yet.{"\n"}
             You can create a group or join a group.</Text>
       </View>
     );
@@ -136,7 +138,7 @@ export default class Home extends Component{
 
     const { groups, token } = this.state;
       return(
-        <View style={{flex: 1, backgroundColor: '#455a64'}}>
+        <View style={{flex: 1, backgroundColor: "#455a64"}}>
           
           <NavigationForm type="My Groups"></NavigationForm>
 
@@ -145,12 +147,12 @@ export default class Home extends Component{
             data={this.state.groups}
             renderItem={({ item }) => (
               <ListItem 
-                containerStyle={{backgroundColor: '#455a64', borderBottomWidth: 0}}
+                containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
                 roundAvatar
                 titleStyle={styles.titleText}
                 title={item.groupName}
                 subtitleStyle={styles.subtitleText}
-                subtitle={'Group ID: ' + item.id}
+                subtitle={"Group ID: " + item.id}
                 onPress={() => {Actions.groupprofile({groupID: item.id, groupName:item.groupName})}}>
               </ListItem>
             )}
@@ -166,13 +168,13 @@ export default class Home extends Component{
             onEndReachedThreshold={50}
           />
           <ActionButton buttonColor="rgba(231,76,60,1)">
-            <ActionButton.Item buttonColor='#9b59b6' title="Create Group" 
+            <ActionButton.Item buttonColor="#9b59b6" title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
               onPress={() => {Actions.creategroup()}}>
               {<Icon name="pluscircleo" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
-            <ActionButton.Item buttonColor='#3498db' title="Join Group"
+            <ActionButton.Item buttonColor="#3498db" title="Join Group"
               textStyle = {styles.itemStyle} 
               textContainerStyle = {styles.itemStyle}
               onPress={() => {Actions.joingroup()}}>
@@ -189,23 +191,23 @@ export default class Home extends Component{
 const styles = StyleSheet.create({
   container : {
     flexGrow: 1,
-    justifyContent:'center',
-    alignItems: 'center',
-    backgroundColor:'#455a64',
-    flexDirection: 'row',
+    justifyContent:"center",
+    alignItems: "center",
+    backgroundColor:"#455a64",
+    flexDirection: "row",
   },
 
   actionButtonIcon: {
     fontSize: 20,
     height: 22,
-    color: '#1c313a',
+    color: "#1c313a",
   },
 
   renderFooter:
   {
     paddingVertical: 20,
     borderTopWidth: 1,
-    borderColor: '#455a64',
+    borderColor: "#455a64",
   },
 
   renderSeparator:
@@ -218,26 +220,26 @@ const styles = StyleSheet.create({
 
   button: {
     width:300,
-    backgroundColor:'#1c313a',
+    backgroundColor:"#1c313a",
      borderRadius: 25,
       marginVertical: 10,
       paddingVertical: 13
   },
   Text: {
     fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center',
+    fontWeight:"500",
+    color:"#ffffff",
+    textAlign:"center",
   },
   titleText: {
-    color:'#ffffff',
-    fontWeight: '300',
+    color:"#ffffff",
+    fontWeight: "300",
   	fontSize:18
   },
   subtitleText: {
-  	color:'#ced0ce',
+  	color:"#ced0ce",
     fontSize:14,
-    fontWeight: '100'
+    fontWeight: "100"
   },
 
 scene: {
@@ -245,19 +247,19 @@ scene: {
     paddingTop: 25,
 },
 user: {
-    width: '100%',
-    backgroundColor: '#333',
+    width: "100%",
+    backgroundColor: "#333",
     marginBottom: 10,
     paddingLeft: 25,
 },
 userName: {
     fontSize: 17,
     paddingVertical: 20,
-    color: '#fff'
+    color: "#fff"
 },
 
 itemStyle: {
-  backgroundColor: '#1c313a',
-  color: '#ffffff'
+  backgroundColor: "#1c313a",
+  color: "#ffffff"
 }
 });

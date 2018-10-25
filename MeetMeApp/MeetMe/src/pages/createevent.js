@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AsyncStorage,
   StyleSheet,
@@ -10,11 +10,11 @@ import {
   Keyboard ,
   AutoGrowingTextInput,
   ScrollView 
-} from 'react-native';
-import Toast from 'react-native-simple-toast';
-import {Actions} from 'react-native-router-flux';
-import NavigationForm from '../components/navigationForm';
-import DateTimePicker from 'react-native-modal-datetime-picker';
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import {Actions} from "react-native-router-flux";
+import NavigationForm from "../components/navigationForm";
+import DateTimePicker from "react-native-modal-datetime-picker";
 
 export default class CreateEvent extends Component {
 
@@ -22,11 +22,11 @@ export default class CreateEvent extends Component {
 		super(props)
 		this.state={
             
-            token: '',
-            eventName: '',
-            description: '',
-            startTime: '',
-            endTime: '',
+            token: "",
+            eventName: "",
+            description: "",
+            startTime: "",
+            endTime: "",
             groupId: this.props.groupID,
             startDateTimePickerVisible: false,
             endDateTimePickerVisible: false,
@@ -42,7 +42,7 @@ export default class CreateEvent extends Component {
   //Call addEvent API, send groupId, eventName, description
   //startTime and endTime as key value pair in the post API 
   //call and allow user to sign up a new account
-  addEvent = () =>{
+  addEvent = () => {
     const {token, eventName, description, startTime, 
             endTime, groupId} = this.state;
 
@@ -58,10 +58,10 @@ export default class CreateEvent extends Component {
     var endDateArr = endArrTotal[0].split("-");
     var startHrMin = startArrTotal[1].split(":");
     var endHrMin = endArrTotal[1].split(":");
-    startHour = parseInt(startHrMin[0]), startMin = parseInt(startHrMin[1]);
-    endHour = parseInt(endHrMin[0]), endMin = parseInt(endHrMin[1]);
-    startYear = parseInt(startDateArr[0]); startMonth = parseInt(startDateArr[1]); startDay = parseInt(startDateArr[2]);
-    endYear = parseInt(endDateArr[0]); endMonth = parseInt(endDateArr[1]); endDay = parseInt(endDateArr[2]);
+    startHour = parseInt(startHrMin[0], 10), startMin = parseInt(startHrMin[1], 10);
+    endHour = parseInt(endHrMin[0], 10), endMin = parseInt(endHrMin[1], 10);
+    startYear = parseInt(startDateArr[0], 10); startMonth = parseInt(startDateArr[1], 10); startDay = parseInt(startDateArr[2], 10);
+    endYear = parseInt(endDateArr[0], 10); endMonth = parseInt(endDateArr[1], 10); endDay = parseInt(endDateArr[2], 10);
     
     var badInput = false;
 
@@ -76,32 +76,32 @@ export default class CreateEvent extends Component {
     
     //test whether use has a valid input or not
 		if(badInput){
-		  Toast.show('Please double check your start and end times.', Toast.LONG);		
-        }
+      Toast.show("Please double check your start and end times.", Toast.LONG);		
+    }
     
     // Create event on good input
 		else{
-		    fetch('http://104.42.79.90:2990/event/addEvent',{
-			      method:'post',
+		    fetch("http://104.42.79.90:2990/event/addEvent",{
+			      method:"post",
 			      headers:{
-				              'Accept': 'application/json',
-                              'Content-type': 'application/json',
-                              'Authorization': 'Bearer ' + token,
-			              },
+				              "Accept": "application/json",
+                              "Content-type": "application/json",
+                              "Authorization": "Bearer " + token,
+			      },
 			      body:JSON.stringify({
                       groupId:         groupId,
                       eventName:       eventName, 
                       description:     description,
                       startTime:       startTime,
                       endTime:         endTime,
-			      })			
+            })			
 		      })
-		        .then((response) => response.json())
-		        .then((responseJson)=>{
+		      .then((response) => response.json())
+		      .then((responseJson)=>{
                     console.log("responseJson:  " + responseJson);
                     console.log("responseJson.message:  " + responseJson.message);
                     Toast.show(responseJson.message, Toast.LONG);		
-            });
+          });
     }
         Keyboard.dismiss();
 }
@@ -112,7 +112,7 @@ hideStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: fal
 
 // Interpret start date
 handleStartDatePicked  = (date) => {
-  console.log('Start Time has been picked: ', date);
+  console.log("Start Time has been picked: ", date);
   var dateString = date.toString();
   // E.G: dateString = Sun Oct 21 2018 17:38:00 GMT-700 (PDT)
   var dateStringArray = dateString.split(" ",5);
@@ -120,7 +120,7 @@ handleStartDatePicked  = (date) => {
   var month;
   var year = dateStringArray[3];
   var time = dateStringArray[4];
-  var dateOutString
+  var dateOutString;
       switch(dateStringArray[1]) {
         case "Jan":
           month = 1;
@@ -173,7 +173,7 @@ hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false }
 
 // Interpret end date
 handleEndDatePicked  = (date) => {
-  console.log('End Time has been picked: ', date);
+  console.log("End Time has been picked: ", date);
   var dateString = date.toString();
   //[0] = dayName; [1] = month; [2] = dayNum; [3] yearNum, [4] time
   var dateStringArray = dateString.split(" ",5);
@@ -181,7 +181,7 @@ handleEndDatePicked  = (date) => {
   var month;
   var year = dateStringArray[3];
   var time = dateStringArray[4];
-  var dateOutString
+  var dateOutString;
       switch(dateStringArray[1]) {
         case "Jan":
           month = 1;
@@ -233,7 +233,7 @@ handleEndDatePicked  = (date) => {
 //display, otherwise, display "Start Time"
 renderStartTime()
 {
-    if(this.state.startTime == '')
+    if(this.state.startTime == "")
     {
       return("Start Time");
     }
@@ -247,7 +247,7 @@ renderStartTime()
 //display, otherwise, display "end Time"
 renderEndTime()
 {
-    if(this.state.endTime == '')
+    if(this.state.endTime == "")
     {
       return("End Time");
     }
@@ -259,13 +259,13 @@ renderEndTime()
 
 	render(){
 		return(
-      <View style={{flex: 1, backgroundColor: '#455a64'}}>
+      <View style={{flex: 1, backgroundColor: "#455a64"}}>
       <NavigationForm type="Create New Event"></NavigationForm>
       <ScrollView contentContainerStyle={styles.contentContainer}>
 			<View style={styles.container}>
 
                     <TextInput style={styles.inputBox} 
-                    underlineColorAndroid='rgba(0,0,0,0)' 
+                    underlineColorAndroid="rgba(0,0,0,0)" 
                     placeholder="Event Name"
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
@@ -300,8 +300,8 @@ renderEndTime()
 
                     <TextInput style={styles.longInputBox} 
                     multiline={true}
-                    textAlignVertical={'top'}
-                    underlineColorAndroid='rgba(0,0,0,0)' 
+                    textAlignVertical={"top"}
+                    underlineColorAndroid="rgba(0,0,0,0)" 
                     placeholder="Event Description"
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
@@ -323,50 +323,50 @@ renderEndTime()
 // Styles definition
 const styles = StyleSheet.create({
   container : {
-    backgroundColor:'#455a64',
+    backgroundColor:"#455a64",
     flex: 1,
-    alignItems:'center',
-    justifyContent :'center'
+    alignItems:"center",
+    justifyContent :"center"
   },
 
   inputBox: {
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     paddingHorizontal:16,
     fontSize:16,
-    color:'#ffffff',
+    color:"#ffffff",
     marginVertical: 10
   },
 
   longInputBox: {
     minHeight: 100,
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     paddingHorizontal:16,
     fontSize:16,
-    color:'#ffffff',
+    color:"#ffffff",
     marginVertical: 10
   },
 
   button: {
     width:300,
-    backgroundColor:'#1c313a',
+    backgroundColor:"#1c313a",
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 13
   },
   buttonText: {
     fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center'
+    fontWeight:"500",
+    color:"#ffffff",
+    textAlign:"center"
   },
 
   datebutton: {
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 13,
@@ -374,8 +374,8 @@ const styles = StyleSheet.create({
   },
   datebuttonText: {
     fontSize:16,
-    color:'#ffffff',
-    textAlign:'left'
+    color:"#ffffff",
+    textAlign:"left"
   }
 
 });

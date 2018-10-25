@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AsyncStorage,
   StyleSheet,
@@ -7,13 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard 
-} from 'react-native';
-import Toast from 'react-native-simple-toast';
-import {Actions} from 'react-native-router-flux';
-import NavigationForm from '../components/navigationForm';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/AntDesign';
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import {Actions} from "react-native-router-flux";
+import NavigationForm from "../components/navigationForm";
+import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import ActionButton from "react-native-action-button";
+import Icon from "react-native-vector-icons/AntDesign";
 
 export default class GroupProfile extends Component {
 
@@ -21,12 +21,14 @@ export default class GroupProfile extends Component {
 		super(props)
 		this.state={
             
+        //Data from the database
         events:[],
-        token: '',
-        userid: '',
-        groupinfo: '',
+        token: "",
+        userid: "",
+        groupinfo: "",
         groupID: 0,
-        curDate: '',
+        curDate: "",
+        //Events from the database - JSON object
         items: {},
     }
   }
@@ -53,10 +55,10 @@ export default class GroupProfile extends Component {
     });
 
     console.log("token in getEvents:  " + token);
-    var userevents = await fetch('http://104.42.79.90:2990/event/getEvents?groupId=${encodeURIComponent(groupId)}', {
-          method: 'get',
+    var userevents = await fetch("http://104.42.79.90:2990/event/getEvents?groupId=${encodeURIComponent(groupId)}", {
+          method: "get",
           headers:{
-            'Authorization': 'Bearer ' + usertoken
+            "Authorization": "Bearer " + usertoken
           }
         });
 
@@ -68,11 +70,17 @@ export default class GroupProfile extends Component {
     });
   }
 
+  // TODO: get events[] from database then convert them into item{} format
+  // TODO: located in https://github.com/wix/react-native-calendars?fbclid=IwAR3bGgMcHXC-eHFBtAtswAbjSrMgoASfbCNtItRRDBVmkiHr_8Gcyxi6ePM#readme
+  // The events[] format is in APIdocumentation.txt
   async getItems()
   {
     const { events } = this.state;
     console.log("events.length:  " + events.length);
     console.log("events:  " + events.toString);
+
+  // var array=[];
+  // events[] format in APIdocumentation.txt
 
   //   for (var i in events) {
   //     events[i].forEach(function(elem, index) {
@@ -88,7 +96,7 @@ export default class GroupProfile extends Component {
     var month = new Date().getMonth() + 1;
     var year = new Date().getFullYear();
 
-    var curDate = year + '-' + month + '-' + date;
+    var curDate = year + "-" + month + "-" + date;
     console.log("curDate:  " + curDate);
 
     this.setState({
@@ -109,10 +117,10 @@ export default class GroupProfile extends Component {
     console.log("token in getGroupInfo:  " + usertoken);
     console.log("groupId:  " + groupId);
 
-    var groupInfos = await fetch('http://104.42.79.90:2990/group/getGroup?groupId=' + groupId, {
-          method: 'get',
+    var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroup?groupId=" + groupId, {
+          method: "get",
           headers:{
-            'Authorization': 'Bearer ' + usertoken
+            "Authorization": "Bearer " + usertoken
           }
         });
 
@@ -129,10 +137,10 @@ export default class GroupProfile extends Component {
   }
 
   renderCreateEvent(){
-    if(this.state.userid == this.state.groupinfo.leaderId)
+    if(this.state.userid === this.state.groupinfo.leaderId)
     {
       return(
-        <ActionButton.Item buttonColor='#3498db' title="Create Event"
+        <ActionButton.Item buttonColor="#3498db" title="Create Event"
         textStyle = {styles.itemStyle} 
         textContainerStyle = {styles.itemStyle}
         onPress={() => {Actions.createevent({groupID: 4})}}>
@@ -152,7 +160,7 @@ export default class GroupProfile extends Component {
   //         const numItems = Math.floor(Math.random() * 5);
   //         for (let j = 0; j < numItems; j++) {
   //           this.state.items[strTime].push({
-  //             name: 'Item for ' + strTime,
+  //             name: "Item for " + strTime,
   //             height: Math.max(50, Math.floor(Math.random() * 150))
   //           });
   //         }
@@ -186,17 +194,17 @@ export default class GroupProfile extends Component {
 
   // timeToString(time) {
   //   const date = new Date(time);
-  //   return date.toISOString().split('T')[0];
+  //   return date.toISOString().split("T")[0];
   // }
 
 	render(){
     const { events, token, userid, groupinfo, groupID, curDate} = this.state;
 
-    // const event1 = {key:'CPEN 321 MVP', color: 'red'};
-    // const event2 = {key:'ELEC 221 Lecture', color: 'blue'};
-    // const event3 = {key:'CPEN 321 Lecture', color: 'green'};
-    // const event4 = {key:'ELEC 221 Quiz', color: 'red'};
-    // const event5 = {key:'CPEN 311 Midterm', color: 'blue'};
+    // const event1 = {key:"CPEN 321 MVP", color: "red"};
+    // const event2 = {key:"ELEC 221 Lecture", color: "blue"};
+    // const event3 = {key:"CPEN 321 Lecture", color: "green"};
+    // const event4 = {key:"ELEC 221 Quiz", color: "red"};
+    // const event5 = {key:"CPEN 311 Midterm", color: "blue"};
 
       return(
         <View style={{flex: 1}}>
@@ -208,17 +216,17 @@ export default class GroupProfile extends Component {
               renderItem={this.renderItem.bind(this)}
               renderEmptyDate={this.renderEmptyDate.bind(this)}
               rowHasChanged={this.rowHasChanged.bind(this)}
-              markingType={'multi-dot'}
+              markingType={"multi-dot"}
               markedDates={{
-                '2018-10-22': {dots: [event1, event2, event3]},
-                '2018-10-23': {dots: [event4, event5]},
+                "2018-10-22": {dots: [event1, event2, event3]},
+                "2018-10-23": {dots: [event4, event5]},
               }}
-              monthFormat={'yyyy'}
-              theme={{calendarBackground: '#758d9f', agendaKnobColor: "#679fad"}}
-              renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
+              monthFormat={"yyyy"}
+              theme={{calendarBackground: "#758d9f", agendaKnobColor: "#679fad"}}
+              renderDay={(day, item) => (<Text>{day ? day.day: "item"}</Text>)}
           /> */}
           <ActionButton buttonColor="rgba(231,76,60,1)">
-              <ActionButton.Item buttonColor='#9b59b6' title="Group Chat" 
+              <ActionButton.Item buttonColor="#9b59b6" title="Group Chat" 
                 textStyle = {styles.itemStyle}
                 textContainerStyle = {styles.itemStyle}
                 onPress={() => {Toast.show("Group Chat")}}>
@@ -235,64 +243,56 @@ const styles = StyleSheet.create({
 
   inputBox: {
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     paddingHorizontal:16,
     fontSize:16,
-    color:'#ffffff',
+    color:"#ffffff",
     marginVertical: 10
   },
 
   actionButtonIcon: {
     fontSize: 20,
     height: 22,
-    color: '#1c313a',
+    color: "#1c313a",
   },
   
   button: {
     width:300,
-    backgroundColor:'#1c313a',
+    backgroundColor:"#1c313a",
      borderRadius: 25,
       marginVertical: 10,
       paddingVertical: 13
   },
   buttonText: {
     fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center'
+    fontWeight:"500",
+    color:"#ffffff",
+    textAlign:"center"
   },
 
   container : {
     flexGrow: 1,
-    justifyContent:'center',
-    alignItems: 'center',
-    backgroundColor:'#455a64',
-    flexDirection: 'row',
-  },
-  
-  button: {
-    width:300,
-    backgroundColor:'#1c313a',
-    borderRadius: 25,
-    marginVertical: 10,
-    paddingVertical: 13
+    justifyContent:"center",
+    alignItems: "center",
+    backgroundColor:"#455a64",
+    flexDirection: "row",
   },
 
   Text: {
     fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center'
+    fontWeight:"500",
+    color:"#ffffff",
+    textAlign:"center"
   },
 
   itemStyle: {
-    backgroundColor: '#1c313a',
-    color: '#ffffff'
+    backgroundColor: "#1c313a",
+    color: "#ffffff"
   },  
   
   item: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     flex: 1,
     borderRadius: 5,
     padding: 10,

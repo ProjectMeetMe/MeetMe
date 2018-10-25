@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import {Image} from 'react-native';
-import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from 'react-native-nav';
-import {Actions} from 'react-native-router-flux';
+import React, { Component } from "react";
+import {Image} from "react-native";
+import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
+import {Actions} from "react-native-router-flux";
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity 
-} from 'react-native';
+} from "react-native";
 
 //This function generate the navigation bar that display at
 //the top of this app
@@ -32,14 +32,14 @@ export default class NavigationForm extends Component {
   //user click profile icon in profile page or user
   //click setting icon in setting page
   render() {
-    if(this.props.type == "Profile")
+    if(this.props.type === "Profile")
     {
       return (
         <NavBar style={styles}>
             <NavButton style={styles.navButton}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require('../images/android_icon_account.png')}
+                source={require("../images/android_icon_account.png")}
               />
             </NavButton>
           <NavTitle style={styles.title}>
@@ -48,11 +48,11 @@ export default class NavigationForm extends Component {
             <NavButton style={styles.navButton} onPress={this.setting}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require('../images/android_icon_setting.png')}
+                source={require("../images/android_icon_setting.png")}
               />
             </NavButton>
          </NavBar> 
-      )
+      );
     }
     else if(this.props.type == "Setting")
     {
@@ -61,7 +61,7 @@ export default class NavigationForm extends Component {
             <NavButton style={styles.navButton} onPress={this.profile}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require('../images/android_icon_account.png')}
+                source={require("../images/android_icon_account.png")}
               />
             </NavButton>
           <NavTitle style={styles.title}>
@@ -70,7 +70,7 @@ export default class NavigationForm extends Component {
             <NavButton style={styles.navButton}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require('../images/android_icon_setting.png')}
+                source={require("../images/android_icon_setting.png")}
               />
             </NavButton>
          </NavBar> 
@@ -83,7 +83,7 @@ export default class NavigationForm extends Component {
             <NavButton style={styles.navButton} onPress={this.profile}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require('../images/android_icon_account.png')}
+                source={require("../images/android_icon_account.png")}
               />
             </NavButton>
           <NavTitle style={styles.title}>
@@ -92,7 +92,7 @@ export default class NavigationForm extends Component {
             <NavButton style={styles.navButton} onPress={this.setting}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require('../images/android_icon_setting.png')}
+                source={require("../images/android_icon_setting.png")}
               />
             </NavButton>
          </NavBar> 
@@ -103,31 +103,31 @@ export default class NavigationForm extends Component {
 
 const styles = StyleSheet.create({
   statusBar: {
-    backgroundColor: '#212121',
+    backgroundColor: "#212121",
   },
   navBar: {
-    backgroundColor: '#212121',
+    backgroundColor: "#212121",
     borderTopWidth: 0,
-    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+    borderBottomColor: "rgba(0, 0, 0, 0.1)",
     borderBottomWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
 
     padding: 0,
   },
   title: {
-    color: '#CECECE',
+    color: "#CECECE",
   },
   buttonText: {
-    color: 'rgba(231, 37, 156, 0.5)',
+    color: "rgba(231, 37, 156, 0.5)",
   },
   navGroup: {
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   navButton: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginLeft: 0,
     marginRight: 0,
     marginTop: 5,

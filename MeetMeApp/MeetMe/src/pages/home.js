@@ -132,7 +132,7 @@ export default class Home extends Component{
             You can create a group or join a group.</Text>
       </View>
     );
-  };
+  }; 
 
 	render(){
 

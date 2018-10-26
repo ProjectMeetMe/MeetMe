@@ -28,6 +28,8 @@ Success: json response:
 }
 Failure: failure response
 
+* All routes below require authenticated JSON web token in "Bearer Token" field of request
+
 ================================================================================
 
 GET to /user/profile
@@ -49,9 +51,41 @@ Responds with json response:
 
 ================================================================================
 
-POST to /group/createGroup - creates a new group
+GET to /user/getGroups - get list of groups user belongs to
 
-requires authenticated JSON web token in "Bearer Token" field of request
+Responds with json array with the groups the current user belongs to:
+{
+	"groups": [
+    {
+        "id": <group id 1>,
+        "groupName": <group name 1>
+    },
+    {
+        "id": <group id 2>,
+        "groupName": <group name 2>
+    }
+	...
+	]
+	"message": <Success message>
+}
+
+================================================================================
+
+PUT to /user/editSchedule - edit the user's schedule
+
+Request body format:
+{
+	"schedule": <JSON object"
+}
+
+Responds with sucess/failure message
+{
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /group/createGroup - creates a new group
 
 Request body format:
 {
@@ -76,11 +110,13 @@ Responds with json response AND creates entry for group (with information in res
 
 PUT to /group/editGroup - edits target group info (currently only changes name)
 
-requires authenticated JSON web token in "Bearer Token" field of request
+Query format:
+{
+	groupId: <target group id>
+}
 
 Request body format:
 {
-	groupId: <target group id to edit>
 	groupName: <new name of group>
 }
 
@@ -105,33 +141,9 @@ On failure, responds with failure message in json body (invalid group id, invali
 
 ================================================================================
 
-GET to /group/getGroups - get list of groups user belongs to
+GET to /group/getGroupInfo - get group info for one group
 
-requires authenticated JSON web token in "Bearer Token" field of request
-
-Responds with json array with the groups the current user belongs to:
-{
-	"groups": [
-    {
-        "id": <group id 1>,
-        "groupName": <group name 1>
-    },
-    {
-        "id": <group id 2>,
-        "groupName": <group name 2>
-    }
-	...
-	]
-	"message": <Success message>
-}
-
-================================================================================
-
-GET to /group/getGroup - get group info for one group
-
-requires authenticated JSON web token in "Bearer Token" field of request
-
-Queury format:
+Query format:
 {
 	groupId: <target group id>
 }
@@ -144,43 +156,14 @@ Responds with group info + users in group:
 	"message": <Success message>
 }
 
-================================================================================
-
-GET to /group/getUsersInGroup - get list of users in target group
-
-requires authenticated JSON web token in "Bearer Token" field of request
-
-Queury format:
-{
-	groupId: <target group id>
-}
-
-Responds with group info + users in group:
-{
-	"groupWithUsers": {
-		...
-		"users": [
-			{
-				"id": <user id>
-				"firstname": <user firstname>
-				"lastname": <user lastname>
-				"email": <user email>
-			}
-			...
-		]
-	}
-	"message": <Success message>
-}
 
 ================================================================================
 
 POST to /group/joinGroup - adds current user to target group
 
-requires authenticated JSON web token in "Bearer Token" field of request
-
-Request body format:
+Query format:
 {
-	groupJoinToken: <token needed to join group>
+	groupId: <group to join>
 }
 
 On success, responds with json response AND adds user to group:
@@ -204,11 +187,9 @@ On failure, responds with failure message in json body (invalid user token, user
 
 ================================================================================
 
-GET to /event/getEvents - gets list of events in target group
+GET to /group/getEvents - gets list of events in target group
 
-requires authenticated JSON web token in "Bearer Token" field of request
-
-Queury format:
+Query format:
 {
 	groupId: <target group id>
 }
@@ -235,11 +216,13 @@ Responds with list of events in group:
 
 POST to /event/addEvent - adds event to target group
 
-requires authenticated JSON web token in "Bearer Token" field of request
+Query format:
+{
+	groupId: <target group id>
+}
 
 Body format:
 {
-	groupId: <target group id>
 	eventName:
 	description:
 	startTime:
@@ -269,16 +252,17 @@ On failure, responds with failure message in json body:
 
 PUT to /event/editEvent - edits target event
 
-requires authenticated JSON web token in "Bearer Token" field of request
+Query format:
+{
+	eventId: <target event id>
+}
 
 Body format:
 {
-	eventId: <target event id>
 	eventName:
 	description:
 	startTime:
 	endTime:
-	groupId:
 }
 
 On success, responds with json response AND edits event in group:
@@ -303,9 +287,7 @@ On failure, responds with failure message in json body:
 
 DELETE to /event/deleteEvent - deletes target event
 
-requires authenticated JSON web token in "Bearer Token" field of request
-
-Body format:
+Query format:
 {
 	eventId: <target event id>
 }

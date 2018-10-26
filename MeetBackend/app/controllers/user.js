@@ -7,7 +7,7 @@ Finds a list of the groups that the currently logged in user belongs to
 List of groups only include their group and groupName
  */
 exports.getGroups = function(req, res, next) {
-	db.user.findOne({
+    db.user.findOne({
         include: [{
             model: db.group,
             attributes: ["id", "groupName"], //elements of the group that we want
@@ -24,11 +24,11 @@ exports.getGroups = function(req, res, next) {
             groups,
             message: "Successful group retrieval"
         }); //only return group info
-    }).catch(function(err){
-		return res.status(400).json({
-			message: "Error: Groups could not be retrieved"
-		});
-	});
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Groups could not be retrieved"
+        });
+    });
 }
 
 /*
@@ -42,18 +42,19 @@ exports.editSchedule = function(req, res, next) {
             id: req.user.id
         }
     }).then(function(updatedUser) {
-        if (!updatedUser)
+        if (!updatedUser) {
             return res.status(400).json({
                 message: "Invalid user ID"
             });
-        else
+        } else {
             return res.status(200).json({
                 message: "Successful schedule update"
             });
-    }).catch(function(err){
-		return res.status(400).json({
-			message: "Some error occured",
-			error: err
-		})
-	})
+        }
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Some error occured",
+            error: err
+        });
+    });
 }

@@ -26,7 +26,7 @@ export default class Routes extends Component{
 
 	//check whether user is already logged in or not
 	componentWillMount(){
-		AsyncStorage.getItem('token')
+		AsyncStorage.getItem("token")
 		.then( (value) =>{
 			if (value != null){
 			  this.setState({

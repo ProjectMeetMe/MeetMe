@@ -135,7 +135,7 @@ export default class LoginFrom extends Component {
                     selectionColor="#fff"
                     keyboardType="email-address"
                     onSubmitEditing={() => this.password.focus()}
-                    onChangeText={userEmail => this.setState({userEmail})}
+                    onChangeText={(userEmail) => this.setState({userEmail})}
                 />
 
                 <TextInput style={styles.inputBox} 
@@ -144,7 +144,7 @@ export default class LoginFrom extends Component {
                     secureTextEntry={true}
                     placeholderTextColor = "#ffffff"
                     ref={(input) => this.password = input}
-                    onChangeText={userPassword => this.setState({userPassword})}
+                    onChangeText={(userPassword) => this.setState({userPassword})}
                 /> 
 
                 <TouchableOpacity style={styles.button} onPress={this.login}>

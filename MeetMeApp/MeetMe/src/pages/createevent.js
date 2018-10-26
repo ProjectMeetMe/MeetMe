@@ -271,7 +271,7 @@ renderEndTime()
                     selectionColor="#fff"
                     keyboardType="email-address"
                     onSubmitEditing={() => this.password.focus()}
-                    onChangeText={eventName => this.setState({eventName})}
+                    onChangeText={(eventName) => this.setState({eventName})}
                     />
                     
                     <TouchableOpacity style={styles.datebutton} 
@@ -306,8 +306,8 @@ renderEndTime()
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
-                    onChangeText={description => this.setState({description})}
+                    onSubmitEditing={() => this.password.focus()}
+                    onChangeText={(description) => this.setState({description})}
                 />
 
                 <TouchableOpacity style={styles.button} onPress={this.addEvent}>

@@ -14,7 +14,7 @@ export default class JoinGroup extends Component {
 				<JoinGroupForm type="Join Group"/>
         </View>
 			</View>	
-			)
+			);
 	}
 }
 

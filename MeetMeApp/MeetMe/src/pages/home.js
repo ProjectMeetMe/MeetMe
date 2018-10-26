@@ -155,7 +155,7 @@ export default class Home extends Component{
                 }}>
               </ListItem>
             )}
-            keyExtractor={item => item.groupName}
+            keyExtractor={(item) => item.groupName}
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}

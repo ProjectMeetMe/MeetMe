@@ -89,7 +89,7 @@ export default class JoinGroupForm extends Component {
                     selectionColor="#fff"
                     keyboardType="email-address"
                     onSubmitEditing={() => this.password.focus()}
-                    onChangeText={joinGroupID => this.setState({joinGroupID})}
+                    onChangeText={(joinGroupID) => this.setState({joinGroupID})}
                 />
 
 

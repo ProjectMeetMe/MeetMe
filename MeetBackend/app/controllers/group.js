@@ -64,7 +64,7 @@ exports.addUser = function(req, res, next) {
     var groupInfo = group.get();
     var users = group.users; //users will be undefined if we are coming from a create group call
 
-    //If we are explicitly calling join group, check that user is not already in group and that
+    //If we are explicitly calling join group (ie not from create group), check that user is not already in group and that
     //max users has not been exceeded
     if (users !== null && users !== "undefined" && users !== undefined) {
         for (var i = 0; i < users.length; i++) {

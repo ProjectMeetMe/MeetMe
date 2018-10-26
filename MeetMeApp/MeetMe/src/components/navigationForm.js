@@ -69,14 +69,15 @@ export default class NavigationForm extends Component {
               />
             </NavButton>
          </NavBar> 
-      )
+      );
     }
     else if(this.props.type === "groupprofile")
     {
       return (
         <NavBar style={styles}>
             <NavButton style={styles.navButton} 
-                onPress={() => {Actions.groupmember({groupID: this.props.groupID})}}>
+                onPress={() => {Actions.groupmember({groupID: this.props.groupID});
+                }}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
                 source={require("../images/android_icon_account.png")}
@@ -86,14 +87,15 @@ export default class NavigationForm extends Component {
           {this.props.title}
           </NavTitle>
             <NavButton style={styles.navButton} 
-                onPress={() => {Actions.groupsummary({groupID: this.props.groupID})}}>
+                onPress={() => {Actions.groupsummary({groupID: this.props.groupID});
+                }}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
                 source={require("../images/android_icon_setting.png")}
               />
             </NavButton>
          </NavBar> 
-      )
+      );
     }
     else
     {
@@ -115,7 +117,7 @@ export default class NavigationForm extends Component {
               />
             </NavButton>
          </NavBar> 
-      )
+      );
     }
   }
 }
@@ -151,5 +153,5 @@ const styles = StyleSheet.create({
     marginRight: 0,
     marginTop: 5,
   },
-})
+});
 

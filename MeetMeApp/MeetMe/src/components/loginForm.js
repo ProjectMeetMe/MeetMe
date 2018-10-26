@@ -49,7 +49,7 @@ export default class LoginFrom extends Component {
 
   //Redirect app to home page
   home() {
-		Actions.home()
+		Actions.home();
   }
 
 
@@ -60,8 +60,8 @@ export default class LoginFrom extends Component {
     var token;
 
     //verify that the user has entered valid input
-		if(userEmail==""){
-		  Toast.show("Please enter your email address!", Toast.LONG);		
+		if(userEmail === ""){
+		  Toast.show("Please enter your email address!", Toast.LONG);
 		}
 		
 		else if(reg.test(userEmail) === false)
@@ -69,7 +69,7 @@ export default class LoginFrom extends Component {
 		  Toast.show("Sorry but seems like you did not enter a valid email address :(", Toast.LONG);
 		  }
 
-		else if(userPassword==""){
+		else if(userPassword === ""){
       Toast.show("Please enter your password!", Toast.LONG);
 		}
 		else{
@@ -112,7 +112,7 @@ export default class LoginFrom extends Component {
           })
             .then((response) => response.json())
             .then((responseJson) => {
-                userid = responseJson.id;
+                var userid = responseJson.id;
                 //console.log(userid);
                 this.saveUserID(userid);
           });
@@ -136,8 +136,8 @@ export default class LoginFrom extends Component {
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
-                    onChangeText={userEmail => this.setState({userEmail})}
+                    onSubmitEditing={() => this.password.focus()}
+                    onChangeText={(userEmail) => this.setState({userEmail})}
                 />
 
                 <TextInput style={styles.inputBox} 
@@ -146,7 +146,7 @@ export default class LoginFrom extends Component {
                     secureTextEntry={true}
                     placeholderTextColor = "#ffffff"
                     ref={(input) => this.password = input}
-                    onChangeText={userPassword => this.setState({userPassword})}
+                    onChangeText={(userPassword) => this.setState({userPassword})}
                 /> 
 
                 <TouchableOpacity style={styles.button} onPress={this.login}>
@@ -159,7 +159,7 @@ export default class LoginFrom extends Component {
                       onPress={this._signIn}
                       disabled={this.state.isSigninInProgress} />  } */}
       </View>
-			)
+			);
 	}
 }
 

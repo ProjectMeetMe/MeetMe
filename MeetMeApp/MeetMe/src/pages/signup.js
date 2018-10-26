@@ -30,7 +30,7 @@ export default class Signup extends Component {
 					<TouchableOpacity onPress={this.goBack}><Text style={styles.signupButton}> Sign in</Text></TouchableOpacity>
 				</View>
 			</View>	
-			)
+			);
 	}
 }
 

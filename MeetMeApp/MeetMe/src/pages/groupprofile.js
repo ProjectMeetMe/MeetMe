@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 export default class GroupProfile extends Component {
 
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
             
         //Data from the database
@@ -30,7 +30,7 @@ export default class GroupProfile extends Component {
         curDate: "",
         //Events from the database - JSON object
         items: {},
-    }
+    };
   }
 
   //at the begining of this page execute below functions
@@ -48,7 +48,7 @@ export default class GroupProfile extends Component {
     const { events, token} = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
-    groupId = this.props.groupID;
+    var groupId = this.props.groupID;
 
     this.setState({
       token: this.usertoken,
@@ -145,7 +145,8 @@ export default class GroupProfile extends Component {
         <ActionButton.Item buttonColor="#3498db" title="Create Event"
         textStyle = {styles.itemStyle} 
         textContainerStyle = {styles.itemStyle}
-        onPress={() => {Actions.createevent({groupID: this.props.groupID})}}>
+        onPress={() => {Actions.createevent({groupID: this.props.groupID});
+        }}>
         <Icon name="pluscircleo" style={styles.actionButtonIcon} />
       </ActionButton.Item>
       );          
@@ -232,7 +233,8 @@ export default class GroupProfile extends Component {
               <ActionButton.Item buttonColor="#9b59b6" title="Group Chat" 
                 textStyle = {styles.itemStyle}
                 textContainerStyle = {styles.itemStyle}
-                onPress={() => {Toast.show("Group Chat")}}>
+                onPress={() => {Toast.show("Group Chat");
+                }}>
                 {<Icon name="message1" style={styles.actionButtonIcon} />}
               </ActionButton.Item>
               { this.renderCreateEvent() }

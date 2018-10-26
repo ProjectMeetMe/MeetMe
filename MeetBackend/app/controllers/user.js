@@ -29,7 +29,7 @@ exports.getGroups = function(req, res, next) {
             message: "Error: Groups could not be retrieved"
         });
     });
-}
+};
 
 /*
 Edits the user schedule specified by req.body.schedule
@@ -57,4 +57,4 @@ exports.editSchedule = function(req, res, next) {
             error: err
         });
     });
-}
+};

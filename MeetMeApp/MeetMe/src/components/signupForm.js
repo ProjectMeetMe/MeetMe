@@ -12,7 +12,7 @@ import {Actions} from "react-native-router-flux";
 export default class SignupForm extends Component {
   
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
       userFirstName:"",
       userLastName:"",
@@ -101,7 +101,7 @@ export default class SignupForm extends Component {
                     selectionColor="#fff"
                     keyboardType="email-address"
                     onSubmitEditing={() => this.password.focus()}
-                    onChangeText= {userFirstName => this.setState({userFirstName})}
+                    onChangeText= {(userFirstName) => this.setState({userFirstName})}
                 />
 
                 <TextInput style={styles.inputBox} 
@@ -110,8 +110,8 @@ export default class SignupForm extends Component {
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
-                    onChangeText= {userLastName => this.setState({userLastName})}
+                    onSubmitEditing={() => this.password.focus()}
+                    onChangeText= {(userLastName) => this.setState({userLastName})}
                 />
 
                 <TextInput style={styles.inputBox} 
@@ -120,8 +120,8 @@ export default class SignupForm extends Component {
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
-                    onChangeText= {userEmail => this.setState({userEmail})}
+                    onSubmitEditing={() => this.password.focus()}
+                    onChangeText= {(userEmail) => this.setState({userEmail})}
                 />
 
                 <TextInput style={styles.inputBox} 
@@ -130,7 +130,7 @@ export default class SignupForm extends Component {
                     secureTextEntry={true}
                     placeholderTextColor = "#ffffff"
                     ref={(input) => this.password = input}
-                    onChangeText= {userPassword  => this.setState({userPassword})}
+                    onChangeText= {(userPassword)  => this.setState({userPassword})}
                 /> 
 
                 <TouchableOpacity onPress={this.userSignup} style={styles.button}>
@@ -138,7 +138,7 @@ export default class SignupForm extends Component {
                 </TouchableOpacity>    
 
   		</View>
-			)
+			);
 	}
 }
 

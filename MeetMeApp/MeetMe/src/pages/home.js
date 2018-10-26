@@ -111,8 +111,9 @@ export default class Home extends Component{
 
   // Display loading icon
   renderFooter = () => {
-    if (!this.state.loading) 
+    if (!this.state.loading) {
         return null;
+    }
 
     return (
       <View style={styles.renderFooter}>
@@ -123,9 +124,9 @@ export default class Home extends Component{
 
   // Display empty group list text
   renderEmptyList = () => {
-    if (this.state.loading)
+    if (this.state.loading) {
       return null;
-
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.Text}>You do not have any groups yet.{"\n"}
@@ -150,10 +151,11 @@ export default class Home extends Component{
                 title={item.groupName}
                 subtitleStyle={styles.subtitleText}
                 subtitle={"Group ID: " + item.id}
-                onPress={() => {Actions.groupprofile({groupID: item.id, groupName:item.groupName})}}>
+                onPress={() => {Actions.groupprofile({groupID: item.id, groupName:item.groupName});
+                }}>
               </ListItem>
             )}
-            keyExtractor={item => item.groupName}
+            keyExtractor={(item) => item.groupName}
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}
@@ -168,13 +170,13 @@ export default class Home extends Component{
             <ActionButton.Item buttonColor="#9b59b6" title="Create Group" 
               textStyle = {styles.itemStyle}
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Actions.creategroup()}}>
+              onPress={() => {Actions.creategroup();}}>
               {<Icon name="pluscircleo" style={styles.actionButtonIcon} />}
             </ActionButton.Item>
             <ActionButton.Item buttonColor="#3498db" title="Join Group"
               textStyle = {styles.itemStyle} 
               textContainerStyle = {styles.itemStyle}
-              onPress={() => {Actions.joingroup()}}>
+              onPress={() => {Actions.joingroup();}}>
               <Icon name="pluscircle" style={styles.actionButtonIcon} />
             </ActionButton.Item>
           </ActionButton>

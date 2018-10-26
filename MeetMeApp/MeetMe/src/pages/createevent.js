@@ -66,10 +66,10 @@ export default class CreateEvent extends Component {
     var badInput = false;
 
     if(endYear < startYear ||
-       (endMonth < startMonth && endYear == startYear) ||
-       (endDay < startDay && endMonth == startMonth && endYear == startYear) ||
-       (endHour < startHour && endDay == startDay && endMonth == startMonth && endYear == startYear) ||
-       (endMin < startMin && endHour == startHour && endDay == startDay && endMonth == startMonth && endYear == startYear)
+       (endMonth < startMonth && endYear === startYear) ||
+       (endDay < startDay && endMonth === startMonth && endYear === startYear) ||
+       (endHour < startHour && endDay === startDay && endMonth === startMonth && endYear === startYear) ||
+       (endMin < startMin && endHour === startHour && endDay === startDay && endMonth === startMonth && endYear === startYear)
        ) {
          badInput = true;
        }
@@ -233,7 +233,7 @@ handleEndDatePicked  = (date) => {
 //display, otherwise, display "Start Time"
 renderStartTime()
 {
-    if(this.state.startTime == "")
+    if(this.state.startTime === "")
     {
       return("Start Time");
     }
@@ -247,7 +247,7 @@ renderStartTime()
 //display, otherwise, display "end Time"
 renderEndTime()
 {
-    if(this.state.endTime == "")
+    if(this.state.endTime === "")
     {
       return("End Time");
     }

@@ -44,7 +44,7 @@ export default class JoinGroupForm extends Component {
     console.log("userid    " + userid);
     console.log("joinGroupID    " + joinGroupID);
 
-		if(joinGroupID==""){
+		if(joinGroupID === ""){
 		  Toast.show("Please enter the group id!", Toast.LONG);		
     }
     

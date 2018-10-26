@@ -24,7 +24,7 @@ export default class NewGroupForm extends Component {
     //Retrieve token from AsyncStorage and store token into 
     //global variable 
     AsyncStorage.getItem("token").then((value) => {
-        if (value != ""){
+        if (value !== ""){
           this.setState({token: value});
         } else {
           this.setState({token: ""});
@@ -42,7 +42,7 @@ export default class NewGroupForm extends Component {
     const {newGroupName, token} = this.state;
     var status = 400;
     //verify that user entered a valid group name
-		if(newGroupName==""){
+		if(newGroupName === ""){
 		  Toast.show("Please enter the group name!", Toast.LONG);		
 		}
     else if(newGroupName.length < 5 || newGroupName.length > 32){

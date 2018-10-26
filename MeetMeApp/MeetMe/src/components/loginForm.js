@@ -92,7 +92,7 @@ export default class LoginFrom extends Component {
        .then((responseJson) => {
          //Display the reason why login failed if failed,
          //Otherwise app keep finishing log in
-         if(responseJson.message != "Successful login")
+         if(responseJson.message !== "Successful login")
          {
           Toast.show(responseJson.message, Toast.LONG);
          }

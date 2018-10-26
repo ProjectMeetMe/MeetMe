@@ -191,7 +191,8 @@ in a target group specified by req.groupInfo
  */
 exports.authenticatePermissions = function(req, res, next) {
     var groupInfo = req.groupInfo;
-    if (req.user.id !== groupInfo.leaderId) {
+
+    if (req.user.id != groupInfo.leaderId) {
         return res.status(400).json({
             message: "Error: Invalid permissions edit group"
         });

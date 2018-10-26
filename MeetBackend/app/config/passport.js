@@ -39,7 +39,8 @@ passport.use("local-signup", new LocalStrategy({
                     email: email,
                     password: userPassword,
                     firstname: req.body.firstname,
-                    lastname: req.body.lastname
+                    lastname: req.body.lastname,
+					schedule: {}
                 };
 
                 db.user.create(userData).then(function(newuser) {

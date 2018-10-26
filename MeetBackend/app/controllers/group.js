@@ -12,7 +12,8 @@ Group edit parameters are in req.body: (groupName)
 exports.editGroup = function(req, res, next) {
     var group = req.group;
     group.update({
-        groupName: req.body.groupName
+        groupName: req.body.groupName,
+		description: req.body.groupDescription
     }).then(function(updatedInfo) {
         return res.status(200).json({
             updatedInfo,
@@ -138,7 +139,8 @@ Attaches the created group instance to req.group
 exports.createGroup = function(req, res, next) {
     db.group.create({
         groupName: req.body.groupName,
-        leaderId: req.user.id
+        leaderId: req.user.id,
+		description: req.body.groupDescription
     }).then(function(newGroup) {
         req.group = newGroup;
 		req.groupInfo = newGroup.get();

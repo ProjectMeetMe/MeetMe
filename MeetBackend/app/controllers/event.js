@@ -24,7 +24,7 @@ exports.createEvent = function(req, res, next) {
             message: "Error: Invalid event creation parameters"
         });
     });
-}
+};
 
 
 /*
@@ -88,7 +88,7 @@ exports.findEvent = function(req, res, next) {
 				req.event = eventFound;
 				req.groupInfo = group;
 				next();
-			})
+			});
         }
     }).catch(function(err) {
         return res.status(400).json({

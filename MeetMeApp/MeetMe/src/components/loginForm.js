@@ -60,7 +60,7 @@ export default class LoginFrom extends Component {
     var token;
 
     //verify that the user has entered valid input
-		if(userEmail==""){
+		if(userEmail === ""){
 		  Toast.show("Please enter your email address!", Toast.LONG);
 		}
 		
@@ -69,7 +69,7 @@ export default class LoginFrom extends Component {
 		  Toast.show("Sorry but seems like you did not enter a valid email address :(", Toast.LONG);
 		  }
 
-		else if(userPassword==""){
+		else if(userPassword === ""){
       Toast.show("Please enter your password!", Toast.LONG);
 		}
 		else{

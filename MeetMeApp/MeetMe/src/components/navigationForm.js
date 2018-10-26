@@ -117,7 +117,7 @@ export default class NavigationForm extends Component {
               />
             </NavButton>
          </NavBar> 
-      )
+      );
     }
   }
 }

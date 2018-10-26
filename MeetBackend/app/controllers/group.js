@@ -23,7 +23,7 @@ exports.editGroup = function(req, res, next) {
             message: "Error: Group could not be edited"
         });
     });
-}
+};
 
 /*
 Gets group info specified by req.group

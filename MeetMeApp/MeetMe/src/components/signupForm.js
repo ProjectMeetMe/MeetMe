@@ -7,7 +7,7 @@ import {
   TouchableOpacity 
 } from "react-native";
 import Toast from "react-native-simple-toast";
-
+import {Actions} from "react-native-router-flux";
 
 export default class SignupForm extends Component {
   
@@ -21,6 +21,10 @@ export default class SignupForm extends Component {
 		};
   }
 
+  goBack() {
+    Actions.pop();
+}
+
   //Call signup API, send userFirstName, userLastName, userEmail
   //and userPassword as key value pair in the post API call and 
   //allow user to sign up a new account
@@ -30,7 +34,7 @@ export default class SignupForm extends Component {
     const {userLastName} = this.state;
 		const {userEmail} = this.state;
 		const {userPassword} = this.state;
-
+    var status = 400;
     //verify that user entered valid inputs
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 		if(userEmail===""){
@@ -69,9 +73,16 @@ export default class SignupForm extends Component {
         })
 
       })
-      .then((response) => response.json())
-      .then((responseJson)=>{ 
+      .then((response) => {
+        status = response.status;
+        return response.json();
+      })
+      .then((responseJson) => { 
         //display success / fail message
+        if(status === 200)    //success
+        {
+          this.goBack();    
+        }
         Toast.show(responseJson.message, Toast.LONG);
       });
     }

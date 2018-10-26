@@ -20,41 +20,36 @@ export default class NavigationForm extends Component {
 
   //redirect this app to profile page
   profile() {
-	  Actions.profile()
+	  Actions.profile();
   }
 
   //redirect this app to seeting page
   setting() {
-    Actions.setting()
-}
+    Actions.setting();
+  }
 
   //notice that this app will not open a new page if 
   //user click profile icon in profile page or user
   //click setting icon in setting page
   render() {
-    if(this.props.type === "Profile")
+    if(this.props.type === "profile" || this.props.type === "setting"
+      || this.props.type === "createGroup" || this.props.type === "createEvent"
+      || this.props.type === "joinGroup" 
+      || this.props.type === "groupSummary" || this.props.type === "groupMember")
     {
       return (
         <NavBar style={styles}>
-            <NavButton style={styles.navButton}>
-            <Image style={{width:60, height: 45}}
-                resizeMode={"contain"}
-                source={require("../images/android_icon_account.png")}
-              />
-            </NavButton>
-          <NavTitle style={styles.title}>
-          {this.props.type}
+          <NavButton style={styles.navButton}>
+          </NavButton>
+          <NavTitle  style={styles.title}>
+          {this.props.title}
           </NavTitle>
-            <NavButton style={styles.navButton} onPress={this.setting}>
-            <Image style={{width:60, height: 45}}
-                resizeMode={"contain"}
-                source={require("../images/android_icon_setting.png")}
-              />
-            </NavButton>
+          <NavButton style={styles.navButton}>
+          </NavButton>
          </NavBar> 
       );
     }
-    else if(this.props.type == "Setting")
+    else if(this.props.type === "home")
     {
       return (
         <NavBar style={styles}>
@@ -65,9 +60,33 @@ export default class NavigationForm extends Component {
               />
             </NavButton>
           <NavTitle style={styles.title}>
-          {this.props.type}
+          {this.props.title}
           </NavTitle>
-            <NavButton style={styles.navButton}>
+            <NavButton style={styles.navButton} onPress={this.setting}>
+            <Image style={{width:60, height: 45}}
+                resizeMode={"contain"}
+                source={require("../images/android_icon_setting.png")}
+              />
+            </NavButton>
+         </NavBar> 
+      )
+    }
+    else if(this.props.type === "groupprofile")
+    {
+      return (
+        <NavBar style={styles}>
+            <NavButton style={styles.navButton} 
+                onPress={() => {Actions.groupmember({groupID: this.props.groupID})}}>
+            <Image style={{width:60, height: 45}}
+                resizeMode={"contain"}
+                source={require("../images/android_icon_account.png")}
+              />
+            </NavButton>
+          <NavTitle style={styles.title}>
+          {this.props.title}
+          </NavTitle>
+            <NavButton style={styles.navButton} 
+                onPress={() => {Actions.groupsummary({groupID: this.props.groupID})}}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
                 source={require("../images/android_icon_setting.png")}

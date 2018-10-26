@@ -55,7 +55,7 @@ export default class Profile extends Component{
     //Toast.show(profile, Toast.LONG);
       return(
         <View  style={{flex: 1}}>
-        <NavigationForm type="Profile"></NavigationForm>
+        <NavigationForm title="Profile" type="profile"></NavigationForm>
           <View style={styles.container}>	
           <Text style={styles.Text}>I am profile page.{"\n"}{"\n"}
           {this.state.name}{"\n"}{"\n"}

@@ -32,11 +32,15 @@ export default class NewGroupForm extends Component {
       }).done();
   }
 
+  goBack() {
+    Actions.pop();
+}
+
   //Call newGroup API, send groupName as key value pair 
   //in the post API call and allow user to join a group
   newGroup = () => {
     const {newGroupName, token} = this.state;
-    
+    var status = 400;
     //verify that user entered a valid group name
 		if(newGroupName==""){
 		  Toast.show("Please enter the group name!", Toast.LONG);		
@@ -56,13 +60,17 @@ export default class NewGroupForm extends Component {
 				    groupName: newGroupName,
 			  })			
 		  })
-		    .then((response) => response.json())
-		    .then((responseJson)=>{
-          //display success / fail message
-          if(responseJson.message != "")
-          {
-              Toast.show(responseJson.message, Toast.LONG);
-          }
+      .then((response) => {
+        status = response.status;
+        return response.json();
+      })
+		  .then((responseJson)=>{
+        //display success / fail message
+        if(status === 200)    //success
+        {
+          this.goBack();    
+        }
+        Toast.show(responseJson.message, Toast.LONG);
      });
     }
     Keyboard.dismiss();

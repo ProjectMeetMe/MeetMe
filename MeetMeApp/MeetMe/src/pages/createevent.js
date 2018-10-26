@@ -260,7 +260,7 @@ renderEndTime()
 	render(){
 		return(
       <View style={{flex: 1, backgroundColor: "#455a64"}}>
-      <NavigationForm type="Create New Event"></NavigationForm>
+      <NavigationForm title="Create New Event" type="createEvent"></NavigationForm>
       <ScrollView contentContainerStyle={styles.contentContainer}>
 			<View style={styles.container}>
 

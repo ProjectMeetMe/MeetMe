@@ -55,10 +55,11 @@ export default class GroupProfile extends Component {
     });
 
     console.log("token in getEvents:  " + token);
-    var userevents = await fetch("http://104.42.79.90:2990/event/getEvents?groupId=${encodeURIComponent(groupId)}", {
+    var userevents = await fetch("http://104.42.79.90:2990/event/getEvents", {
           method: "get",
           headers:{
-            "Authorization": "Bearer " + usertoken
+            "Authorization": "Bearer " + usertoken,
+            "groupId": groupId,
           }
         });
 
@@ -117,10 +118,11 @@ export default class GroupProfile extends Component {
     console.log("token in getGroupInfo:  " + usertoken);
     console.log("groupId:  " + groupId);
 
-    var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroup?groupId=" + groupId, {
+    var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroupInfo", {
           method: "get",
           headers:{
-            "Authorization": "Bearer " + usertoken
+            "Authorization": "Bearer " + usertoken,
+            "groupId": groupId, 
           }
         });
 
@@ -143,7 +145,7 @@ export default class GroupProfile extends Component {
         <ActionButton.Item buttonColor="#3498db" title="Create Event"
         textStyle = {styles.itemStyle} 
         textContainerStyle = {styles.itemStyle}
-        onPress={() => {Actions.createevent({groupID: 4})}}>
+        onPress={() => {Actions.createevent({groupID: this.props.groupID})}}>
         <Icon name="pluscircleo" style={styles.actionButtonIcon} />
       </ActionButton.Item>
       );          
@@ -208,7 +210,8 @@ export default class GroupProfile extends Component {
 
       return(
         <View style={{flex: 1}}>
-        <NavigationForm type={this.props.groupName}></NavigationForm>
+        <NavigationForm type="groupprofile" title={this.props.groupName}
+          groupID={this.props.groupID}></NavigationForm>
           {/* <Agenda
               items={this.state.items}
               loadItemsForMonth={this.loadItems.bind(this)}

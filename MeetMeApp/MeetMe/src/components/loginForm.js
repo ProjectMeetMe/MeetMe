@@ -52,7 +52,7 @@ export default class LoginFrom extends Component {
 
 
   //Call signin post API to achieve user login
-  login = () =>{
+  login = () => {
 		const {userEmail,userPassword} = this.state;
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     var token;
@@ -87,7 +87,7 @@ export default class LoginFrom extends Component {
         
       })
       .then((response) => response.json())
-       .then((responseJson)=>{
+       .then((responseJson) => {
          //Display the reason why login failed if failed,
          //Otherwise app keep finishing log in
          if(responseJson.message != "Successful login")
@@ -109,7 +109,7 @@ export default class LoginFrom extends Component {
             }
           })
             .then((response) => response.json())
-            .then((responseJson)=>{
+            .then((responseJson) => {
                 userid = responseJson.id;
                 //console.log(userid);
                 this.saveUserID(userid);

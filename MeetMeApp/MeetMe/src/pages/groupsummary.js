@@ -3,14 +3,14 @@ import { AppRegistry,View,Text,StyleSheet } from "react-native";
 import NavBar from "react-native-nav";
 import NavigationForm from "../components/navigationForm";
 
-export default class Setting extends Component{
+export default class GroupSummary extends Component{
 	
 	render(){
 		return(
       <View style={{flex: 1}}>
-      <NavigationForm title="Setting" type="setting"></NavigationForm>
+      <NavigationForm title="Group Summary" type="groupSummary"></NavigationForm>
 	  		<View style={styles.container}>	
-				<Text style={styles.Text}>I am setting page.</Text>
+				<Text style={styles.Text}>I am GroupSummary page.</Text>
 			  </View>
       </View> 
 		);

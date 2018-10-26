@@ -52,7 +52,7 @@ export default class Home extends Component{
 
     console.log("usertoken:  " + usertoken);
 
-    var usergroups = await fetch("http://104.42.79.90:2990/group/getGroups", {
+    var usergroups = await fetch("http://104.42.79.90:2990/user/getGroups", {
           method: "get",
           headers:{
             "Authorization": "Bearer " + usertoken
@@ -140,7 +140,7 @@ export default class Home extends Component{
       return(
         <View style={{flex: 1, backgroundColor: "#455a64"}}>
           
-          <NavigationForm type="My Groups"></NavigationForm>
+          <NavigationForm title="My Groups" type="home"></NavigationForm>
 
         
           <FlatList

@@ -9,7 +9,7 @@ export default class CreateGroup extends Component {
 	render() {
 		return(
 			<View style={{flex: 1}}>
-      <NavigationForm type="Create New Group"></NavigationForm>
+      <NavigationForm title="Create New Group" type="createGroup"></NavigationForm>
       <View style={styles.container}>
 				<NewGroupForm type="Create Group"/>
 			</View>	

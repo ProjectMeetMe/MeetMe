@@ -9,7 +9,7 @@ export default class JoinGroup extends Component {
 	render() {
 		return(
 			<View style={{flex: 1}}>
-      <NavigationForm type="Join A Group"></NavigationForm>
+      <NavigationForm title="Join Group" type="joinGroup"></NavigationForm>
       <View style={styles.container}>
 				<JoinGroupForm type="Join Group"/>
         </View>

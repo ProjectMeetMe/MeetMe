@@ -32,10 +32,15 @@ export default class JoinGroupForm extends Component {
     }).done();
   }
 
+  goBack() {
+    Actions.pop();
+}
+
   //Call joinGroup post API to join a exist group
-  joinGroup = () =>{
+  joinGroup = () => {
     const {joinGroupID, token, userid} = this.state;
-    
+    var status = 400;
+
     console.log("userid    " + userid);
 
 		if(joinGroupID==""){
@@ -57,16 +62,20 @@ export default class JoinGroupForm extends Component {
                       id:      userid, 
 			      })			
           })
-            .then((response) => response.json())
-		        .then((responseJson)=>{
-                  if(responseJson.message != "")
-                  {
-                      //Display success / fail message
-                      Toast.show(responseJson.message, Toast.LONG);
-                  }
+            .then((response) => {
+                status = response.status;
+                return response.json();
+            })
+		        .then((responseJson) => {
+                //display success / fail message
+                if(status === 200)    //success
+                {
+                   this.goBack();    
+                }
+                Toast.show(responseJson.message, Toast.LONG);
             });
     }
-        Keyboard.dismiss();
+    Keyboard.dismiss();
 }
 
 	render(){

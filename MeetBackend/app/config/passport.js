@@ -92,7 +92,7 @@ passport.use("local-signin", new LocalStrategy({
                 lastLogin: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
             }).then(function(updatedUser) {
                 return done(null, updatedUser.get());
-            })
+            });
             return null; //suppress warnings
 
         }).catch(function(err) {

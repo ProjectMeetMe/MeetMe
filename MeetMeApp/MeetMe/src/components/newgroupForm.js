@@ -49,8 +49,8 @@ export default class NewGroupForm extends Component {
       Toast.show("Your password must be between 5 to 32 characters!", Toast.LONG);
     }
     else{
-		  fetch("http://104.42.79.90:2990/group/createGroup",{
-			  method:"post",
+		  fetch("http://104.42.79.90:2990/group/createGroup", {
+		    method:"post",
 			  headers:{
 				        "Accept": "application/json",
                 "Content-type": "application/json",

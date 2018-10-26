@@ -61,7 +61,7 @@ export default class LoginFrom extends Component {
 
     //verify that the user has entered valid input
 		if(userEmail==""){
-		  Toast.show("Please enter your email address!", Toast.LONG);		
+		  Toast.show("Please enter your email address!", Toast.LONG);
 		}
 		
 		else if(reg.test(userEmail) === false)

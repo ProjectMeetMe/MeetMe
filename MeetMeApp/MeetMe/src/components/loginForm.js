@@ -112,7 +112,7 @@ export default class LoginFrom extends Component {
           })
             .then((response) => response.json())
             .then((responseJson) => {
-                userid = responseJson.id;
+                var userid = responseJson.id;
                 //console.log(userid);
                 this.saveUserID(userid);
           });

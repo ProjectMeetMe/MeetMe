@@ -57,4 +57,4 @@ exports.editSchedule = function(req, res, next) {
             error: err
         });
     });
-}
+};

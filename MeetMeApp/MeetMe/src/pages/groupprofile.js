@@ -48,7 +48,7 @@ export default class GroupProfile extends Component {
     const { events, token} = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
-    groupId = this.props.groupID;
+    var groupId = this.props.groupID;
 
     this.setState({
       token: this.usertoken,

@@ -49,7 +49,7 @@ exports.editEvent = function(req, res, next) {
             message: "Error: Invalid event edit parameters"
         });
     });
-}
+};
 
 
 /*

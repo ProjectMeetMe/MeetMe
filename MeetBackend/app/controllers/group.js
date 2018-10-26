@@ -35,7 +35,7 @@ exports.getGroupInfo = function(req, res, next) {
         groupInfo,
         message: "Successful group retrieval"
     });
-}
+};
 
 /*
 Gets events from group specified by req.group

@@ -14,12 +14,12 @@ import {Actions} from "react-native-router-flux";
 export default class NewGroupForm extends Component {
 
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
             
             newGroupName:"",
             token: "",
-    }
+    };
 
     //Retrieve token from AsyncStorage and store token into 
     //global variable 
@@ -64,7 +64,7 @@ export default class NewGroupForm extends Component {
         status = response.status;
         return response.json();
       })
-		  .then((responseJson)=>{
+		  .then((responseJson) => {
         //display success / fail message
         if(status === 200)    //success
         {
@@ -94,7 +94,7 @@ export default class NewGroupForm extends Component {
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
   		</View>
-			)
+			);
 	}
 }
 

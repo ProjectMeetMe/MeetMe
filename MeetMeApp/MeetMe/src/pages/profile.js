@@ -60,7 +60,7 @@ logout = async() => {
 }
 
 login() {
-  Actions.login()
+  Actions.login();
 }
 
 	render(){

@@ -14,13 +14,13 @@ import {Actions} from "react-native-router-flux";
 export default class JoinGroupForm extends Component {
 
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
             
             joinGroupID:"",
             token: "",
             userid: "",
-    }
+    };
 
     //load token and userid from AsyncStorage
     AsyncStorage.getItem("token").then((value) => {
@@ -97,7 +97,7 @@ export default class JoinGroupForm extends Component {
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
   		</View>
-			)
+			);
 	}
 }
 

@@ -49,7 +49,7 @@ export default class LoginFrom extends Component {
 
   //Redirect app to home page
   home() {
-		Actions.home()
+		Actions.home();
   }
 
 
@@ -134,7 +134,7 @@ export default class LoginFrom extends Component {
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
+                    onSubmitEditing={() => this.password.focus()}
                     onChangeText={userEmail => this.setState({userEmail})}
                 />
 
@@ -157,7 +157,7 @@ export default class LoginFrom extends Component {
                       onPress={this._signIn}
                       disabled={this.state.isSigninInProgress} />  } */}
       </View>
-			)
+			);
 	}
 }
 

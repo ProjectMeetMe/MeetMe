@@ -14,7 +14,7 @@ export default class CreateGroup extends Component {
 				<NewGroupForm type="Create Group"/>
 			</View>	
       </View>
-			)
+			);
 	}
 }
 

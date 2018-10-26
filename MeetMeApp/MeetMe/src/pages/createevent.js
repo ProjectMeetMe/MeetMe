@@ -19,7 +19,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 export default class CreateEvent extends Component {
 
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
             
             token: "",
@@ -30,7 +30,7 @@ export default class CreateEvent extends Component {
             groupId: this.props.groupID,
             startDateTimePickerVisible: false,
             endDateTimePickerVisible: false,
-    }
+    };
 
     //retrieve token from AsyncStorage
     AsyncStorage.getItem("token").then((value) => {
@@ -97,7 +97,7 @@ export default class CreateEvent extends Component {
             })			
 		      })
 		      .then((response) => response.json())
-		      .then((responseJson)=>{
+		      .then((responseJson) => {
                     console.log("responseJson:  " + responseJson);
                     console.log("responseJson.message:  " + responseJson.message);
                     Toast.show(responseJson.message, Toast.LONG);		
@@ -270,7 +270,7 @@ renderEndTime()
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
+                    onSubmitEditing={() => this.password.focus()}
                     onChangeText={eventName => this.setState({eventName})}
                     />
                     
@@ -316,7 +316,7 @@ renderEndTime()
   		</View>
       </ScrollView>
       </View>
-			)
+			);
 	}
 }
 

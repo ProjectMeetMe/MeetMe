@@ -12,7 +12,7 @@ import {Actions} from "react-native-router-flux";
 export default class SignupForm extends Component {
   
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
       userFirstName:"",
       userLastName:"",
@@ -110,7 +110,7 @@ export default class SignupForm extends Component {
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={()=> this.password.focus()}
+                    onSubmitEditing={() => this.password.focus()}
                     onChangeText= {userLastName => this.setState({userLastName})}
                 />
 
@@ -138,7 +138,7 @@ export default class SignupForm extends Component {
                 </TouchableOpacity>    
 
   		</View>
-			)
+			);
 	}
 }
 

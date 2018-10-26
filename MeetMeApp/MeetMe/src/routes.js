@@ -27,7 +27,7 @@ export default class Routes extends Component{
 	//check whether user is already logged in or not
 	componentWillMount(){
 		AsyncStorage.getItem("token")
-		.then( (value) =>{
+		.then( (value) => {
 			if (value != null){
 			  this.setState({
 				logged: true,
@@ -36,7 +36,7 @@ export default class Routes extends Component{
 			} else{
 			  this.setState({
 				loading: false,
-			  })
+			  });
 			}
 		  }
 		);
@@ -65,7 +65,7 @@ export default class Routes extends Component{
 					<Scene key="groupsummary" component={GroupSummary} title="GroupSummary"/>
 			    </Stack>
 			</Router>
-			)
+			);
 	}
 }
 

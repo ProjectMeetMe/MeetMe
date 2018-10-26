@@ -10,7 +10,7 @@ export default class Login extends Component {
 
 	//Redirect page to signup view
 	signup() {
-		Actions.signup()
+		Actions.signup();
 	}
 
 	render() {
@@ -25,7 +25,7 @@ export default class Login extends Component {
 					</TouchableOpacity>
 				</View>
 			</View>	
-			)
+			);
 	}
 }
 const styles = StyleSheet.create({

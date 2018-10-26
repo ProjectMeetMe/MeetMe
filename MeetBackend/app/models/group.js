@@ -1,10 +1,10 @@
-var sequelizeTokenify = require('sequelize-tokenify');
+var sequelizeTokenify = require("sequelize-tokenify");
 
 //Defines a group object
 
 module.exports = function(sequelize, Sequelize) {
 
-    var Group = sequelize.define('group', {
+    var Group = sequelize.define("group", {
         id: {
             autoIncrement: true,
             primaryKey: true,
@@ -25,7 +25,7 @@ module.exports = function(sequelize, Sequelize) {
     });
 
     sequelizeTokenify.tokenify(Group, { //generates unique token for group for purposes of joining group
-        field: 'joinToken'
+        field: "joinToken"
     });
 
     return Group;

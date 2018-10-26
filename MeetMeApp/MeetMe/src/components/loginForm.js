@@ -18,12 +18,12 @@ export default class LoginFrom extends Component {
   constructor(props){
 		super(props);
 		this.state={
-			// userEmail:"",
-      // userPassword:""
+			userEmail:"",
+      userPassword:""
 
       // This is for test purpose
-      userEmail:"12345678@hotmail.com",
-      userPassword:"12345678",
+      // userEmail:"12345678@hotmail.com",
+      // userPassword:"12345678",
     };
   
     //Actions.reset("login");
@@ -59,20 +59,20 @@ export default class LoginFrom extends Component {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     var token;
 
-    // verify that the user has entered valid input
-		// if(userEmail==""){
-		//   Toast.show("Please enter your email address!", Toast.LONG);		
-		// }
+    //verify that the user has entered valid input
+		if(userEmail==""){
+		  Toast.show("Please enter your email address!", Toast.LONG);		
+		}
 		
-		// else if(reg.test(userEmail) === false)
-		// {
-		//   Toast.show("Sorry but seems like you did not enter a valid email address :(", Toast.LONG);
-		//   }
+		else if(reg.test(userEmail) === false)
+		{
+		  Toast.show("Sorry but seems like you did not enter a valid email address :(", Toast.LONG);
+		  }
 
-		// else if(userPassword==""){
-    //   Toast.show("Please enter your password!", Toast.LONG);
-		// }
-		// else{
+		else if(userPassword==""){
+      Toast.show("Please enter your password!", Toast.LONG);
+		}
+		else{
 
       //Call joinGroup API, send user email and password
       //as key value pair in the post API call
@@ -121,8 +121,7 @@ export default class LoginFrom extends Component {
           this.home();
          }
        });
-    //}
-
+    }
     Keyboard.dismiss();
 	}
 

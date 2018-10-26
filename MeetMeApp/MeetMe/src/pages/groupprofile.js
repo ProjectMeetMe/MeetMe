@@ -55,7 +55,7 @@ export default class GroupProfile extends Component {
     });
 
     console.log("token in getEvents:  " + token);
-    var userevents = await fetch("http://104.42.79.90:2990/event/getEvents", {
+    var userevents = await fetch("http://104.42.79.90:2990/group/getEvents", {
           method: "get",
           headers:{
             "Authorization": "Bearer " + usertoken,

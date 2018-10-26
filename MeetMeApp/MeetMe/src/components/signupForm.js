@@ -83,6 +83,8 @@ export default class SignupForm extends Component {
         {
           this.goBack();    
         }
+        console.log("userEmail:     " + userEmail);
+        console.log("userPassword:     " + userPassword);
         Toast.show(responseJson.message, Toast.LONG);
       });
     }

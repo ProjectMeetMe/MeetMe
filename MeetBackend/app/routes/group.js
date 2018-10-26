@@ -29,7 +29,7 @@ router.put("/removeMember", groupController.findGroup, groupController.removeUse
 
 /* GET events for some group*/
 //Request header: {groupId: <int>}
-router.get('/getEvents',groupController.findGroup, groupController.getEvents);
+router.get("/getEvents",groupController.findGroup, groupController.getEvents);
 
 
 

@@ -17,24 +17,23 @@ export default class NewGroupForm extends Component {
 		super(props);
 		this.state={
             
-            newGroupName:"",
+            newGroupName: "",
+            newGroupDescription: "",
             token: "",
     };
 
     //Retrieve token from AsyncStorage and store token into 
     //global variable 
     AsyncStorage.getItem("token").then((value) => {
-        if (value !== ""){
           this.setState({token: value});
-        } else {
-          this.setState({token: ""});
-        }
+
       }).done();
   }
 
   goBack() {
     Actions.pop();
-}
+    Actions.reset("home"); 
+  }
 
   //Call newGroup API, send groupName as key value pair 
   //in the post API call and allow user to join a group
@@ -46,7 +45,7 @@ export default class NewGroupForm extends Component {
 		  Toast.show("Please enter the group name!", Toast.LONG);		
 		}
     else if(newGroupName.length < 5 || newGroupName.length > 32){
-      Toast.show("Your password must be between 5 to 32 characters!", Toast.LONG);
+      Toast.show("Your group name must be between 5 to 32 characters!", Toast.LONG);
     }
     else{
 		  fetch("http://104.42.79.90:2990/group/createGroup", {
@@ -57,7 +56,8 @@ export default class NewGroupForm extends Component {
                 "Authorization": "Bearer " + token,
 			  },
 			  body:JSON.stringify({
-				    groupName: newGroupName,
+            groupName: newGroupName,
+            groupDescription: newGroupDescription,
 			  })			
 		  })
       .then((response) => {
@@ -88,15 +88,27 @@ export default class NewGroupForm extends Component {
                     onSubmitEditing={() => this.password.focus()}
                     onChangeText={(newGroupName) => this.setState({newGroupName})}
                 />
+                <TextInput style={styles.longInputBox} 
+                    multiline={true}
+                    textAlignVertical={"top"}
+                    underlineColorAndroid="rgba(0,0,0,0)" 
+                    placeholder="Group Description"
+                    placeholderTextColor = "#ffffff"
+                    selectionColor="#fff"
+                    keyboardType="email-address"
+                    onSubmitEditing={() => this.password.focus()}
+                    onChangeText={(newGroupDescription) => this.setState({newGroupDescription})}
+                />
 
 
                 <TouchableOpacity style={styles.button} onPress={this.newGroup}>
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
   		</View>
-			);
-	}
+			); 
+    }
 }
+
 
 const styles = StyleSheet.create({
   container : {

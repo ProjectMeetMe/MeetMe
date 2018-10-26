@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AsyncStorage,
   StyleSheet,
@@ -7,106 +7,119 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard 
-} from 'react-native';
-import Toast from 'react-native-simple-toast';
-import Home from '../pages/home';
-import {Actions} from 'react-native-router-flux';
-//import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import Home from "../pages/home";
+import {Actions} from "react-native-router-flux";
+//import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 
 export default class LoginFrom extends Component {
 
   constructor(props){
-		super(props)
+		super(props);
 		this.state={
-			// userEmail:'',
-      // userPassword:''
-      userEmail:'12345678@hotmail.com',
-      userPassword:'12345678',
-      // userEmail:'tester1@test.com',
-      // userPassword:'test',
-    }
+			// userEmail:"",
+      // userPassword:""
+
+      // This is for test purpose
+      userEmail:"12345678@hotmail.com",
+      userPassword:"12345678",
+    };
   }
 
+  //Save user token into AsyncStorage
   async saveToken(value) {
     try {
-      await AsyncStorage.setItem('token', value);
+      await AsyncStorage.setItem("token", value);
     } catch (error) {
       console.log("Error saving data" + error);
     }
   }
 
-  async saveProfile(value) {
+  //Save user ID into AsyncStorage
+  async saveUserID(value) {
     try {
-      await AsyncStorage.setItem('profile', value);
+      await AsyncStorage.setItem("userid", value.toString());
     } catch (error) {
       console.log("Error saving data" + error);
     }
   }
 
+  //Redirect app to home page
   home() {
 		Actions.home()
   }
 
+
+  //Call signin post API to achieve user login
   login = () =>{
 		const {userEmail,userPassword} = this.state;
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     var token;
+
+    // verify that the user has entered valid input
 		// if(userEmail==""){
-		//   Toast.show('Please enter your email address!', Toast.LONG);		
+		//   Toast.show("Please enter your email address!", Toast.LONG);		
 		// }
 		
 		// else if(reg.test(userEmail) === false)
 		// {
-		//   Toast.show('Sorry but seems like you did not enter a valid email address :(', Toast.LONG);
+		//   Toast.show("Sorry but seems like you did not enter a valid email address :(", Toast.LONG);
 		//   }
 
 		// else if(userPassword==""){
-    //   Toast.show('Please enter your password!', Toast.LONG);
+    //   Toast.show("Please enter your password!", Toast.LONG);
 		// }
 		// else{
-		
-    // }
-    fetch('http://104.42.79.90:2990/auth/signin',{
-			method:'post',
-			headers:{
-				'Accept': 'application/json',
-				'Content-type': 'application/json'
-			},
-			body:JSON.stringify({
-				email: userEmail,
-				password: userPassword
-			})
-			
-		})
-		.then((response) => response.json())
-		 .then((responseJson)=>{
-       if(responseJson.message != "Successful login")
-       {
-        Toast.show(responseJson.message, Toast.LONG);
-       }
-       else
-       {
-        //Toast.show(JSON.stringify(responseJson), Toast.LONG)
-        console.log("Redirect");
-        token = responseJson.token;
 
-        this.saveToken(token);
-
-        fetch('http://104.42.79.90:2990/user/profile', {
-          method: 'GET',
-          headers:{
-            'Authorization': 'Bearer ' + token
-          }
+      //Call joinGroup API, send user email and password
+      //as key value pair in the post API call
+      fetch("http://104.42.79.90:2990/auth/signin",{
+        method:"post",
+        headers:{
+          "Accept": "application/json",
+          "Content-type": "application/json"
+        },
+        body:JSON.stringify({
+          email: userEmail,
+          password: userPassword
         })
-        .then((response) => response.json())
-        .then((responseJson)=>{ 
-            this.saveProfile(responseJson);
-            //Toast.show(JSON.stringify(responseJson), Toast.LONG)
-        });
-
-        this.home();
-       }
-     });
+        
+      })
+      .then((response) => response.json())
+       .then((responseJson)=>{
+         //Display the reason why login failed if failed,
+         //Otherwise app keep finishing log in
+         if(responseJson.message != "Successful login")
+         {
+          Toast.show(responseJson.message, Toast.LONG);
+         }
+         else
+         {
+          token = responseJson.token;
+  
+          //save token to asyncstorage 
+          this.saveToken(token);
+          
+          //save user id to asyncstorage
+          fetch("http://104.42.79.90:2990/user/profile",{
+            method: "GET",
+            headers:{
+              "Authorization": "Bearer " + token
+            }
+          })
+            .then((response) => response.json())
+            .then((responseJson)=>{
+                userid = responseJson.id;
+                //console.log(userid);
+                this.saveUserID(userid);
+          });
+  
+          //Login success, redirect view to home page
+          this.home();
+         }
+       });
+    //}
 
     Keyboard.dismiss();
 	}
@@ -115,7 +128,7 @@ export default class LoginFrom extends Component {
 		return(
 			<View style={styles.container}>
                 <TextInput style={styles.inputBox} 
-                    underlineColorAndroid='rgba(0,0,0,0)' 
+                    underlineColorAndroid="rgba(0,0,0,0)" 
                     placeholder="Email"
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
@@ -125,7 +138,7 @@ export default class LoginFrom extends Component {
                 />
 
                 <TextInput style={styles.inputBox} 
-                    underlineColorAndroid='rgba(0,0,0,0)' 
+                    underlineColorAndroid="rgba(0,0,0,0)" 
                     placeholder="Password"
                     secureTextEntry={true}
                     placeholderTextColor = "#ffffff"
@@ -142,7 +155,7 @@ export default class LoginFrom extends Component {
                       color={GoogleSigninButton.Color.Dark}
                       onPress={this._signIn}
                       disabled={this.state.isSigninInProgress} />  } */}
-  		</View>
+      </View>
 			)
 	}
 }
@@ -150,31 +163,31 @@ export default class LoginFrom extends Component {
 const styles = StyleSheet.create({
   container : {
     flexGrow: 1,
-    justifyContent:'center',
-    alignItems: 'center'
+    justifyContent:"center",
+    alignItems: "center"
   },
 
   inputBox: {
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     paddingHorizontal:16,
     fontSize:16,
-    color:'#ffffff',
+    color:"#ffffff",
     marginVertical: 10
   },
   button: {
     width:300,
-    backgroundColor:'#1c313a',
+    backgroundColor:"#1c313a",
      borderRadius: 25,
       marginVertical: 10,
       paddingVertical: 13
   },
   buttonText: {
     fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center'
+    fontWeight:"500",
+    color:"#ffffff",
+    textAlign:"center"
   }
   
 });

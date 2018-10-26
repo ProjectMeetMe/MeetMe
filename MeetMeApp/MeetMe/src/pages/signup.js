@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AppRegistry,
   StyleSheet,
@@ -6,19 +6,20 @@ import {
   View,
   StatusBar ,
   TouchableOpacity
-} from 'react-native';
-import Toast from 'react-native-simple-toast';
-import Logo from '../components/logo';
-import SignupForm from '../components/signupForm';
-import {Actions} from 'react-native-router-flux';
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import Logo from "../components/logo";
+import SignupForm from "../components/signupForm";
+import {Actions} from "react-native-router-flux";
 
 
 export default class Signup extends Component {
 
+  //Redirect page to signin view
   goBack() {
       Actions.pop();
   }
-  
+  //TODO: implement return to login screen after creaing account successfully
 	render() {
 		return(
 			<View style={styles.container}>
@@ -35,27 +36,26 @@ export default class Signup extends Component {
 
 const styles = StyleSheet.create({
   container : {
-    backgroundColor:'#455a64',
+    backgroundColor:"#455a64",
     flex: 1,
-    alignItems:'center',
-    justifyContent :'center'
+    alignItems:"center",
+    justifyContent :"center"
   },
   signupTextCont : {
   	flexGrow: 1,
-    alignItems:'flex-end',
-    justifyContent :'center',
+    alignItems:"flex-end",
+    justifyContent :"center",
     paddingVertical:16,
-    flexDirection:'row'
+    flexDirection:"row"
   },
   signupText: {
-  	color:'rgba(255,255,255,0.6)',
+    color:"rgba(255,255,255,0.6)",
   	fontSize:16
   },
   signupButton: {
-  	color:'#ffffff',
+  	color:"#ffffff",
   	fontSize:16,
-  	fontWeight:'500'
+  	fontWeight:"500"
   }
 });
 
-AppRegistry.registerComponent('signup', () => signup);

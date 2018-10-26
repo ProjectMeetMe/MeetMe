@@ -38,7 +38,7 @@ export default class NewGroupForm extends Component {
   //Call newGroup API, send groupName as key value pair 
   //in the post API call and allow user to join a group
   newGroup = () => {
-    const {newGroupName, token} = this.state;
+    const {newGroupName, newGroupDescription, token} = this.state;
     var status = 400;
     //verify that user entered a valid group name
 		if(newGroupName === ""){
@@ -118,6 +118,16 @@ const styles = StyleSheet.create({
   },
 
   inputBox: {
+    width:300,
+    backgroundColor:"rgba(255, 255,255,0.2)",
+    borderRadius: 25,
+    paddingHorizontal:16,
+    fontSize:16,
+    color:"#ffffff",
+    marginVertical: 10
+  },
+  longInputBox: {
+    minHeight: 100,
     width:300,
     backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,

@@ -55,8 +55,8 @@ logout = async() => {
   AsyncStorage.clear();
   Toast.show("Log out successfully!", Toast.LONG);
   this.login();
-  //Actions.reset("login");
-  Actions.popTo("login");
+  Actions.reset("login");
+  //Actions.popTo("login");
 }
 
 login() {

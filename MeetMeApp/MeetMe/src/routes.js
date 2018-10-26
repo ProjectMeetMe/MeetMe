@@ -53,7 +53,7 @@ export default class Routes extends Component{
 			<Router>
 			    <Stack key="root" hideNavBar={true}>
 					<Scene key="login" component={Login} title="Login" initial={!this.state.logged}/>
-			    	<Scene key="signup" component={Signup} title="Register"/>
+			    <Scene key="signup" component={Signup} title="Register"/>
 					<Scene key="home" component={Home} title="HomePage" initial={this.state.logged}/>
 					<Scene key="profile" component={Profile} title="ProfilePage"/>
 					<Scene key="creategroup" component={CreateGroup} title="CreateGroup"/>

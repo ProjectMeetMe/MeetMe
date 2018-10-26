@@ -55,11 +55,11 @@ export default class GroupProfile extends Component {
     });
 
     console.log("token in getEvents:  " + token);
-    var userevents = await fetch("http://104.42.79.90:2990/group/getEvents", {
+    var userevents = await fetch("http://104.42.79.90:2990/group/getEvents?groupId=" + groupId, {
           method: "get",
           headers:{
             "Authorization": "Bearer " + usertoken,
-            "groupId": groupId,
+            //"groupId": groupId,
           }
         });
 
@@ -118,11 +118,11 @@ export default class GroupProfile extends Component {
     console.log("token in getGroupInfo:  " + usertoken);
     console.log("groupId:  " + groupId);
 
-    var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroupInfo", {
+    var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroupInfo?groupId=" + groupId, {
           method: "get",
           headers:{
             "Authorization": "Bearer " + usertoken,
-            "groupId": groupId, 
+            //"groupId": groupId, 
           }
         });
 

@@ -81,7 +81,7 @@ export default class CreateEvent extends Component {
     
     // Create event on good input
 		else{
-		    fetch("http://104.42.79.90:2990/event/addEvent",{
+		    fetch("http://104.42.79.90:2990/event/addEvent?groupId=" + groupId,{
 			      method:"post",
 			      headers:{
 				              "Accept": "application/json",

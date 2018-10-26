@@ -119,6 +119,8 @@ export default class LoginFrom extends Component {
   
           //Login success, redirect view to home page
           this.home();
+          Actions.reset("home");
+          //Actions.popTo("home");
          }
        });
     }

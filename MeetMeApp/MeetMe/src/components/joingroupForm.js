@@ -51,17 +51,13 @@ export default class JoinGroupForm extends Component {
 		else{
         //Call joinGroup API, send the group the user want to 
         //and the user id as key value pair in the post API call
-		    fetch("http://104.42.79.90:2990/group/joinGroup",{
+		    fetch("http://104.42.79.90:2990/group/joinGroup?groupId=" + joinGroupID,{
 			      method:"post",
 			      headers:{
 				              "Accept": "application/json",
                       "Content-type": "application/json",
                       "Authorization": "Bearer " + token,
-			              },
-			      body:JSON.stringify({
-                      groupId: joinGroupID,
-                      id:      userid, 
-			      })			
+                    }	
           })
             .then((response) => {
                 status = response.status;

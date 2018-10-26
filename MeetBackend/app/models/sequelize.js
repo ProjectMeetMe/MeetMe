@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize")
+const Sequelize = require("sequelize");
 
 const dbUser = "cpen321";
 const dbPassword = "Test8as_";
@@ -53,7 +53,7 @@ sequelize.sync(
             }*/
     )
     .then(() => {
-        console.log(`Database & tables synced with models!`);
+        console.log("Database & tables synced with models!");
     });
 
 module.exports = db;

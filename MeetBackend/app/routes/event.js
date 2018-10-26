@@ -17,7 +17,7 @@ router.post("/addEvent", groupController.findGroup, groupController.authenticate
 //Body header: {eventName, description, startTime, endTime}
 router.put("/editEvent", eventController.findEvent, groupController.authenticatePermissions, eventController.editEvent);
 
-/* PUT to edit events */
+/* DELETE to delete events */
 //Request header: {eventId: <int>}
 router.delete("/deleteEvent", eventController.findEvent, groupController.authenticatePermissions, eventController.deleteEvent);
 

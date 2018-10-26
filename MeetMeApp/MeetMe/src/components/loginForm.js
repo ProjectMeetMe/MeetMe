@@ -25,6 +25,8 @@ export default class LoginFrom extends Component {
       userEmail:"12345678@hotmail.com",
       userPassword:"12345678",
     };
+  
+    //Actions.reset("login");
   }
 
   //Save user token into AsyncStorage

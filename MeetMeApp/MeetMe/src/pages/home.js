@@ -138,11 +138,8 @@ export default class Home extends Component{
 
     const { groups, token } = this.state;
       return(
-        <View style={{flex: 1, backgroundColor: "#455a64"}}>
-          
+        <View style={{flex: 1, backgroundColor: "#455a64"}}>          
           <NavigationForm title="My Groups" type="home"></NavigationForm>
-
-        
           <FlatList
             data={this.state.groups}
             renderItem={({ item }) => (

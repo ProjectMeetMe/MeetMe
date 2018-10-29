@@ -10,15 +10,15 @@ var eventController = require("../controllers/event.js");
 /* POST add event */
 //Request header: {groupId: <int>}
 //Body header: {eventName, description, startTime, endTime}
-router.post("/addEvent", groupController.findGroup, groupController.authenticatePermissions, eventController.createEvent);
+router.post("/addEvent", groupController.findGroup, groupController.checkPermissions, eventController.createEvent);
 
 /* PUT to edit events */
 //Request header: {eventId: <int>}
 //Body header: {eventName, description, startTime, endTime}
-router.put("/editEvent", eventController.findEvent, groupController.authenticatePermissions, eventController.editEvent);
+router.put("/editEvent", eventController.findEvent, groupController.checkPermissions, eventController.editEvent);
 
 /* DELETE to delete events */
 //Request header: {eventId: <int>}
-router.delete("/deleteEvent", eventController.findEvent, groupController.authenticatePermissions, eventController.deleteEvent);
+router.delete("/deleteEvent", eventController.findEvent, groupController.checkPermissions, eventController.deleteEvent);
 
 module.exports = router;

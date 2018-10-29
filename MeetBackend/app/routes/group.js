@@ -32,14 +32,14 @@ router.put("/removeMember", groupController.findGroup, groupController.checkPerm
 
 /* GET events for some group*/
 //Request header: {groupId: <int>}
-router.get("/getEvents", groupController.findGroup, groupController.getEvents);
+router.get("/getEvents", groupController.findGroup, groupController.checkMembership, groupController.getEvents);
 
 
 
 /////Work in progress:
 
 /* GET optimal availibilties for all users in group*/
-router.get("/getAvailabilities", groupController.findGroup, groupController.checkMembership);
+router.get("/getAvailabilities", groupController.findGroup, groupController.checkMembership, groupController.calculateAvailabilities);
 
 
 

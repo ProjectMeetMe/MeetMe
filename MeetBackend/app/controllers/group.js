@@ -63,7 +63,7 @@ Adds user specified by user token to target group instance specified by req.grou
 exports.addUser = function(req, res, next) {
     var group = req.group;
     var groupInfo = group.get();
-	var users = req.group.users; //users will be undefined if we are coming from a create group call
+    var users = req.group.users; //users will be undefined if we are coming from a create group call
 
     group.addUser(req.user.id).then(function(newUser) {
         if (users !== null && users !== "undefined" && users !== undefined) { // Coming from member join
@@ -140,6 +140,30 @@ exports.leaveGroup = function(req, res, next) {
 }
 
 
+/*
+Takes into consideration all user schedules in a group and outputs optimal
+user schedules
+ */
+exports.calculateAvailabilities = function(req, res, next) {
+    var users = req.group.users;
+
+    for (var i = 0; i < users.length; i++) {
+		console.log("TESTING")
+        console.log(JSON.stringify(users[i].schedule));
+    }
+
+
+	return res.status(200).json({
+		message: "TESTING"
+	});
+}
+
+
+
+
+
+
+
 
 /* HELPER MIDDLEWARES THAT DO NOT RESOLVE A REQUEST, MUST BE USED WITH FUNCTIONS*/
 
@@ -172,7 +196,7 @@ exports.findGroup = function(req, res, next) {
     db.group.findOne({
         include: [{
             model: db.user,
-            attributes: ["id", "firstname", "lastname", "email"], //elements of the group that we want
+            attributes: ["id", "firstname", "lastname", "email", "schedule"], //elements of the group that we want
             through: {
                 attributes: []
             }
@@ -222,14 +246,23 @@ exports.checkMembership = function(req, res, next) {
     var groupInfo = group.get();
     var users = group.users;
 
+    var isUserInGroup = false;
+
     for (var i = 0; i < users.length; i++) {
+        console.log(users[i].id)
+        console.log(req.user.id)
         if (users[i].id === req.user.id) { //user exists in group
-            next();
+            isUserInGroup = true;
+            break;
         }
     }
-    return res.status(400).json({
-        message: "Error: User is not a member of this group"
-    });
+    if (isUserInGroup) {
+        next();
+    } else {
+        return res.status(400).json({
+            message: "Error: User is not a member of this group"
+        });
+    }
 }
 
 
@@ -237,7 +270,7 @@ exports.checkMembership = function(req, res, next) {
 Checks if the group is joinable (user is not already in the group AND group is not full)
  */
 exports.checkGroupJoinable = function(req, res, next) {
-	var users = req.group.users;
+    var users = req.group.users;
 
     for (var i = 0; i < users.length; i++) {
         if (users[i].id === req.user.id) { //user already exists in group
@@ -252,5 +285,5 @@ exports.checkGroupJoinable = function(req, res, next) {
             message: "Error: Group is full and no more members can join"
         });
     }
-	next();
+    next();
 }

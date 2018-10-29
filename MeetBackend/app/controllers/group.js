@@ -13,7 +13,7 @@ exports.editGroup = function(req, res, next) {
     var group = req.group;
     group.update({
         groupName: req.body.groupName,
-		description: req.body.groupDescription
+        description: req.body.groupDescription
     }).then(function(updatedInfo) {
         return res.status(200).json({
             updatedInfo,
@@ -43,17 +43,17 @@ Gets events from group specified by req.group
  */
 exports.getEvents = function(req, res, next) {
     var group = req.group;
-	group.getEvents().then(function(events) {
-		//TODO: sort events by order
-		return res.status(200).json({
-			events,
-			message: "Successful event retrieval"
-		});
-	}).catch(function(err){
-		return res.status(400).json({
+    group.getEvents().then(function(events) {
+        //TODO: sort events by order
+        return res.status(200).json({
+            events,
+            message: "Successful event retrieval"
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
             message: "Error: Events could not be retrieved"
         });
-	});
+    });
 }
 
 
@@ -63,25 +63,7 @@ Adds user specified by user token to target group instance specified by req.grou
 exports.addUser = function(req, res, next) {
     var group = req.group;
     var groupInfo = group.get();
-    var users = group.users; //users will be undefined if we are coming from a create group call
-
-    //If we are explicitly calling join group (ie not from create group), check that user is not already in group and that
-    //max users has not been exceeded
-    if (users !== null && users !== "undefined" && users !== undefined) {
-        for (var i = 0; i < users.length; i++) {
-            if (users[i].id === req.user.id) { //user already exists in group
-                return res.status(400).json({
-                    message: "Error: User already in group"
-                });
-            }
-        }
-        var numUsers = users.length;
-        if (numUsers >= MAX_GROUP_USERS) {
-            return res.status(400).json({
-                message: "Error: Group is full and no more members can join"
-            });
-        }
-    }
+	var users = req.group.users; //users will be undefined if we are coming from a create group call
 
     group.addUser(req.user.id).then(function(newUser) {
         if (users !== null && users !== "undefined" && users !== undefined) { // Coming from member join
@@ -110,6 +92,11 @@ Removes target user specified by req.body.userId from target group instance spec
  */
 exports.removeUser = function(req, res, next) {
     var group = req.group;
+    if (req.body.userId == req.user.id) { //cannot remove self
+        return res.status(400).json({
+            message: "Error: User cannot remove self"
+        });
+    }
 
     group.removeUser(req.body.userId).then(function(success) {
         if (success) {
@@ -129,6 +116,30 @@ exports.removeUser = function(req, res, next) {
 }
 
 
+/*
+Removes self user (specified by req.user.id) from target group instance specified by req.group
+ */
+exports.leaveGroup = function(req, res, next) {
+    var group = req.group;
+
+    group.removeUser(req.user.id).then(function(success) {
+        if (success) {
+            return res.status(200).json({
+                message: "Successful group leave"
+            });
+        } else {
+            return res.status(400).json({
+                message: "Error: User does not exist in group"
+            });
+        }
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Something went wrong with leave group"
+        });
+    });
+}
+
+
 
 /* HELPER MIDDLEWARES THAT DO NOT RESOLVE A REQUEST, MUST BE USED WITH FUNCTIONS*/
 
@@ -140,10 +151,10 @@ exports.createGroup = function(req, res, next) {
     db.group.create({
         groupName: req.body.groupName,
         leaderId: req.user.id,
-		description: req.body.groupDescription
+        description: req.body.groupDescription
     }).then(function(newGroup) {
         req.group = newGroup;
-		req.groupInfo = newGroup.get();
+        req.groupInfo = newGroup.get();
         next();
     }).catch(function(err) {
         return res.status(400).json({
@@ -176,7 +187,7 @@ exports.findGroup = function(req, res, next) {
             });
         } else {
             req.group = groupFound; //Can directly perform db operations
-			req.groupInfo = groupFound.get(); //Only contains info
+            req.groupInfo = groupFound.get(); //Only contains info
             next();
         }
     }).catch(function(err) {
@@ -191,7 +202,7 @@ exports.findGroup = function(req, res, next) {
 Authenticates the permissions of the current user (given by the user token)
 in a target group specified by req.groupInfo
  */
-exports.authenticatePermissions = function(req, res, next) {
+exports.checkPermissions = function(req, res, next) {
     var groupInfo = req.groupInfo;
 
     if (req.user.id != groupInfo.leaderId) {
@@ -201,4 +212,45 @@ exports.authenticatePermissions = function(req, res, next) {
     } else {
         next();
     }
+}
+
+/*
+Checks that the current user is a member of the group
+ */
+exports.checkMembership = function(req, res, next) {
+    var group = req.group;
+    var groupInfo = group.get();
+    var users = group.users;
+
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].id === req.user.id) { //user exists in group
+            next();
+        }
+    }
+    return res.status(400).json({
+        message: "Error: User is not a member of this group"
+    });
+}
+
+
+/*
+Checks if the group is joinable (user is not already in the group AND group is not full)
+ */
+exports.checkGroupJoinable = function(req, res, next) {
+	var users = req.group.users;
+
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].id === req.user.id) { //user already exists in group
+            return res.status(400).json({
+                message: "Error: User already in group"
+            });
+        }
+    }
+    var numUsers = users.length;
+    if (numUsers >= MAX_GROUP_USERS) {
+        return res.status(400).json({
+            message: "Error: Group is full and no more members can join"
+        });
+    }
+	next();
 }

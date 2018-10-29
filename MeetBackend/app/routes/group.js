@@ -12,25 +12,34 @@ router.post("/createGroup", groupController.createGroup, groupController.addUser
 
 /* PUT (edit) existing group info (currently can only change group name) */
 //Request header: {groupId: <int>}, body: {groupName: <string>}
-router.put("/editGroup", groupController.findGroup, groupController.authenticatePermissions, groupController.editGroup);
+router.put("/editGroup", groupController.findGroup, groupController.checkPermissions, groupController.editGroup);
 
 /* GET information for one group, including users */
-//TODO: Add validation for checking if user is a member
 //Request header: {groupId: <int>}
-router.get("/getGroupInfo", groupController.findGroup, groupController.getGroupInfo);
+router.get("/getGroupInfo", groupController.findGroup, groupController.checkMembership, groupController.getGroupInfo);
 
 /* POST join logged in user to group by groupId */
 //Request header: {groupId: <int>}
-router.post("/joinGroup", groupController.findGroup, groupController.addUser);
+router.post("/joinGroup", groupController.findGroup, groupController.checkGroupJoinable, groupController.addUser);
+
+/* PUT request to leave group by groupId */
+//Request header: {groupId: <int>}
+router.post("/leaveGroup", groupController.findGroup, groupController.checkMembership, groupController.leaveGroup);
 
 /* PUT request to remove group member */
 //Request header: {groupId: <int>}, body: {userId: <int>}
-router.put("/removeMember", groupController.findGroup, groupController.removeUser);
+router.put("/removeMember", groupController.findGroup, groupController.checkPermissions, groupController.removeUser);
 
 /* GET events for some group*/
 //Request header: {groupId: <int>}
-router.get("/getEvents",groupController.findGroup, groupController.getEvents);
+router.get("/getEvents", groupController.findGroup, groupController.getEvents);
 
+
+
+/////Work in progress:
+
+/* GET optimal availibilties for all users in group*/
+router.get("/getAvailabilities", groupController.findGroup, groupController.checkMembership);
 
 
 

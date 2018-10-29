@@ -20,7 +20,7 @@ passport.use("local-signup", new LocalStrategy({
     function(req, email, password, done) {
         //encrypts password
         var generateHash = function(password) {
-            return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null);
+            return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
         };
 
         //If sequelize finds matching email in DB ...

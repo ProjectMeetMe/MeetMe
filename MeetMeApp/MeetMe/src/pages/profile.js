@@ -40,7 +40,7 @@ export default class Profile extends Component{
     });
 
     var profilejson = await userprofile.json();
-    console.log("profilejson:", profilejson);
+    //console.log("profilejson:", profilejson);
 
     this.setState({
       token: usertoken,

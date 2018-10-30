@@ -54,7 +54,7 @@ export default class GroupProfile extends Component {
       token: this.usertoken,
     });
 
-    console.log("token in getEvents:  " + token);
+    //console.log("token in getEvents:  " + token);
     var userevents = await fetch("http://104.42.79.90:2990/group/getEvents?groupId=" + groupId, {
           method: "get",
           headers:{
@@ -77,8 +77,8 @@ export default class GroupProfile extends Component {
   async getItems()
   {
     const { events } = this.state;
-    console.log("events.length:  " + events.length);
-    console.log("events:  " + events.toString);
+    //console.log("events.length:  " + events.length);
+    //console.log("events:  " + events.toString);
 
   // var array=[];
   // events[] format in APIdocumentation.txt
@@ -98,7 +98,7 @@ export default class GroupProfile extends Component {
     var year = new Date().getFullYear();
 
     var curDate = year + "-" + month + "-" + date;
-    console.log("curDate:  " + curDate);
+    //console.log("curDate:  " + curDate);
 
     this.setState({
       curDate: curDate,
@@ -115,8 +115,8 @@ export default class GroupProfile extends Component {
 
     var groupId = this.props.groupID;
 
-    console.log("token in getGroupInfo:  " + usertoken);
-    console.log("groupId:  " + groupId);
+    //console.log("token in getGroupInfo:  " + usertoken);
+    //console.log("groupId:  " + groupId);
 
     var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroupInfo?groupId=" + groupId, {
           method: "get",
@@ -128,8 +128,8 @@ export default class GroupProfile extends Component {
 
     const groupinfojson = await groupInfos.json();
     
-    console.log("current user id:  " + curuserid);
-    console.log("group owner id:  " + groupinfojson.groupInfo.leaderId);
+    //console.log("current user id:  " + curuserid);
+    //console.log("group owner id:  " + groupinfojson.groupInfo.leaderId);
     
     this.setState({
       groupinfo: groupinfojson.groupInfo,

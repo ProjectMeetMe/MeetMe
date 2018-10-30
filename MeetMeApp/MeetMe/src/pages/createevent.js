@@ -47,7 +47,7 @@ export default class CreateEvent extends Component {
             endTime, groupId} = this.state;
 
     // var groupId = this.props.groupID;		
-    console.log("groupId:  " + this.state.groupId);
+    //console.log("groupId:  " + this.state.groupId);
     
     // String manipulation to compare start and end times and check for bad input
     var startDay, startMonth, startYear, endDay, endMonth, endYear;
@@ -112,7 +112,7 @@ hideStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: fal
 
 // Interpret start date
 handleStartDatePicked  = (date) => {
-  console.log("Start Time has been picked: ", date);
+  //console.log("Start Time has been picked: ", date);
   var dateString = date.toString();
   // E.G: dateString = Sun Oct 21 2018 17:38:00 GMT-700 (PDT)
   var dateStringArray = dateString.split(" ",5);
@@ -173,7 +173,7 @@ hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false }
 
 // Interpret end date
 handleEndDatePicked  = (date) => {
-  console.log("End Time has been picked: ", date);
+  //console.log("End Time has been picked: ", date);
   var dateString = date.toString();
   //[0] = dayName; [1] = month; [2] = dayNum; [3] yearNum, [4] time
   var dateStringArray = dateString.split(" ",5);

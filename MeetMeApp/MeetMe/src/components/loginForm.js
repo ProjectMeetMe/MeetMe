@@ -34,7 +34,7 @@ export default class LoginFrom extends Component {
     try {
       await AsyncStorage.setItem("token", value);
     } catch (error) {
-      console.log("Error saving data" + error);
+      //console.log("Error saving data" + error);
     }
   }
 
@@ -43,7 +43,7 @@ export default class LoginFrom extends Component {
     try {
       await AsyncStorage.setItem("userid", value.toString());
     } catch (error) {
-      console.log("Error saving data" + error);
+      //console.log("Error saving data" + error);
     }
   }
 

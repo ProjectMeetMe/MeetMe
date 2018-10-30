@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import { AsyncStorage, AppRegistry,View,Text,StyleSheet,
+import { AsyncStorage,View,Text,StyleSheet,
     FlatList, ActivityIndicator, ScrollView } from "react-native";
 import NavBar from "react-native-nav";
 import NavigationForm from "../components/navigationForm";
 import {List, ListItem, SearchBar } from "react-native-elements";
 import Toast from "react-native-simple-toast";
 import ActionButton from "react-native-action-button";
-import Icon from "react-native-vector-icons/AntDesign";
-import {Actions} from "react-native-router-flux";
 import FetchAPI from "../controller/fetchAPI";
 import {YellowBox} from 'react-native';
+import Dialog, {
+  DialogTitle,
+  DialogButton,
+} from 'react-native-popup-dialog';
+import Icon from "react-native-vector-icons/Foundation";
 
 export default class GroupMember extends Component{
 	
@@ -24,11 +27,16 @@ export default class GroupMember extends Component{
       ownerId: "",
       refreshing: false,
       loading: true,
+      defaultAnimationDialog: false,
+      customBackgroundDialog: false,
+      deleteUserId: 0,
+      deleteUserName: "",
     };
   }
 
   //at the begining of this page execute below functions
   componentDidMount() {
+    YellowBox.ignoreWarnings(['Warning: Failed prop type: Prop']);
     this.getGroupInfo();
   }
 
@@ -38,25 +46,17 @@ export default class GroupMember extends Component{
   {
     const usertoken = await AsyncStorage.getItem("token");
     const userId = await AsyncStorage.getItem("userid");
-
     var groupId = this.props.groupID;
-    YellowBox.ignoreWarnings(['Warning: Each child in an array or iterator should have a unique']);
 
-    // console.log("token in getGroupInfo:  " + usertoken);
-    // console.log("groupId:  " + groupId);
     var groupInfos = await fetch("http://104.42.79.90:2990/group/getGroupInfo?groupId=" + groupId, {
           method: "get",
           headers:{
             "Authorization": "Bearer " + usertoken,
-            //"groupId": groupId, 
           }
         });
 
     const groupinfojson = await groupInfos.json();
-    
-    // console.log("groupInfos:  " + groupInfos);
-    // console.log("groupinfojson:  " + groupinfojson.groupInfo);
-    
+
     this.setState({
       members: groupinfojson.groupInfo.users,
       loading: false,
@@ -64,6 +64,29 @@ export default class GroupMember extends Component{
       userId: userId,
       ownerId: groupinfojson.groupInfo.leaderId
     });
+  }
+
+  async deleteGroupMember()
+  {
+    const usertoken = await AsyncStorage.getItem("token");
+    var groupId = this.props.groupID;
+
+    console.log("this.state.deleteUserId: =============" + this.state.deleteUserId);
+
+    var memberRemove = await fetch("http://104.42.79.90:2990/group/removeMember?groupId=" + groupId, {
+          method: "put",
+          headers:{
+            "Accept": "application/json",
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + usertoken,
+          },
+          body:JSON.stringify({
+            userId: this.state.deleteUserId,
+          })
+        });
+
+    const memberRemoveJson = await memberRemove.json();
+    Toast.show(memberRemoveJson.message, Toast.LONG);
   }
 
   // Pull-down refresh
@@ -132,6 +155,83 @@ export default class GroupMember extends Component{
     );
   };
 
+  renderPopupDialog(){
+    if(this.state.userId == this.state.ownerId)
+    {
+      return(
+        <Dialog
+          //dialogStyle={styles.dialogStyle}
+          onDismiss={() => {
+            this.setState({ customBackgroundDialog: false });
+          }}
+          onTouchOutside={() => {
+            this.setState({ customBackgroundDialog: false });
+          }}
+          width={0.75}
+          visible={this.state.customBackgroundDialog}
+          rounded
+          dialogTitle={
+            <DialogTitle
+              title={"Are you sure to delete " + this.state.deleteUserName 
+                        + " from this group?"}
+              textStyle={styles.dialogTitle}
+              hasTitleBar={false}
+              align="center"
+            />
+          }
+          actions={[
+            <DialogButton
+              text="CANCEL"
+              onPress={() => {
+                this.setState({ customBackgroundDialog: false });
+              }}
+              key="cancel"
+              style={styles.dialogButton}
+              textStyle={styles.cancelButtonText}
+            />,
+            <DialogButton
+              text="DELETE"
+              onPress={() => {
+                this.deleteGroupMember();
+                this.setState({ customBackgroundDialog: false });
+              }}
+              key="delete"
+              style={styles.dialogButton}
+              textStyle={styles.deleteButtonText}
+            />,
+          ]}
+        >
+        </Dialog>
+      );          
+    }
+  }
+
+  //get preperty for righticon in ListItem
+  renderRightIcon(itemId, itemName){
+    if(itemId == this.state.ownerId)
+    {
+      return(
+        <Icon name="crown" style={styles.iconCrown}/>
+      );          
+    }
+    else
+    {
+      return(
+        <Icon name="x" style={styles.iconClose}                
+         onPress={() => {
+          if(this.state.userId == this.state.ownerId && itemId != this.state.ownerId)
+          {
+            this.setState({
+              customBackgroundDialog: true,
+              deleteUserId: itemId,
+              deleteUserName: itemName,
+            });
+          }
+        }}/>
+      ); 
+    }
+  }
+
 	render(){
 
       return(
@@ -148,11 +248,22 @@ export default class GroupMember extends Component{
                 title={item.firstname + " " + item.lastname}
                 subtitleStyle={styles.subtitleText}
                 subtitle={"Email: " + item.email}
-                onPress={() => {Toast.show("Group Chat");
-                }}>
+                rightIcon={this.renderRightIcon(item.id, item.firstname + " " + item.lastname)}
+                hideChevron={this.state.userId != this.state.ownerId && item.id != this.state.ownerId ? true : false}
+                // onPress={() => {
+                //   if(this.state.userId == this.state.ownerId && item.id != this.state.ownerId)
+                //   {
+                //     this.setState({
+                //       customBackgroundDialog: true,
+                //       deleteUserId: item.id,
+                //       deleteUserName: item.firstname + " " + item.lastname,
+                //     });
+                //   }
+                // }}
+                >
               </ListItem>
             )}
-            keyExtractor={(item) => {item.id}}
+            keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}
@@ -163,9 +274,9 @@ export default class GroupMember extends Component{
             onEndReached={this.handleLoadMore}
             onEndReachedThreshold={50}
           />
+        { this.renderPopupDialog() }
         </View> 
       );
-    
 	}
 }
 
@@ -177,12 +288,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor:"#455a64",
     flexDirection: "row",
-  },
-
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: "#1c313a",
   },
 
   renderFooter:
@@ -200,13 +305,6 @@ const styles = StyleSheet.create({
     marginLeft: "2.5%",
   },
 
-  button: {
-    width:300,
-    backgroundColor:"#1c313a",
-     borderRadius: 25,
-      marginVertical: 10,
-      paddingVertical: 13
-  },
   Text: {
     fontSize:16,
     fontWeight:"500",
@@ -224,24 +322,47 @@ const styles = StyleSheet.create({
     fontWeight: "100"
   },
 
-scene: {
-    flex: 1,
-    paddingTop: 25,
-},
-user: {
-    width: "100%",
-    backgroundColor: "#333",
-    marginBottom: 10,
-    paddingLeft: 25,
-},
-userName: {
-    fontSize: 17,
-    paddingVertical: 20,
-    color: "#fff"
+  dialogStyle: {
+    backgroundColor: "#212121",
 },
 
-itemStyle: {
-  backgroundColor: "#1c313a",
-  color: "#ffffff"
-}
+  dialogTitle: {
+    fontSize:16,
+    fontWeight:"200",
+    color:"#000000",
+    textAlign:"center",
+},
+
+  deleteButtonText: {
+    fontSize:20,
+    fontWeight:"300",
+    color:"#CB3333",
+    textAlign:"center",
+},
+
+  cancelButtonText: {
+    fontSize:16,
+    fontWeight:"200",
+    color:"#000000",
+    textAlign:"center",
+},
+
+  dialogButton: {
+    backgroundColor: "#CB3333",
+},
+
+iconCrown: {
+  marginRight: 10,
+  fontSize: 24,
+  height: 22,
+  color: "#FFD700",
+},
+
+iconClose: {
+  marginRight: 10,
+  fontSize: 24,
+  height: 22,
+  color: "#CB3333",
+},
+
 });

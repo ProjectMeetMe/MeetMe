@@ -214,6 +214,39 @@ Responds with list of events in group:
 
 ================================================================================
 
+POST to /group/leaveGroup - removes logged in user from group
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Responds with message
+{
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /group/removeMember - removes target user from group - requires leader permissions
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Request body format:
+{
+	userId: <target user id>
+}
+
+Responds with message
+{
+	"message": <Success message>
+}
+
+================================================================================
+
 POST to /event/addEvent - adds event to target group
 
 Query format:

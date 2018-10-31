@@ -1,17 +1,18 @@
-const Sequelize = require('sequelize')
+var Sequelize = require("sequelize");
+var config = require("config");
 
-const db_user = "cpen321";
-const db_password = "Test8as_";
-const db_name = "CPEN321";
-const db_host = "104.42.79.90";
-const db_dialect = "mysql";
-const Op = Sequelize.Op;
+//Retrieve info from config file
+var dbUser = config.get("dbConfig.user");
+var dbPassword = config.get("dbConfig.password");
+var dbName = config.get("dbConfig.name");
+var dbHost = config.get("dbConfig.host");
+var dbDialect = config.get("dbConfig.dialect");
 
 //Connect to mysql database
-const sequelize = new Sequelize(db_name, db_user, db_password, { //database username password
-    host: db_host,
-    dialect: db_dialect,
-    operatorsAliases: Op, //suppress warnings
+var sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
+    host: dbHost,
+    dialect: dbDialect,
+    operatorsAliases: false, //suppress warnings
     pool: {
         max: 5,
         min: 0,
@@ -20,31 +21,40 @@ const sequelize = new Sequelize(db_name, db_user, db_password, { //database user
     },
 });
 
-const db = {};
+var db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 //Defined models
-db.user = require('./user.js')(sequelize, Sequelize);
-db.group = require('./group.js')(sequelize, Sequelize);
+db.user = require("./user.js")(sequelize, Sequelize);
+db.group = require("./group.js")(sequelize, Sequelize);
+db.event = require("./event.js")(sequelize, Sequelize);
 
 //Defined relations
+//Many to many relation between group and users
 db.user.belongsToMany(db.group, {
-    through: 'group_users'
+    through: "group_users"
 });
 db.group.belongsToMany(db.user, {
-    through: 'group_users'
+    through: "group_users"
+});
+
+//One to many relation between groups and events
+db.event.belongsTo(db.group);
+db.group.hasMany(db.event, {
+    as: "events"
 });
 
 //Sync models with database
 sequelize.sync(
+        // Enable to reset database
         /*{
                 force: true
             }*/
     )
     .then(() => {
-        console.log(`Database & tables synced with models!`);
-    })
+        console.log("Database & tables synced with models!");
+    });
 
 module.exports = db;

@@ -28,6 +28,8 @@ Success: json response:
 }
 Failure: failure response
 
+* All routes below require authenticated JSON web token in "Bearer Token" field of request
+
 ================================================================================
 
 GET to /user/profile
@@ -49,67 +51,11 @@ Responds with json response:
 
 ================================================================================
 
-POST to /group/createGroup
-
-requires authenticated JSON web token in "Bearer Token" field of request
-request body format:
-
-Request body format:
-{
-	groupName: <name of group>
-}
-
-Responds with json response AND creates entry for group (with information in response):
-{
-    "id": <group ID>,
-    "groupName": <group name>,
-    "leaderId": <group leader user id>,
-    "updatedAt": <time of last update>,
-    "createdAt": <time of creation>,
-    "joinToken": <token needed to join group>
-}
-
-================================================================================
-
-POST to /group/joinGroup
-
-requires authenticated JSON web token in "Bearer Token" field of request
-request body format:
-
-Request body format:
-{
-	groupJoinToken: <token needed to join group>
-}
-
-On success, responds with json response AND adds user to group:
-{
-    "id": <group ID>,
-    "groupName": <group name>,
-    "leaderId": <group leader user id>,
-    "updatedAt": "<time of last update>",
-    "createdAt": "<time of creation>",
-    "joinToken": "<token needed to join group>"
-}
-
-On failure, responds with failure message in json body (invalid user token, user already in group, too many members in group):
-{
-	"message": <Error message>
-}
-
-================================================================================
-
-GET to /group/getGroups
-
-requires authenticated JSON web token in "Bearer Token" field of request
-request body format:
-
-Request body format:
-{
-	groupJoinToken: <token needed to join group>
-}
+GET to /user/getGroups - get list of groups user belongs to
 
 Responds with json array with the groups the current user belongs to:
-[
+{
+	"groups": [
     {
         "id": <group id 1>,
         "groupName": <group name 1>
@@ -119,4 +65,280 @@ Responds with json array with the groups the current user belongs to:
         "groupName": <group name 2>
     }
 	...
-]
+	]
+	"message": <Success message>
+}
+
+================================================================================
+
+PUT to /user/editSchedule - edit the user's schedule
+
+Request body format:
+{
+	"schedule": <JSON object"
+}
+
+Responds with sucess/failure message
+{
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /group/createGroup - creates a new group
+
+Request body format:
+{
+	groupName: <name of group>
+}
+
+Responds with json response AND creates entry for group (with information in response):
+{
+	"newGroupInfo":
+	{
+    	"id": <group ID>,
+    	"groupName": <group name>,
+    	"leaderId": <group leader user id>,
+    	"updatedAt": <time of last update>,
+    	"createdAt": <time of creation>,
+    	"joinToken": <token needed to join group>
+	}
+	"message:" <success message>
+}
+
+================================================================================
+
+PUT to /group/editGroup - edits target group info (currently only changes name)
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Request body format:
+{
+	groupName: <new name of group>
+}
+
+On success, responds with json response AND edits group name:
+{
+	"newGroupInfo":
+	{
+    	"id": <group ID>,
+    	"groupName": <group name>,   <---updated
+    	"leaderId": <group leader user id>,
+    	"updatedAt": "<time of last update>",
+    	"createdAt": "<time of creation>",
+    	"joinToken": "<token needed to join group>"
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body (invalid group id, invalid permissions):
+{
+	"message": <Error message>
+}
+
+================================================================================
+
+GET to /group/getGroupInfo - get group info for one group
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Responds with group info + users in group:
+{
+	"groupInfo": {
+
+	}
+	"message": <Success message>
+}
+
+
+================================================================================
+
+POST to /group/joinGroup - adds current user to target group
+
+Query format:
+{
+	groupId: <group to join>
+}
+
+On success, responds with json response AND adds user to group:
+{
+	"joinedGroupInfo": {
+    	"id": <group ID>,
+    	"groupName": <group name>,
+    	"leaderId": <group leader user id>,
+    	"updatedAt": "<time of last update>",
+    	"createdAt": "<time of creation>",
+    	"joinToken": "<token needed to join group>"
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body (invalid user token, user already in group, too many members in group):
+{
+	"message": <Error message>
+}
+
+
+================================================================================
+
+GET to /group/getEvents - gets list of events in target group
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Responds with list of events in group:
+{
+	"events":
+	[
+		{
+			"id": <user id>
+			"eventName": <event name>
+			"description": <event description>
+			"startTime": <start time for eventl>
+			"endTime": <end time for event>
+			"groupId": <group that owns this event>
+		}
+		...
+	]
+
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /group/leaveGroup - removes logged in user from group
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Responds with message
+{
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /group/removeMember - removes target user from group - requires leader permissions
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Request body format:
+{
+	userId: <target user id>
+}
+
+Responds with message
+{
+	"message": <Success message>
+}
+
+================================================================================
+
+POST to /event/addEvent - adds event to target group
+
+Query format:
+{
+	groupId: <target group id>
+}
+
+Body format:
+{
+	eventName:
+	description:
+	startTime:
+	endTime:
+	groupId:
+}
+
+On success, responds with json response AND adds event to group:
+{
+	"newEventInfo": {
+		"id": <user id>
+		"eventName": <event name>
+		"description": <event description>
+		"startTime": <start time for event>
+		"endTime": <end time for event>
+		"groupId": <group that owns this event>
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body:
+{
+	"message": <Error message>
+}
+
+================================================================================
+
+PUT to /event/editEvent - edits target event
+
+Query format:
+{
+	eventId: <target event id>
+}
+
+Body format:
+{
+	eventName:
+	description:
+	startTime:
+	endTime:
+}
+
+On success, responds with json response AND edits event in group:
+{
+	"newEventInfo": {
+		"id": <user id>
+		"eventName": <event name>
+		"description": <event description>
+		"startTime": <start time for event>
+		"endTime": <end time for event>
+		"groupId": <group that owns this event>
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body:
+{
+	"message": <Error message>
+}
+
+================================================================================
+
+DELETE to /event/deleteEvent - deletes target event
+
+Query format:
+{
+	eventId: <target event id>
+}
+
+On success, responds with json response AND deletes event from group:
+{
+	"newEventInfo": {
+		"id": <user id>
+		"eventName": <event name>
+		"description": <event description>
+		"startTime": <start time for event>
+		"endTime": <end time for event>
+		"groupId": <group that owns this event>
+	}
+	"message": <Success message>
+}
+
+On failure, responds with failure message in json body (invalid permissions, invalid event id, etc.):
+{
+	"message": <Error message>
+}

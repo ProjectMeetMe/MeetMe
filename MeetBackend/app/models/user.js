@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, Sequelize) {
 
-    var User = sequelize.define('user', {
+    var User = sequelize.define("user", {
         id: {
             autoIncrement: true,
             primaryKey: true,
@@ -29,9 +29,10 @@ module.exports = function(sequelize, Sequelize) {
         lastLogin: {
             type: Sequelize.DATE
         },
-        status: {
-            type: Sequelize.ENUM('active', 'inactive'),
-            defaultValue: 'active'
+		//JSON object represents individual user schedules (for one week),
+		//frontend needs to ensure this is correctly formatted
+        schedule: {
+            type: Sequelize.JSON
         }
     });
 

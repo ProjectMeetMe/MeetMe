@@ -1,28 +1,34 @@
-var sequelizeTokenify = require("sequelize-tokenify");
-
-//Defines a group object
+//Defines an event object
 
 module.exports = function(sequelize, Sequelize) {
 
-    var Group = sequelize.define("group", {
+    var Event = sequelize.define("event", {
         id: {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        groupName: {
-            type: Sequelize.STRING,
-            notEmpty: true
-        },
-        leaderId: {
+        eventName: {
             type: Sequelize.STRING,
             notEmpty: true
         },
         description: {
             type: Sequelize.TEXT,
             notEmpty: true
-        }
+        },
+        startTime: {
+            type: Sequelize.DATE,
+            notEmpty: true
+        },
+		endTime: {
+			type: Sequelize.DATE,
+			notEmpty: true
+		},
+		groupId: {
+			type: Sequelize.INTEGER,
+			notEmpty: true
+		}
     });
 
-    return Group;
+    return Event;
 }

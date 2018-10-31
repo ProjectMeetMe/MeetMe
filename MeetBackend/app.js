@@ -28,3 +28,5 @@ app.use("/event", passport.authenticate("jwt", {session: false}), require("./app
 app.listen(port, function() {
     console.log("RESTful API server listening on port: " + port);
 });
+
+module.exports = app; //for testing

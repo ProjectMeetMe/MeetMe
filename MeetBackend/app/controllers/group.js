@@ -24,7 +24,7 @@ exports.editGroup = function(req, res, next) {
             message: "Error: Group could not be edited"
         });
     });
-}
+};
 
 /*
 Gets group info specified by req.group
@@ -36,7 +36,7 @@ exports.getGroupInfo = function(req, res, next) {
         groupInfo,
         message: "Successful group retrieval"
     });
-}
+};
 
 /*
 Gets events from group specified by req.group

@@ -32,24 +32,7 @@ export default class NavigationForm extends Component {
   //user click profile icon in profile page or user
   //click setting icon in setting page
   render() {
-    if(this.props.type === "profile" || this.props.type === "setting"
-      || this.props.type === "createGroup" || this.props.type === "createEvent"
-      || this.props.type === "joinGroup" 
-      || this.props.type === "groupSummary" || this.props.type === "groupMember")
-    {
-      return (
-        <NavBar style={styles}>
-          <NavButton style={styles.navButton}>
-          </NavButton>
-          <NavTitle  style={styles.title}>
-          {this.props.title}
-          </NavTitle>
-          <NavButton style={styles.navButton}>
-          </NavButton>
-         </NavBar> 
-      );
-    }
-    else if(this.props.type === "home")
+    if(this.props.type === "home")
     {
       return (
         <NavBar style={styles}>
@@ -101,23 +84,15 @@ export default class NavigationForm extends Component {
     {
       return (
         <NavBar style={styles}>
-            <NavButton style={styles.navButton} onPress={this.profile}>
-            <Image style={{width:60, height: 45}}
-                resizeMode={"contain"}
-                source={require("../images/android_icon_account.png")}
-              />
-            </NavButton>
-          <NavTitle style={styles.title}>
-          {this.props.type}
+          <NavButton style={styles.navButton}>
+          </NavButton>
+          <NavTitle  style={styles.title}>
+          {this.props.title}
           </NavTitle>
-            <NavButton style={styles.navButton} onPress={this.setting}>
-            <Image style={{width:60, height: 45}}
-                resizeMode={"contain"}
-                source={require("../images/android_icon_setting.png")}
-              />
-            </NavButton>
+          <NavButton style={styles.navButton}>
+          </NavButton>
          </NavBar> 
-      )
+      );
     }
   }
 }

@@ -34,7 +34,7 @@ export default class LoginFrom extends Component {
     try {
       await AsyncStorage.setItem("token", value);
     } catch (error) {
-      console.log("Error saving data" + error);
+      //console.log("Error saving data" + error);
     }
   }
 
@@ -43,7 +43,7 @@ export default class LoginFrom extends Component {
     try {
       await AsyncStorage.setItem("userid", value.toString());
     } catch (error) {
-      console.log("Error saving data" + error);
+      //console.log("Error saving data" + error);
     }
   }
 
@@ -60,8 +60,8 @@ export default class LoginFrom extends Component {
     var token;
 
     //verify that the user has entered valid input
-		if(userEmail==""){
-		  Toast.show("Please enter your email address!", Toast.LONG);		
+		if(userEmail === ""){
+		  Toast.show("Please enter your email address!", Toast.LONG);
 		}
 		
 		else if(reg.test(userEmail) === false)
@@ -69,7 +69,7 @@ export default class LoginFrom extends Component {
 		  Toast.show("Sorry but seems like you did not enter a valid email address :(", Toast.LONG);
 		  }
 
-		else if(userPassword==""){
+		else if(userPassword === ""){
       Toast.show("Please enter your password!", Toast.LONG);
 		}
 		else{
@@ -112,13 +112,15 @@ export default class LoginFrom extends Component {
           })
             .then((response) => response.json())
             .then((responseJson) => {
-                userid = responseJson.id;
+                var userid = responseJson.id;
                 //console.log(userid);
                 this.saveUserID(userid);
           });
   
           //Login success, redirect view to home page
           this.home();
+          Actions.reset("home");
+          //Actions.popTo("home");
          }
        });
     }

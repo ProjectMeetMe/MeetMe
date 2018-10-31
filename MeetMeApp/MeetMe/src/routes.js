@@ -13,6 +13,7 @@ import GroupProfile from "./pages/groupprofile";
 import CreateEvent from "./pages/createevent";
 import GroupMember from "./pages/groupmember";
 import GroupSummary from "./pages/groupsummary";
+import {YellowBox} from 'react-native';
 
 export default class Routes extends Component{
 
@@ -26,8 +27,10 @@ export default class Routes extends Component{
 
 	//check whether user is already logged in or not
 	componentWillMount(){
+		YellowBox.ignoreWarnings(['Require cycles are allowed']);
 		AsyncStorage.getItem("token")
-		.then( (value) => {
+		.then( (value) => 
+		{
 			if (value != null){
 			  this.setState({
 				logged: true,
@@ -38,8 +41,7 @@ export default class Routes extends Component{
 				loading: false,
 			  });
 			}
-		  }
-		);
+		});
 	  };
 
 	//loading screen while app is checking user login status
@@ -53,7 +55,7 @@ export default class Routes extends Component{
 			<Router>
 			    <Stack key="root" hideNavBar={true}>
 					<Scene key="login" component={Login} title="Login" initial={!this.state.logged}/>
-			    	<Scene key="signup" component={Signup} title="Register"/>
+			    <Scene key="signup" component={Signup} title="Register"/>
 					<Scene key="home" component={Home} title="HomePage" initial={this.state.logged}/>
 					<Scene key="profile" component={Profile} title="ProfilePage"/>
 					<Scene key="creategroup" component={CreateGroup} title="CreateGroup"/>

@@ -40,7 +40,7 @@ export default class Profile extends Component{
     });
 
     var profilejson = await userprofile.json();
-    console.log("profilejson:", profilejson);
+    //console.log("profilejson:", profilejson);
 
     this.setState({
       token: usertoken,
@@ -55,8 +55,8 @@ logout = async() => {
   AsyncStorage.clear();
   Toast.show("Log out successfully!", Toast.LONG);
   this.login();
-  //Actions.reset("login");
-  Actions.popTo("login");
+  Actions.reset("login");
+  //Actions.popTo("login");
 }
 
 login() {

@@ -71,7 +71,7 @@ passport.use("local-signin", new LocalStrategy({
     function(req, email, password, done) {
         var isValidPassword = function(userpass, password) { //userpass = encrypted password
             return bCrypt.compareSync(password, userpass);
-        };
+        }
         //If sequelize finds matching email in DB ...
         db.user.findOne({
             where: {
@@ -128,5 +128,5 @@ passport.use(new JWTStrategy({
             })
             .catch(function(err) { //payload is nonsense
                 return cb(err);
-            });
+            })
     }));

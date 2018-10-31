@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 //load passport strategies
-require("./app/config/passport.js");
+require("./app/auth/passport.js");
 
 //Load routes
 app.use("/auth", require("./app/routes/auth.js"));

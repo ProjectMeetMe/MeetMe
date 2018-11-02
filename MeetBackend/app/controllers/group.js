@@ -1,9 +1,13 @@
 var db = require("../models/sequelize.js");
+var moment = require("moment");
 
 const MAX_GROUP_USERS = 10; // Max allowed users per group
 
-/* Middlewares for handling group related requests */
+//Colour array for dot events
+const colours = ["red", "orange", "yellow", "green", "blue", "purple"];
 
+
+/* Middlewares for handling group related requests */
 
 /*
 Edits a group specified by req.group
@@ -45,6 +49,18 @@ exports.getEvents = function(req, res, next) {
     var group = req.group;
     group.getEvents().then(function(events) {
         //TODO: sort events by order
+        //manipulate events order
+        //Body example:
+        //{sortedEvents:
+        //	{
+        //		date(no time): [ordered list of events on that date],
+        //		date2(no time): [events],
+        //		...
+        //	}
+        //note: add a colour field
+        //}
+        var events = sortEvents(events);
+
         return res.status(200).json({
             events,
             message: "Successful event retrieval"
@@ -54,6 +70,32 @@ exports.getEvents = function(req, res, next) {
             message: "Error: Events could not be retrieved"
         });
     });
+}
+
+/*
+Helper function for get events, sorts events in chronological order and
+categorized by date, with index and colour fields
+ */
+sortEvents = function(events) {
+    events.sort(function(a, b) { //sort raw events list by chronological order
+        return a.dataValues.startTime - b.dataValues.startTime
+    });
+	var sortedEvents = {}; //Contains return JSON object, containing both categorized and dot events
+	var categorizedEvents = {}; //Contains sorted event info grouped by sorted date
+	var dotEvents = {}; //Contains colours to represent events, grouped by sorted date
+	for (var i=0; i<events.length; i++){
+		var eventDate = moment.utc(events[i].dataValues.startTime).format("YYYY-MM-DD"); // no time
+		if(!(eventDate in categorizedEvents)){ //add key if doesnt exist
+			categorizedEvents[eventDate] = [];
+			dotEvents[eventDate] = {"dots": []};
+		}
+		categorizedEvents[eventDate].push(events[i].dataValues); //add event to correct key
+		dotEvents[eventDate]["dots"].push({color: colours[Math.floor(Math.random() * colours.length)]}); //assign random colour to dot event
+	}
+
+	sortedEvents["categorizedEvents"] = categorizedEvents;
+	sortedEvents["dotEvents"] = dotEvents;
+    return sortedEvents;
 }
 
 
@@ -148,18 +190,15 @@ exports.calculateAvailabilities = function(req, res, next) {
     var users = req.group.users;
 
     for (var i = 0; i < users.length; i++) {
-		console.log("TESTING")
+        console.log("TESTING")
         console.log(JSON.stringify(users[i].schedule));
     }
 
 
-	return res.status(200).json({
-		message: "TESTING"
-	});
+    return res.status(200).json({
+        message: "TESTING"
+    });
 }
-
-
-
 
 
 
@@ -249,8 +288,6 @@ exports.checkMembership = function(req, res, next) {
     var isUserInGroup = false;
 
     for (var i = 0; i < users.length; i++) {
-        console.log(users[i].id)
-        console.log(req.user.id)
         if (users[i].id === req.user.id) { //user exists in group
             isUserInGroup = true;
             break;

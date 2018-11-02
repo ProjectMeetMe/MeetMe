@@ -100,6 +100,7 @@ describe("Event Related Tests", function() {
             startTime: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
             endTime: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
         };
+
         it("Successful event add to group", function(done) {
             chai.request(server)
                 .post("/event/addEvent?groupId=" + groupId)
@@ -111,6 +112,20 @@ describe("Event Related Tests", function() {
                     done();
                 });
         });
+
+		it("Check that event was successfully added", function(done) {
+			chai.request(server)
+				.get("/group/getEvents?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					
+					done();
+				});
+		});
+
+
     });
 
 	// Empty the user test database after running this test suite

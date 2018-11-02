@@ -6,6 +6,7 @@ var JWTStrategy = passportJWT.Strategy;
 var ExtractJWT = passportJWT.ExtractJwt;
 var moment = require("moment");
 var passport = require("passport");
+var config = require("config");
 
 var db = require("../models/sequelize.js"); //load models
 var LocalStrategy = require("passport-local").Strategy;
@@ -70,7 +71,7 @@ passport.use("local-signin", new LocalStrategy({
     function(req, email, password, done) {
         var isValidPassword = function(userpass, password) { //userpass = encrypted password
             return bCrypt.compareSync(password, userpass);
-        };
+        }
         //If sequelize finds matching email in DB ...
         db.user.findOne({
             where: {
@@ -107,7 +108,7 @@ passport.use("local-signin", new LocalStrategy({
 /* JSON WEB TOKEN AUTHENTICATION */
 passport.use(new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: "your_jwt_secret"
+        secretOrKey: config.get("jwtSecret")
     },
     function(jwtPayload, cb) { //jwtPayload contains user info unencrypted
 
@@ -127,5 +128,5 @@ passport.use(new JWTStrategy({
             })
             .catch(function(err) { //payload is nonsense
                 return cb(err);
-            });
+            })
     }));

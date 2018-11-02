@@ -1,17 +1,18 @@
-const Sequelize = require("sequelize");
+var Sequelize = require("sequelize");
+var config = require("config");
 
-const dbUser = "cpen321";
-const dbPassword = "Test8as_";
-const dbName = "CPEN321";
-const dbHost = "104.42.79.90";
-const dbDialect = "mysql";
-const Op = Sequelize.Op;
+//Retrieve info from config file
+var dbUser = config.get("dbConfig.user");
+var dbPassword = config.get("dbConfig.password");
+var dbName = config.get("dbConfig.name");
+var dbHost = config.get("dbConfig.host");
+var dbDialect = config.get("dbConfig.dialect");
 
 //Connect to mysql database
-const sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
+var sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
     host: dbHost,
     dialect: dbDialect,
-    operatorsAliases: Op, //suppress warnings
+    operatorsAliases: false, //suppress warnings
     pool: {
         max: 5,
         min: 0,
@@ -20,7 +21,7 @@ const sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database usernam
     },
 });
 
-const db = {};
+var db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;

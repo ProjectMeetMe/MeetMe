@@ -87,7 +87,6 @@ describe("Event Related Tests", function() {
 				res.body.should.be.a("object");
 				res.body.should.have.property("groupInfo");
 				groupId = res.body.groupInfo.id;
-				//console.log("DONE BEFORE SEQUENCE FOR EVENT.JS")
 				done();
 			});
 	})
@@ -120,7 +119,7 @@ describe("Event Related Tests", function() {
 				.end(function(err, res) {
 					res.should.have.status(200);
 					res.body.should.be.a("object");
-					
+
 					done();
 				});
 		});

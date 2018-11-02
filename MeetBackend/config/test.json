@@ -1,0 +1,10 @@
+{
+    "jwtSecret": "T3STS3C4ETK3Y",
+	"dbConfig": {
+		"user": "cpen321",
+		"password": "Test8as_",
+		"name": "MEETME_TEST",
+		"host": "104.42.79.90",
+		"dialect": "mysql"
+	}
+}

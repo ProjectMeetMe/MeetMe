@@ -228,7 +228,7 @@ Responds with message
 
 ================================================================================
 
-POST to /group/removeMember - removes target user from group - requires leader permissions
+PUT to /group/removeMember - removes target user from group - requires leader permissions
 
 Query format:
 {

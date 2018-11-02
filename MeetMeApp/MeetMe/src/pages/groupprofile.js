@@ -29,8 +29,10 @@ export default class GroupProfile extends Component {
         groupID: 0,
         curDate: "",
         loading: true,
+        refreshing: false,
         //Events from the database - JSON object
         items: {},
+        dotEvents: {},
     };
   }
 
@@ -38,11 +40,12 @@ export default class GroupProfile extends Component {
   componentDidMount() {
     this.getDate();
     this.getEvents();
-    this.getItems();
+    this.getDotEvents();
     this.getGroupInfo();
 
     this.setState({
-			loading: false,
+      loading: false,
+      refreshing: false,
     });
   }
   
@@ -72,40 +75,39 @@ export default class GroupProfile extends Component {
     //store events array
     this.setState({
       events: userevent.events,
+      refreshing: false,
     });
   }
 
   // TODO: get events[] from database then convert them into item{} format
   // TODO: located in https://github.com/wix/react-native-calendars?fbclid=IwAR3bGgMcHXC-eHFBtAtswAbjSrMgoASfbCNtItRRDBVmkiHr_8Gcyxi6ePM#readme
   // The events[] format is in APIdocumentation.txt
-  async getItems()
+  async getDotEvents()
   {
-    const { events } = this.state;
-    //console.log("events.length:  " + events.length);
-    //console.log("events:  " + events.toString);
+    const { events, refreshing } = this.state;
 
-  // var array=[];
-  // events[] format in APIdocumentation.txt
-
-  //   for (var i in events) {
-  //     events[i].forEach(function(elem, index) {
-  //         console.log(elem, index);
-  //     });
-  // }
   this.setState({
     items:   {
-      '2018-10-30': [{eventName: 'Work on App', eventStartTime: '12:00:00', eventEndTime: '14:00:00', eventDescription: 'We have to work on this fucking app today :('},
-                     {eventName: 'Work on ELEC221', eventStartTime: '15:00:00', eventEndTime: '16:00:00', eventDescription: 'I dont like this class mom :('},
-                     {eventName: 'Dinner with girlfriend', eventStartTime: '18:00:00', eventEndTime: '19:00:00', eventDescription: 'Its gonna be tough'}],
-      '2018-10-31': [{eventName: 'Get out from bed', eventStartTime: '12:00:00', eventEndTime: '14:00:00', eventDescription: 'Why did it took me 2 hours to get out of my bed? :('},
-                     {eventName: 'Wondering', eventStartTime: '17:00:00', eventEndTime: '17:30:00', eventDescription: 'Am I even going to school today?'},
-                     {eventName: 'No wondering', eventStartTime: '18:00:00', eventEndTime: '18:30:00', eventDescription: 'Nah XD'}],
-      '2018-11-01': [{eventName: 'Hello everyone', eventStartTime: '8:00:00', eventEndTime: '9:00:00', eventDescription: 'What am I doing'},
-                     {eventName: 'I am confused', eventStartTime: '12:00:00', eventEndTime: '22:30:00', eventDescription: 'Day dreaming'},],
-      '2018-11-02': [{eventName: 'Hahahahaha', eventStartTime: '10:00:00', eventEndTime: '14:00:00', eventDescription: 'I am finally insane'},
-                     {eventName: 'Hahahahahhahahah', eventStartTime: '15:00:00', eventEndTime: '17:30:00', eventDescription: 'Hahahahahahahahhahahahahahahahahahahahhahah, hahahahahahahhahahahahahahhahahaha, hahahahahahhahahahahhahaha'},
-                     {eventName: 'Lets roll', eventStartTime: '18:00:00', eventEndTime: '18:30:00', eventDescription: 'What is roll?'}],
+      '2018-10-30': [{eventName: 'Work on App', eventStartTime: '12:00', eventEndTime: '14:00', eventDescription: 'We have to work on this fucking app today :('},
+                     {eventName: 'Work on ELEC221', eventStartTime: '15:00', eventEndTime: '16:00', eventDescription: 'I dont like this class mom :('},
+                     {eventName: 'Dinner with girlfriend', eventStartTime: '18:00', eventEndTime: '19:00', eventDescription: 'Its gonna be tough'}],
+      '2018-10-31': [{eventName: 'Get out from bed', eventStartTime: '12:00', eventEndTime: '14:00', eventDescription: 'Why did it took me 2 hours to get out of my bed? :('},
+                     {eventName: 'Wondering', eventStartTime: '17:00', eventEndTime: '17:30', eventDescription: 'Am I even going to school today?'},
+                     {eventName: 'No wondering', eventStartTime: '18:00', eventEndTime: '18:30', eventDescription: 'Nah XD'}],
+      '2018-11-01': [{eventName: 'Hello everyone', eventStartTime: '08:00', eventEndTime: '09:00', eventDescription: 'What am I doing'},
+                     {eventName: 'I am confused', eventStartTime: '12:00', eventEndTime: '22:30', eventDescription: 'Day dreaming'},],
+      '2018-11-02': [{eventName: 'Hahahahaha', eventStartTime: '10:00', eventEndTime: '14:00', eventDescription: 'I am finally insane'},
+                     {eventName: 'Hahahahahhahahah', eventStartTime: '15:00', eventEndTime: '17:30', eventDescription: 'Hahahahahahahahhahahahahahahahahahahahhahah, hahahahahahahhahahahahahahhahahaha, hahahahahahhahahahahhahaha'},
+                     {eventName: 'Lets roll', eventStartTime: '18:00', eventEndTime: '18:30', eventDescription: 'What is roll?'}],
   },
+
+    dotEvents:  {
+      "2018-10-30": {dots: [{color: "red"}, {color: "blue"}, {color: "green"}]},
+      "2018-10-31": {dots: [{color: "red"}, {color: "blue"}, {color: "green"}]},
+      "2018-11-01": {dots: [{color: "red"}, {color: "blue"} ]},
+      "2018-11-02": {dots: [{color: "red"}, {color: "blue"}, {color: "green"}]},
+  },
+      //refreshing: false,
   });
   }
 
@@ -150,96 +152,50 @@ export default class GroupProfile extends Component {
     });
   }
 
-  renderCreateEvent(){
-    if(this.state.userid === this.state.groupinfo.leaderId)
-    {
-      return(
-        <ActionButton.Item buttonColor="#3498db" title="Create Event"
-        textStyle = {styles.itemStyle} 
-        textContainerStyle = {styles.itemStyle}
-        onPress={() => {Actions.createevent({groupID: this.props.groupID});
-        }}>
-        <Icon name="pluscircleo" style={styles.actionButtonIcon} />
-      </ActionButton.Item>
-      );          
-    }
+  async deleteGroupEvent()
+  {
+    const usertoken = await AsyncStorage.getItem("token");
+    var groupId = this.props.groupID;
+
+    console.log("this.state.deleteUserId: =============" + this.state.deleteUserId);
+
+    var memberRemove = await fetch("http://104.42.79.90:2990/event/deleteEvent?groupId=" + groupId, {
+          method: "put",
+          headers:{
+            "Accept": "application/json",
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + usertoken,
+          },
+          body:JSON.stringify({
+            userId: this.state.deleteUserId,
+          })
+        });
+
+    const memberRemoveJson = await memberRemove.json();
+    Toast.show(memberRemoveJson.message, Toast.LONG);
   }
 
-  loadItems(day) {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = this.timeToString(time);
-        if (!this.state.items[strTime]) {
-          this.state.items[strTime] = [];
-          const numItems = Math.floor(Math.random() * 5);
-          for (let j = 0; j < numItems; j++) {
-            this.state.items[strTime].push({
-              name: "Item for " + strTime,
-              height: Math.max(50, Math.floor(Math.random() * 150))
-            });
-          }
-        }
+  handleRefresh = () => {
+    this.setState(
+      {
+        refreshing: true
+      },
+      () => {
+        this.getDate();
+        this.getEvents();
+        this.getItems();
       }
-      //console.log(this.state.items);
-      const newItems = {};
-      Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
-      this.setState({
-        items: newItems
-      });
-     }, 1000);
-    // // console.log(`Load Items for ${day.year}-${day.month}`);
-
-      // setTimeout(() => {
-      //   const newItems = {};
-      //   Object.keys(this.state.items).forEach(key => { newItems[key] = this.state.items[key]; });
-      //   this.setState({
-      //     events: newItems
-      //   });
-      // }, 1000);
-  }
-
-  renderItem(item) {
-    return (
-      <View style={[styles.item, {height: item.height}]}>
-        <Text>{item.eventName}{"\n"}
-              {item.eventDescription}
-        </Text>
-      </View>
     );
-  }
-
-  renderEmptyDate() {
-    return (
-      <View style={styles.emptyDate}><Text>This is empty date!</Text></View>
-    );
-  }
-
-  rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
-  }
-
-  timeToString(time) {
-    const date = new Date(time);
-    return date.toISOString().split("T")[0];
-  }
+  };
 
 	render(){
     const { events, token, userid, groupinfo, groupID, curDate} = this.state;
-
-    const event1 = {key:"CPEN 321 MVP", color: "red"};
-    const event2 = {key:"ELEC 221 Lecture", color: "blue"};
-    const event3 = {key:"CPEN 321 Lecture", color: "green"};
-    const event4 = {key:"ELEC 221 Quiz", color: "red"};
-    const event5 = {key:"CPEN 311 Midterm", color: "blue"};
 
     // if(this.state.loading == true) {
 		// 	return <View style={styles.container}>
 		// 			<Text style={styles.Text}>Loading...</Text>
 		// 			</View>;
     // }
-    // else
-    // {
       return(
         <View style={{flex: 1}}>
         <NavigationForm type="groupprofile" title={this.props.groupName}
@@ -247,57 +203,28 @@ export default class GroupProfile extends Component {
           <Agenda
             items={this.state.items}
             // callback that gets called when items for a certain month should be loaded (month became visible)
-            loadItemsForMonth={(month) => {console.log('trigger items loading')}}
-            // callback that fires when the calendar is opened or closed
-            onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
-            // callback that gets called on day press
-            onDayPress={(day)=>{console.log('day pressed')}}
-            // callback that gets called when day changes while scrolling agenda list
-            onDayChange={(day)=>{console.log('day changed')}}
-            // initially selected day
+            loadItemsForMonth={this.loadItems.bind(this)}
+            //onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
+            //renderEmptyData={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
             selected={curDate}
-            // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-            minDate={'2018-01-01'}
-            // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-            maxDate={'2018-12-31'}
-            // Max amount of months allowed to scroll to the past. Default = 50
-            pastScrollRange={50}
-            // Max amount of months allowed to scroll to the future. Default = 50
-            futureScrollRange={50}
-            // specify how each item should be rendered in agenda
+            minDate={'2018-09-01'}
+            maxDate={'2019-04-30'}
             renderItem={this.renderItem.bind(this)}
-            // specify how each date should be rendered. day can be undefined if the item is not first in that day.
-            renderDay={(day, item) => {return (<View />);}}
-            // specify how empty date content with no items should be rendered
-            renderEmptyDate={() => {return (<View />);}}
-            // specify how agenda knob should look like
-            renderKnob={() => {return (<View />);}}
-            // specify what should be rendered instead of ActivityIndicator
-            renderEmptyData = {() => {return (<View />);}}
-            // specify your item comparison function for increased performance
-            rowHasChanged={(r1, r2) => {return r1.text !== r2.text}}
-            // Hide knob button. Default = false
-            hideKnob={true}
-            // By default, agenda dates are marked if they have at least one item, but you can override this if needed
+            renderEmptyDate = {this.renderEmptyDate.bind(this)}
+            onDayPress={this.onDayPress}
+            onDayChange={this.onDayChange}
+            rowHasChanged={this.rowHasChanged.bind(this)}
             markingType={"multi-dot"}
-            markedDates={{
-              "2018-10-30": {dots: [event1, event2, event3]},
-              "2018-10-31": {dots: [event4, event5]},
-            }}
-            // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly.
-            onRefresh={() => console.log('refreshing...')}
-            // Set this true while waiting for new data from a refresh
-            refreshing={false}
-            // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView.
+            markedDates={this.state.dotEvents}
+            onRefresh={this.handleRefresh}
+            refreshing={this.state.refreshing}
             refreshControl={null}
-            // agenda theme
             theme={{
-              agendaDayTextColor: 'yellow',
-              agendaDayNumColor: 'green',
-              agendaTodayColor: 'red',
-              agendaKnobColor: 'blue'
+              agendaDayTextColor: '#3390FF',
+              agendaDayNumColor: '#3390FF',
+              agendaTodayColor: '#3390FF',
+              agendaKnobColor: '#4A4B4A'
             }}
-            // agenda container style
             style={{}}
           />
           <ActionButton buttonColor="rgba(231,76,60,1)">
@@ -312,9 +239,158 @@ export default class GroupProfile extends Component {
             </ActionButton>
         </View> 
       );
-    //}
+    }
+
+    onDayPress = (date) => {
+      this.setState({
+        date: new Date(date.year, date.month-1, date.day),
+      });
+    };
+  
+    onDayChange = (date) => {
+      this.setState({
+        date: new Date(date.year, date.month-1, date.day),
+      });
+    };
+
+    renderCreateEvent(){
+      if(this.state.userid === this.state.groupinfo.leaderId)
+      {
+        return(
+          <ActionButton.Item buttonColor="#3498db" title="Create Event"
+          textStyle = {styles.itemStyle} 
+          textContainerStyle = {styles.itemStyle}
+          onPress={() => {Actions.createevent({groupID: this.props.groupID});
+          }}>
+          <Icon name="pluscircleo" style={styles.actionButtonIcon} />
+        </ActionButton.Item>
+        );          
+      }
+    }
+  
+    loadItems(day) {
+      setTimeout(() => {
+          const newItems = {};
+          Object.keys(this.state.items).forEach(key => { newItems[key] = this.state.items[key]; });
+          this.setState({
+            items: newItems
+          });
+        }, 1000);
+    }
+  
+    // loadItems(day) {
+    //   setTimeout(() => {
+    //       const newItems = {};
+
+    //       time = day.timestamp;
+    //       const strTime = this.timeToString(time);
+
+    //       if(!this.state.items[strTime])
+    //       {
+    //         this.state.items[strTime].push({
+    //           eventStartTime: "No event found at that day for group " + this.props.groupName,
+    //           height: Math.max(50, Math.floor(Math.random() * 150))
+    //         });
+    //         Object.keys(this.state.items).forEach(key => { newItems[key] = this.state.items[key]; });
+    //         this.setState({
+    //           items: newItems
+    //         });
+    //       }
+    //       else
+    //       {
+    //         Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
+    //         this.setState({
+    //           items: newItems
+    //         });
+    //       }
+    //     }, 1000);
+    // }
+
+    // loadItems(day) {
+    //   setTimeout(() => {
+    //     for (let i = -15; i < 85; i++) {
+    //       const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+    //       const strTime = this.timeToString(time);
+    //       if (!this.state.items[strTime]) {
+    //         this.state.items[strTime] = [];
+    //         const numItems = Math.floor(Math.random() * 5);
+    //         for (let j = 0; j < numItems; j++) {
+    //           this.state.items[strTime].push({
+    //             eventStartTime: 'Item for ' + strTime,
+    //             height: Math.max(50, Math.floor(Math.random() * 150))
+    //           });
+    //         }
+    //       }
+    //     }
+    //     //console.log(this.state.items);
+    //     const newItems = {};
+    //     Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
+    //     this.setState({
+    //       items: newItems
+    //     });
+    //   }, 1000);
+    //   // console.log(`Load Items for ${day.year}-${day.month}`);
+    // }
+
+    renderItem(item) {
+      if(this.state.userid == this.state.groupinfo.leaderId)
+      {
+        return (
+          <View style={[styles.item]}>
+              <View>
+                  <View style={{flexDirection: 'row'}}><Text>{item.eventStartTime + " - " + item.eventEndTime}</Text>
+                        <Icon name="close" style={styles.iconClose}                
+                          onPress={() => {
+                            Toast.show("clicked remove icon");
+                              //   this.setState({
+                              //     customBackgroundDialog: true,
+                              // }
+                          }}/>
+                  </View>
+                  <View><Text>{item.eventName}</Text></View>
+                  <View><Text>{item.eventDescription}</Text></View>
+              </View>
+            </View>
+        );
+      }
+      else
+      {
+        return (
+          <View style={[styles.item]}>
+              <View>
+                  <View><Text>{item.eventStartTime + " - " + item.eventEndTime}</Text></View>
+                  <View><Text>{item.eventName}</Text></View>
+                  <View><Text>{item.eventDescription}</Text></View>
+              </View>
+            </View>
+        );
+      }
+    }
+  
+    renderEmptyDate() {
+      return (
+        <View style={[styles.emptyDate]}>
+          <View>
+              <View><Text style={styles.emptyDateText}>
+                    {"No event found at that day for group " + this.props.groupName}
+              </Text></View>
+          </View>
+        </View>
+      );
+    }
+  
+    rowHasChanged(r1, r2) {
+      return r1.eventStartTime !== r2.eventStartTime || r1.eventEndTime !== r2.eventEndTime ||
+             r1.eventName !== r2.eventName || r1.eventDescription !== r2.eventDescription;
+    }
+  
+    timeToString(time) {
+      const date = new Date(time);
+      return date.toISOString().split("T")[0];
     }
 }
+
+
 
 const styles = StyleSheet.create({
 
@@ -363,6 +439,13 @@ const styles = StyleSheet.create({
     textAlign:"center"
   },
 
+  emptyDateText: {
+    // fontSize:16,
+    // fontWeight:"200",
+    // color:"#1c313a",
+    textAlign:"center"
+  },
+
   itemStyle: {
     backgroundColor: "#1c313a",
     color: "#ffffff"
@@ -377,9 +460,20 @@ const styles = StyleSheet.create({
     marginTop: 17
   },
   emptyDate: {
-    height: 15,
-    flex:1,
-    paddingTop: 30
-  }
+    marginTop: 45,
+    marginRight: 10,
+    // borderTopWidth: 2,
+    // borderTopColor: '#dddddd',
+    height: 5,
+  },
+
+  iconClose: {
+    //marginRight: 10,
+    marginLeft: 168,
+    fontSize: 18,
+    height: 22,
+    color: "#CB3333",
+    textAlign: 'right',
+  },
   
 });

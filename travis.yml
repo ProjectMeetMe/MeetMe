@@ -1,0 +1,12 @@
+matrix:
+    include:
+        - language: node_js
+        before_install:
+            cd MeetBackend/
+        install:
+            - npm install
+        script:
+            - npm run test
+
+notifications:
+    email: false

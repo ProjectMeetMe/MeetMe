@@ -80,12 +80,12 @@ passport.use("local-signin", new LocalStrategy({
         }).then(function(userFound) {
             if (!userFound) { //no user found, wrong email
                 return done(null, false, {
-                    message: "Email does not exist"
+                    message: "Error: Email does not exist"
                 });
             }
             if (!isValidPassword(userFound.password, password)) { //user found but passwords dont match
                 return done(null, false, {
-                    message: "Incorrect password"
+                    message: "Error: Incorrect password"
                 });
             }
 

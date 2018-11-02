@@ -13,7 +13,7 @@ describe("Account Signup and Login Tests", function() {
 
     this.timeout(5000); //sets allowance time to 5 seconds to receive responses
 
-    //Empty the user test database before and after running this test suite
+    // Empty the user test database before running this test suite
     before(function(done) {
         db.user.destroy({
             where: {}
@@ -21,8 +21,8 @@ describe("Account Signup and Login Tests", function() {
             done();
         })
     });
-    after(function(done) {
-        db.user.destroy({
+    before(function(done) {
+        db.group.destroy({
             where: {}
         }).then(function() {
             done();
@@ -109,6 +109,7 @@ describe("Account Signup and Login Tests", function() {
                     res.body.message.should.be.eql("Successful login");
                     res.body.should.have.property("user");
                     res.body.should.have.property("token");
+                    //tests.token = res.body.token;
                     done();
                 });
         });
@@ -125,31 +126,44 @@ describe("Account Signup and Login Tests", function() {
                     res.should.have.status(400);
                     res.body.should.be.a("object");
                     res.body.should.have.property("message");
-                	res.body.message.should.be.eql("Error: Incorrect password");
+                    res.body.message.should.be.eql("Error: Incorrect password");
                     done();
                 });
         });
 
-		it("Test an unsuccessful login request due to incorrect email", function(done) {
-			var userLogin = {
-				email: "Tester1@test.com",
-				password: "12345",
-			}
-			chai.request(server)
-				.post("/auth/signin")
-				.send(userLogin)
-				.end(function(err, res) {
-					res.should.have.status(400);
-					res.body.should.be.a("object");
-					res.body.should.have.property("message");
-					res.body.message.should.be.eql("Error: Email does not exist");
-					done();
-				});
-		});
-
-
+        it("Test an unsuccessful login request due to incorrect email", function(done) {
+            var userLogin = {
+                email: "Tester1@test.com",
+                password: "12345",
+            }
+            chai.request(server)
+                .post("/auth/signin")
+                .send(userLogin)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.body.should.be.a("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.eql("Error: Email does not exist");
+                    done();
+                });
+        });
 
     });
 
+	// Empty the user test database after running this test suite
+    after(function(done) {
+        db.user.destroy({
+            where: {}
+        }).then(function() {
+            done();
+        })
+    });
+    after(function(done) {
+        db.group.destroy({
+            where: {}
+        }).then(function() {
+            done();
+        })
+    });
 
 });

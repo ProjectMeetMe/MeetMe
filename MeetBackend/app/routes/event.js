@@ -6,7 +6,6 @@ var groupController = require("../controllers/group.js");
 var userController = require("../controllers/user.js");
 var eventController = require("../controllers/event.js");
 
-
 /* POST add event */
 //Request header: {groupId: <int>}
 //Body header: {eventName, description, startTime, endTime}

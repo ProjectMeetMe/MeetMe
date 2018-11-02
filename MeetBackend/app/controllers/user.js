@@ -35,6 +35,8 @@ exports.getGroups = function(req, res, next) {
 Edits the user schedule specified by req.body.schedule
  */
 exports.editSchedule = function(req, res, next) {
+	//TODO: should confirm that req.body.schedule is in correct format
+
     db.user.update({
         schedule: req.body.schedule
     }, {

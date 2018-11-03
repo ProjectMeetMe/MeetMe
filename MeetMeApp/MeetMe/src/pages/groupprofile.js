@@ -63,10 +63,10 @@ export default class GroupProfile extends Component {
   {
     const { events, token} = this.state;
     const usertoken = await AsyncStorage.getItem("token");
+    const curuserid = await AsyncStorage.getItem("userid");
 
     var groupId = this.props.groupID;
 
-    //console.log("token in getEvents:  " + token);
     var userevents = await fetch("http://104.42.79.90:2990/group/getEvents?groupId=" + groupId, {
           method: "get",
           headers:{
@@ -76,10 +76,11 @@ export default class GroupProfile extends Component {
 
     const userevent = await userevents.json();
 
-    console.log(userevents.events);
-    console.log(userevent.events);
+    // console.log(userevents.events);
+    // console.log(userevent.events);
     //store events array
     this.setState({
+      userid: curuserid,
       items: userevent.events.categorizedEvents,
       dotEvents: userevent.events.dotEvents,
       refreshing: false,
@@ -199,6 +200,7 @@ export default class GroupProfile extends Component {
             }}
             style={{}}
           />
+          { this.renderPopupDialog() }
           <ActionButton buttonColor="rgba(231,76,60,1)">
               <ActionButton.Item buttonColor="#9b59b6" title="Group Chat" 
                 textStyle = {styles.itemStyle}
@@ -304,7 +306,10 @@ export default class GroupProfile extends Component {
     //   // console.log(`Load Items for ${day.year}-${day.month}`);
     // }
     renderPopupDialog(){
-      console.log("in renderPopupDialog: ", this.state.customBackgroundDialog);
+      // console.log("this.state.groupinfo.leaderId: " + this.state.groupinfo.leaderId);
+      // console.log("this.state.userid: " + this.state.userid);
+      if(this.state.userid == this.state.groupinfo.leaderId)
+      {  
         return(
           <Dialog
             //dialogStyle={styles.dialogStyle}
@@ -315,8 +320,7 @@ export default class GroupProfile extends Component {
               this.setState({ customBackgroundDialog: false });
             }}
             width={0.75}
-            //visible={this.state.customBackgroundDialog}
-            visible={true}
+            visible={this.state.customBackgroundDialog}
             rounded
             dialogTitle={
               <DialogTitle
@@ -349,7 +353,8 @@ export default class GroupProfile extends Component {
             ]}
           >
           </Dialog>
-        );          
+        );   
+      }    
       }
 
     renderItem(item) {
@@ -358,7 +363,6 @@ export default class GroupProfile extends Component {
         return (
           <View style={[styles.item]}>
               <View>
-              { this.renderPopupDialog() }
                   <View style={{flexDirection: 'row'}}>
                         <Text>{item.startTime.substring(11, 16) + " - " + item.endTime.substring(11, 16)}</Text>
                         <Icon name="close" style={styles.iconClose}                

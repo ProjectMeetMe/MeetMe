@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { AsyncStorage,View,Text,StyleSheet,
-    FlatList, ActivityIndicator, ScrollView } from "react-native";
+    FlatList, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
 import NavBar from "react-native-nav";
 import NavigationForm from "../components/navigationForm";
+import { Actions } from "react-native-router-flux";
 import {List, ListItem, SearchBar } from "react-native-elements";
 import Toast from "react-native-simple-toast";
 import ActionButton from "react-native-action-button";
@@ -13,6 +14,7 @@ import Dialog, {
   DialogButton,
 } from 'react-native-popup-dialog';
 import Icon from "react-native-vector-icons/Foundation";
+import Home from "../pages/home";
 
 export default class GroupMember extends Component{
 	
@@ -29,6 +31,7 @@ export default class GroupMember extends Component{
       loading: true,
       defaultAnimationDialog: false,
       customBackgroundDialog: false,
+      showDialog: false,
       deleteUserId: 0,
       deleteUserName: "",
     };
@@ -87,6 +90,25 @@ export default class GroupMember extends Component{
 
     const memberRemoveJson = await memberRemove.json();
     Toast.show(memberRemoveJson.message, Toast.LONG);
+  }
+
+  async leaveGroup() 
+  {
+    const usertoken = await AsyncStorage.getItem("token");
+    var groupId = this.props.groupID;
+  
+    var leaveGroup = await fetch("http://104.42.79.90:2990/group/leaveGroup?groupId=" + groupId, {
+          method: "post",
+          headers:{
+            "Accept": "application.json",
+            "Content-type": "application.json",
+            "Authorization": "Bearer " + usertoken,
+          },
+        });
+  
+    const leaveGroupJson = await leaveGroup.json();
+    Toast.show(leaveGroupJson.message, Toast.LONG);
+    Actions.popTo("home");
   }
 
   // Pull-down refresh
@@ -206,6 +228,55 @@ export default class GroupMember extends Component{
     }
   }
 
+  renderLeaveDialog(){
+    return(
+      <Dialog
+        //dialogStyle={styles.dialogStyle}
+        onDismiss={() => {
+          this.setState({ showDialog: false });
+        }}
+        onTouchOutside={() => {
+          this.setState({ showDialog: false });
+        }}
+        width={0.75}
+        visible={this.state.showDialog}
+        rounded
+        dialogTitle={
+          <DialogTitle
+            title={"Are you sure you want to leave this group?"}
+            textStyle={styles.dialogTitle}
+            hasTitleBar={false}
+            align="center"
+          />
+        }
+        actions={[
+          <DialogButton
+            text="Cancel"
+            onPress={() => {
+              this.setState({ showDialog: false });
+            }}
+            key="cancel"
+            style={styles.dialogButton}
+            textStyle={styles.cancelButtonText}
+          />,
+          <DialogButton
+            text="Leave"
+            onPress={() => {
+              this.leaveGroup();
+              this.setState({ showDialog: false });
+            }}
+            key="leave"
+            style={styles.dialogButton}
+            textStyle={styles.deleteButtonText}
+          />,
+        ]}
+        >
+        </Dialog>
+  );
+      //Actions.popTo("home");
+        
+}
+
   //get preperty for righticon in ListItem
   renderRightIcon(itemId, itemName){
     if(itemId == this.state.ownerId)
@@ -250,16 +321,6 @@ export default class GroupMember extends Component{
                 subtitle={"Email: " + item.email}
                 rightIcon={this.renderRightIcon(item.id, item.firstname + " " + item.lastname)}
                 hideChevron={this.state.userId != this.state.ownerId && item.id != this.state.ownerId ? true : false}
-                // onPress={() => {
-                //   if(this.state.userId == this.state.ownerId && item.id != this.state.ownerId)
-                //   {
-                //     this.setState({
-                //       customBackgroundDialog: true,
-                //       deleteUserId: item.id,
-                //       deleteUserName: item.firstname + " " + item.lastname,
-                //     });
-                //   }
-                // }}
                 >
               </ListItem>
             )}
@@ -274,7 +335,19 @@ export default class GroupMember extends Component{
             onEndReached={this.handleLoadMore}
             onEndReachedThreshold={50}
           />
+          <View style={styles.container}>	
+            <TouchableOpacity style={styles.logoutButton} 
+              onPress={() => {
+                this.setState({ showDialog: true });
+  
+              }}
+            >
+              <Text style={styles.logoutButtonText}>Leave Group</Text>
+            </TouchableOpacity> 
+          </View>
+        
         { this.renderPopupDialog() }
+        { this.renderLeaveDialog() }
         </View> 
       );
 	}
@@ -349,6 +422,20 @@ const styles = StyleSheet.create({
 
   dialogButton: {
     backgroundColor: "#CB3333",
+},
+
+logoutButton: {
+  width:300,
+  backgroundColor:"#CB3333",
+   borderRadius: 10,
+    marginVertical: 10,
+    paddingVertical: 13
+},
+logoutButtonText: {
+  fontSize:16,
+  fontWeight:"500",
+  color:"#ffffff",
+  textAlign:"center"
 },
 
 iconCrown: {

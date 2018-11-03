@@ -74,7 +74,7 @@ describe("Event Related Tests", function() {
 	            done();
 	        });
 	});
-	before(function(done) { //create group
+	before(function(done) { //create group 
 		this.timeout(5000)
 		chai.request(server)
 			.post("/group/createGroup")

@@ -14,6 +14,11 @@ import NavigationForm from "../components/navigationForm";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import ActionButton from "react-native-action-button";
 import Icon from "react-native-vector-icons/AntDesign";
+import Dialog, {
+  DialogTitle,
+  DialogButton,
+} from 'react-native-popup-dialog';
+import {YellowBox} from 'react-native';
 
 export default class GroupProfile extends Component {
 
@@ -33,15 +38,18 @@ export default class GroupProfile extends Component {
         //Events from the database - JSON object
         items: {},
         dotEvents: {},
+        customBackgroundDialog: false,
     };
   }
 
   //at the begining of this page execute below functions
   componentDidMount() {
+    YellowBox.ignoreWarnings(['Warning: Failed prop type: Prop']);
+
     this.getDate();
-    this.getEvents();
-    this.getDotEvents();
     this.getGroupInfo();
+    this.getEvents();
+
 
     this.setState({
       loading: false,
@@ -58,10 +66,6 @@ export default class GroupProfile extends Component {
 
     var groupId = this.props.groupID;
 
-    this.setState({
-      token: this.usertoken,
-    });
-
     //console.log("token in getEvents:  " + token);
     var userevents = await fetch("http://104.42.79.90:2990/group/getEvents?groupId=" + groupId, {
           method: "get",
@@ -72,43 +76,15 @@ export default class GroupProfile extends Component {
 
     const userevent = await userevents.json();
 
+    console.log(userevents.events);
+    console.log(userevent.events);
     //store events array
     this.setState({
-      events: userevent.events,
+      items: userevent.events.categorizedEvents,
+      dotEvents: userevent.events.dotEvents,
       refreshing: false,
+      token: this.usertoken,
     });
-  }
-
-  // TODO: get events[] from database then convert them into item{} format
-  // TODO: located in https://github.com/wix/react-native-calendars?fbclid=IwAR3bGgMcHXC-eHFBtAtswAbjSrMgoASfbCNtItRRDBVmkiHr_8Gcyxi6ePM#readme
-  // The events[] format is in APIdocumentation.txt
-  async getDotEvents()
-  {
-    const { events, refreshing } = this.state;
-
-  this.setState({
-    items:   {
-      '2018-10-30': [{eventName: 'Work on App', eventStartTime: '12:00', eventEndTime: '14:00', eventDescription: 'We have to work on this fucking app today :('},
-                     {eventName: 'Work on ELEC221', eventStartTime: '15:00', eventEndTime: '16:00', eventDescription: 'I dont like this class mom :('},
-                     {eventName: 'Dinner with girlfriend', eventStartTime: '18:00', eventEndTime: '19:00', eventDescription: 'Its gonna be tough'}],
-      '2018-10-31': [{eventName: 'Get out from bed', eventStartTime: '12:00', eventEndTime: '14:00', eventDescription: 'Why did it took me 2 hours to get out of my bed? :('},
-                     {eventName: 'Wondering', eventStartTime: '17:00', eventEndTime: '17:30', eventDescription: 'Am I even going to school today?'},
-                     {eventName: 'No wondering', eventStartTime: '18:00', eventEndTime: '18:30', eventDescription: 'Nah XD'}],
-      '2018-11-01': [{eventName: 'Hello everyone', eventStartTime: '08:00', eventEndTime: '09:00', eventDescription: 'What am I doing'},
-                     {eventName: 'I am confused', eventStartTime: '12:00', eventEndTime: '22:30', eventDescription: 'Day dreaming'},],
-      '2018-11-02': [{eventName: 'Hahahahaha', eventStartTime: '10:00', eventEndTime: '14:00', eventDescription: 'I am finally insane'},
-                     {eventName: 'Hahahahahhahahah', eventStartTime: '15:00', eventEndTime: '17:30', eventDescription: 'Hahahahahahahahhahahahahahahahahahahahhahah, hahahahahahahhahahahahahahhahahaha, hahahahahahhahahahahhahaha'},
-                     {eventName: 'Lets roll', eventStartTime: '18:00', eventEndTime: '18:30', eventDescription: 'What is roll?'}],
-  },
-
-    dotEvents:  {
-      "2018-10-30": {dots: [{color: "red"}, {color: "blue"}, {color: "green"}]},
-      "2018-10-31": {dots: [{color: "red"}, {color: "blue"}, {color: "green"}]},
-      "2018-11-01": {dots: [{color: "red"}, {color: "blue"} ]},
-      "2018-11-02": {dots: [{color: "red"}, {color: "blue"}, {color: "green"}]},
-  },
-      //refreshing: false,
-  });
   }
 
   //Get current date
@@ -148,31 +124,27 @@ export default class GroupProfile extends Component {
       groupinfo: groupinfojson.groupInfo,
       userid: curuserid,
       groupID: groupId,
-			//loading: false,
     });
   }
 
   async deleteGroupEvent()
   {
+    console.log("eventId:  " + this.state.deleteEventId );
     const usertoken = await AsyncStorage.getItem("token");
-    var groupId = this.props.groupID;
 
-    console.log("this.state.deleteUserId: =============" + this.state.deleteUserId);
-
-    var memberRemove = await fetch("http://104.42.79.90:2990/event/deleteEvent?groupId=" + groupId, {
-          method: "put",
+    var eventRemove = await fetch("http://104.42.79.90:2990/event/deleteEvent?eventId=" + this.state.deleteEventId, {
+          method: "delete",
           headers:{
             "Accept": "application/json",
             "Content-type": "application/json",
             "Authorization": "Bearer " + usertoken,
           },
-          body:JSON.stringify({
-            userId: this.state.deleteUserId,
-          })
         });
 
-    const memberRemoveJson = await memberRemove.json();
-    Toast.show(memberRemoveJson.message, Toast.LONG);
+    const eventRemoveJson = await eventRemove.json();
+    Toast.show(eventRemoveJson.message, Toast.LONG);
+
+    this.handleRefresh();
   }
 
   handleRefresh = () => {
@@ -331,6 +303,54 @@ export default class GroupProfile extends Component {
     //   }, 1000);
     //   // console.log(`Load Items for ${day.year}-${day.month}`);
     // }
+    renderPopupDialog(){
+      console.log("in renderPopupDialog: ", this.state.customBackgroundDialog);
+        return(
+          <Dialog
+            //dialogStyle={styles.dialogStyle}
+            onDismiss={() => {
+              this.setState({ customBackgroundDialog: false });
+            }}
+            onTouchOutside={() => {
+              this.setState({ customBackgroundDialog: false });
+            }}
+            width={0.75}
+            //visible={this.state.customBackgroundDialog}
+            visible={true}
+            rounded
+            dialogTitle={
+              <DialogTitle
+                title={"Delete event " + this.state.deleteEventName + " from this group?"}
+                textStyle={styles.dialogTitle}
+                hasTitleBar={this.state.customBackgroundDialog}
+                align="center"
+              />
+            }
+            actions={[
+              <DialogButton
+                text="CANCEL"
+                onPress={() => {
+                  this.setState({ customBackgroundDialog: false });
+                }}
+                key="cancel"
+                style={styles.dialogButton}
+                textStyle={styles.cancelButtonText}
+              />,
+              <DialogButton
+                text="DELETE"
+                onPress={() => {
+                  this.deleteGroupEvent();
+                  this.setState({ customBackgroundDialog: false });
+                }}
+                key="delete"
+                style={styles.dialogButton}
+                textStyle={styles.deleteButtonText}
+              />,
+            ]}
+          >
+          </Dialog>
+        );          
+      }
 
     renderItem(item) {
       if(this.state.userid == this.state.groupinfo.leaderId)
@@ -338,17 +358,22 @@ export default class GroupProfile extends Component {
         return (
           <View style={[styles.item]}>
               <View>
-                  <View style={{flexDirection: 'row'}}><Text>{item.eventStartTime + " - " + item.eventEndTime}</Text>
+              { this.renderPopupDialog() }
+                  <View style={{flexDirection: 'row'}}>
+                        <Text>{item.startTime.substring(11, 16) + " - " + item.endTime.substring(11, 16)}</Text>
                         <Icon name="close" style={styles.iconClose}                
                           onPress={() => {
-                            Toast.show("clicked remove icon");
-                              //   this.setState({
-                              //     customBackgroundDialog: true,
-                              // }
+                            //Toast.show("clicked");
+                                this.setState({
+                                  customBackgroundDialog: true,
+                                  deleteEventId: item.eventId,
+                                  deleteEventName: item.eventName,
+                              })
+                              console.log("after clicked: ", this.state.customBackgroundDialog);
                           }}/>
                   </View>
                   <View><Text>{item.eventName}</Text></View>
-                  <View><Text>{item.eventDescription}</Text></View>
+                  <View><Text>{item.description}</Text></View>
               </View>
             </View>
         );
@@ -358,9 +383,9 @@ export default class GroupProfile extends Component {
         return (
           <View style={[styles.item]}>
               <View>
-                  <View><Text>{item.eventStartTime + " - " + item.eventEndTime}</Text></View>
+                  <View><Text>{item.startTime.substring(11, 16) + " - " + item.endTime.substring(11, 16)}</Text></View>
                   <View><Text>{item.eventName}</Text></View>
-                  <View><Text>{item.eventDescription}</Text></View>
+                  <View><Text>{item.description}</Text></View>
               </View>
             </View>
         );
@@ -475,5 +500,34 @@ const styles = StyleSheet.create({
     color: "#CB3333",
     textAlign: 'right',
   },
+
+  dialogStyle: {
+    backgroundColor: "#212121",
+},
+
+  dialogTitle: {
+    fontSize:16,
+    fontWeight:"200",
+    color:"#000000",
+    textAlign:"center",
+},
+
+  deleteButtonText: {
+    fontSize:20,
+    fontWeight:"300",
+    color:"#CB3333",
+    textAlign:"center",
+},
+
+  cancelButtonText: {
+    fontSize:16,
+    fontWeight:"200",
+    color:"#000000",
+    textAlign:"center",
+},
+
+  dialogButton: {
+    backgroundColor: "#CB3333",
+},
   
 });

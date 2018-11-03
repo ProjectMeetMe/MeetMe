@@ -28,9 +28,8 @@ export default class NavigationForm extends Component {
     Actions.setting();
   }
 
-  //notice that this app will not open a new page if 
-  //user click profile icon in profile page or user
-  //click setting icon in setting page
+  //render icon on navigation bar depending on which page the 
+  //user is on
   render() {
     if(this.props.type === "home")
     {
@@ -57,13 +56,10 @@ export default class NavigationForm extends Component {
     else if(this.props.type === "groupprofile")
     {
       return (
-        <NavBar style={styles}>
-            <NavButton style={styles.navButton} 
-                onPress={() => {Actions.groupmember({groupID: this.props.groupID});
-                }}>
+        <NavBar style={styles}>          
+            <NavButton style={styles.navButton}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require("../images/android_icon_account.png")}
               />
             </NavButton>
           <NavTitle style={styles.title}>
@@ -114,6 +110,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#CECECE",
+    textAlign: 'center',
   },
   buttonText: {
     color: "rgba(231, 37, 156, 0.5)",

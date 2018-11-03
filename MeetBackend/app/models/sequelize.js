@@ -12,6 +12,7 @@ var dbDialect = config.get("dbConfig.dialect");
 var sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
     host: dbHost,
     dialect: dbDialect,
+	useUTC: true,
     logging: false, //disables console messages
     operatorsAliases: false, //suppress warnings
     pool: {

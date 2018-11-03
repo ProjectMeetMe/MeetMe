@@ -16,7 +16,7 @@ import Dialog, {
 import Icon from "react-native-vector-icons/Foundation";
 import Home from "../pages/home";
 
-export default class GroupMember extends Component{
+export default class GroupSummary extends Component{
 	
   constructor(props) {
 
@@ -29,7 +29,6 @@ export default class GroupMember extends Component{
       ownerId: "",
       refreshing: false,
       loading: true,
-      defaultAnimationDialog: false,
       customBackgroundDialog: false,
       showDialog: false,
       deleteUserId: 0,
@@ -37,7 +36,7 @@ export default class GroupMember extends Component{
     };
   }
 
-  //at the begining of this page execute below functions
+  // Ignore popup dialog warnings
   componentDidMount() {
     YellowBox.ignoreWarnings(['Warning: Failed prop type: Prop']);
     this.getGroupInfo();
@@ -110,7 +109,12 @@ export default class GroupMember extends Component{
     Toast.show(leaveGroupJson.message, Toast.LONG);
     Actions.popTo("home");
   }
-
+  
+  // Delete group from database and remove all members
+  destroyGroup() 
+  {
+    Toast.show("Destroy Group function to be implemented", Toast.LONG);
+  }
   // Pull-down refresh
   handleRefresh = () => {
     this.setState(
@@ -123,17 +127,6 @@ export default class GroupMember extends Component{
     );
   };
 
-  // TODO: Implement searchbar functionality
-  /*
-  handleSearch = (text) => {
-    const formatQuery = text.toLowerCase();
-    const data = _.filter(this.state.fullData, (user) => {
-      return contains(user, formatQuery);
-    })
-    this.setState({ query: formatQuery, data});
-  };
-  */
-
   renderSeparator = () => {
     return (
       <View style={styles.renderSeparator}/>
@@ -141,14 +134,9 @@ export default class GroupMember extends Component{
   };
 
   // Display searchbar
+  
   renderHeader = () => {
-    return <SearchBar 
-            platform={"android"}
-            clearIcon={{ color: "grey" }}
-            placeholder="Search Here..." 
-            inputContainerStyle={styles.container} 
-            round
-            />;
+    return <Text style={styles.headerText}>    Group Members</Text>;
   };
 
   // Display loading icon
@@ -165,6 +153,7 @@ export default class GroupMember extends Component{
   };
 
   // Display empty group list text
+  // Note: This should never be the case since group owner will belong to the group
   renderEmptyList = () => {
     if (this.state.loading) {
       return null;
@@ -177,6 +166,7 @@ export default class GroupMember extends Component{
     );
   };
 
+  // Dialog when kicking a member
   renderPopupDialog(){
     if(this.state.userId == this.state.ownerId)
     {
@@ -191,7 +181,7 @@ export default class GroupMember extends Component{
           }}
           width={0.75}
           visible={this.state.customBackgroundDialog}
-          rounded
+          rounded={false}
           dialogTitle={
             <DialogTitle
               title={"Are you sure to delete " + this.state.deleteUserName 
@@ -229,6 +219,7 @@ export default class GroupMember extends Component{
   }
 
   renderLeaveDialog(){
+    if(this.state.userId != this.state.ownerId) {
     return(
       <Dialog
         //dialogStyle={styles.dialogStyle}
@@ -240,7 +231,7 @@ export default class GroupMember extends Component{
         }}
         width={0.75}
         visible={this.state.showDialog}
-        rounded
+        rounded={false}
         dialogTitle={
           <DialogTitle
             title={"Are you sure you want to leave this group?"}
@@ -273,8 +264,52 @@ export default class GroupMember extends Component{
         >
         </Dialog>
   );
-      //Actions.popTo("home");
-        
+  } else {
+    return(
+      <Dialog
+        //dialogStyle={styles.dialogStyle}
+        onDismiss={() => {
+          this.setState({ showDialog: false });
+        }}
+        onTouchOutside={() => {
+          this.setState({ showDialog: false });
+        }}
+        width={0.75}
+        visible={this.state.showDialog}
+        rounded={false}
+        dialogTitle={
+          <DialogTitle
+            title={"Are you sure you want to destroy this group? \n This action can not be undone."}
+            textStyle={styles.dialogTitle}
+            hasTitleBar={false}
+            align="center"
+          />
+        }
+        actions={[
+          <DialogButton
+            text="Cancel"
+            onPress={() => {
+              this.setState({ showDialog: false });
+            }}
+            key="cancel"
+            style={styles.dialogButton}
+            textStyle={styles.cancelButtonText}
+          />,
+          <DialogButton
+            text="Yes"
+            onPress={() => {
+              this.destroyGroup();
+              this.setState({ showDialog: false });
+            }}
+            key="leave"
+            style={styles.dialogButton}
+            textStyle={styles.deleteButtonText}
+          />,
+        ]}
+        >
+        </Dialog>
+    );
+  }
 }
 
   //get preperty for righticon in ListItem
@@ -304,14 +339,14 @@ export default class GroupMember extends Component{
   }
 
 	render(){
-
+    if(this.state.userId != this.state.ownerId) {
       return(
-        <View style={{flex: 1, backgroundColor: "#455a64"}}>          
-          <NavigationForm title="Group Member" type="groupmember"></NavigationForm>
+        <View style={{flex: 1, backgroundColor: "#455a64"}}>
+          <NavigationForm title="Group Summary" type="groupsummary"></NavigationForm>
           <FlatList
             data={this.state.members}
             renderItem={({ item }) => (
-              <ListItem 
+              <ListItem
                 containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
                 roundAvatar
                 id={item.id}
@@ -328,7 +363,6 @@ export default class GroupMember extends Component{
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}
-            //TODO: Format the text to appear in center of page
             ListEmptyComponent={this.renderEmptyList}
             onRefresh={this.handleRefresh}
             refreshing={this.state.refreshing}
@@ -336,21 +370,69 @@ export default class GroupMember extends Component{
             onEndReachedThreshold={50}
           />
           <View style={styles.container}>	
-            <TouchableOpacity style={styles.logoutButton} 
+            <TouchableOpacity style={styles.leaveGroupButton} 
               onPress={() => {
                 this.setState({ showDialog: true });
   
               }}
             >
-              <Text style={styles.logoutButtonText}>Leave Group</Text>
+              <Text style={styles.leaveGroupButtonText}>Leave Group</Text>
             </TouchableOpacity> 
           </View>
-        
+          
         { this.renderPopupDialog() }
         { this.renderLeaveDialog() }
         </View> 
       );
-	}
+    } else {
+      return(
+        <View style={{flex: 1, backgroundColor: "#455a64"}}>
+          <NavigationForm title="Group Summary" type="groupsummary"></NavigationForm>
+          <FlatList
+            data={this.state.members}
+            renderItem={({ item }) => (
+              <ListItem
+                containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
+                roundAvatar
+                id={item.id}
+                titleStyle={styles.titleText}
+                title={item.firstname + " " + item.lastname}
+                subtitleStyle={styles.subtitleText}
+                subtitle={"Email: " + item.email}
+                rightIcon={this.renderRightIcon(item.id, item.firstname + " " + item.lastname)}
+                hideChevron={this.state.userId != this.state.ownerId && item.id != this.state.ownerId ? true : false}
+                >
+              </ListItem>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={this.renderSeparator}
+            ListHeaderComponent={this.renderHeader}
+            ListFooterComponent={this.renderFooter}
+            ListEmptyComponent={this.renderEmptyList}
+            onRefresh={this.handleRefresh}
+            refreshing={this.state.refreshing}
+            onEndReached={this.handleLoadMore}
+            onEndReachedThreshold={50}
+          />
+          <View style={styles.container}>	
+            <TouchableOpacity style={styles.leaveGroupButton} 
+              onPress={() => {
+                this.setState({ showDialog: true });
+  
+              }}
+            >
+            
+              <Text style={styles.leaveGroupButtonText}>Destroy Group</Text>
+            </TouchableOpacity> 
+          </View>
+          
+        { this.renderPopupDialog() }
+        { this.renderLeaveDialog() }
+        </View> 
+      );
+    }
+  }
+	
 }
 
 // Style definitions
@@ -395,6 +477,13 @@ const styles = StyleSheet.create({
     fontWeight: "100"
   },
 
+  headerText: {
+  	color:"#ffffff",
+    fontSize:18,
+    fontWeight: "300",
+    textAlignVertical: "bottom",
+    },
+
   dialogStyle: {
     backgroundColor: "#212121",
 },
@@ -424,14 +513,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#CB3333",
 },
 
-logoutButton: {
+leaveGroupButton: {
   width:300,
   backgroundColor:"#CB3333",
-   borderRadius: 10,
-    marginVertical: 10,
-    paddingVertical: 13
+  borderRadius: 10,
+  marginVertical: 10,
+  paddingVertical: 13,
+  textAlignVertical: "bottom"  
+  
 },
-logoutButtonText: {
+leaveGroupButtonText: {
   fontSize:16,
   fontWeight:"500",
   color:"#ffffff",

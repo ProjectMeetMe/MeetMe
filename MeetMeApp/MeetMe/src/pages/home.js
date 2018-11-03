@@ -8,7 +8,8 @@ import Toast from "react-native-simple-toast";
 import ActionButton from "react-native-action-button";
 import Icon from "react-native-vector-icons/AntDesign";
 import {Actions} from "react-native-router-flux";
-import {YellowBox} from 'react-native';
+import {YellowBox} from "react-native";
+import _ from "lodash";
 
 export default class Home extends Component{
   
@@ -21,6 +22,7 @@ export default class Home extends Component{
       groups: [],
       refreshing: false,
       loading: true,
+      query: "",
     };
   }
 
@@ -84,15 +86,12 @@ export default class Home extends Component{
   };
 
   // TODO: Implement searchbar functionality
-  /*
+  
+ 
   handleSearch = (text) => {
-    const formatQuery = text.toLowerCase();
-    const data = _.filter(this.state.fullData, (user) => {
-      return contains(user, formatQuery);
-    })
-    this.setState({ query: formatQuery, data});
+    this.setState({ query: text });
   };
-  */
+  
 
   renderSeparator = () => {
     return (
@@ -108,6 +107,7 @@ export default class Home extends Component{
             placeholder="Search Here..." 
             inputContainerStyle={styles.container} 
             round
+            onChangeText={this.handleSearch}
             />;
   };
 

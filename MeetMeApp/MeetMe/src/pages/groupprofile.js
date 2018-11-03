@@ -156,7 +156,6 @@ export default class GroupProfile extends Component {
       () => {
         this.getDate();
         this.getEvents();
-        this.getItems();
       }
     );
   };
@@ -370,7 +369,7 @@ export default class GroupProfile extends Component {
                             //Toast.show("clicked");
                                 this.setState({
                                   customBackgroundDialog: true,
-                                  deleteEventId: item.eventId,
+                                  deleteEventId: item.id,
                                   deleteEventName: item.eventName,
                               })
                               console.log("after clicked: ", this.state.customBackgroundDialog);

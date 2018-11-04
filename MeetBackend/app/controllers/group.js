@@ -48,19 +48,7 @@ Gets events from group specified by req.group
 exports.getEvents = function(req, res, next) {
     var group = req.group;
     group.getEvents().then(function(events) {
-        //TODO: sort events by order
-        //manipulate events order
-        //Body example:
-        //{sortedEvents:
-        //	{
-        //		date(no time): [ordered list of events on that date],
-        //		date2(no time): [events],
-        //		...
-        //	}
-        //note: add a colour field
-        //}
         var events = sortEvents(events);
-
         return res.status(200).json({
             events,
             message: "Successful event retrieval"

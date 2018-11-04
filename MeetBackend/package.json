@@ -28,8 +28,7 @@
     },
     "scripts": {
         "start": "node app.js",
-        "test": "mocha --timeout 10000",
-        "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+        "test": "mocha --timeout 10000"
     },
     "repository": {
         "type": "git",

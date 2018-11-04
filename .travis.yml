@@ -10,7 +10,7 @@ matrix:
       script:
         - npm run test
       after_success:
-        - npm run coveralls
+        - ./node_modules/.bin/mocha -R mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
 
 notifications:
   email: false

@@ -12,6 +12,7 @@
     "@babel/runtime": "^7.0.0",
     "appium": "^1.9.1",
     "appium-doctor": "^1.6.0",
+    "babel-preset-react-native": "^4.0.1",
     "react": "16.5.0",
     "react-native": "0.57.1",
     "react-native-action-button": "^2.8.5",

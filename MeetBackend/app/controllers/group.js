@@ -151,6 +151,11 @@ Removes self user (specified by req.user.id) from target group instance specifie
  */
 exports.leaveGroup = function(req, res, next) {
     var group = req.group;
+	if (group.leaderId == req.user.id){
+		return res.status(400).json({
+			message: "Error: Leader of group cannot leave"
+		});
+	}
 
     group.removeUser(req.user.id).then(function(success) {
         if (success) {
@@ -258,7 +263,7 @@ exports.checkPermissions = function(req, res, next) {
 
     if (req.user.id != groupInfo.leaderId) {
         return res.status(400).json({
-            message: "Error: Invalid permissions edit group"
+            message: "Error: Invalid group permissions"
         });
     } else {
         next();

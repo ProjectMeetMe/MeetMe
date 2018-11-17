@@ -10,6 +10,8 @@ chai.use(chaiHttp);
 
 var userToken1; //Used for authentication, obtained in "before" function
 var userToken2; //2nd user account for testing
+var userId1;
+var userId2;
 var groupId;
 
 describe("Group Related Tests", function() {
@@ -70,6 +72,7 @@ describe("Group Related Tests", function() {
 	            res.should.have.status(200);
 	            res.body.should.be.a("object");
 	            userToken1 = res.body.token;
+				userId1 = res.body.user.id;
 	            done();
 	        });
 	});
@@ -105,6 +108,7 @@ describe("Group Related Tests", function() {
 				res.should.have.status(200);
 				res.body.should.be.a("object");
 				userToken2 = res.body.token;
+				userId2= res.body.user.id;
 				done();
 			});
 	});
@@ -124,6 +128,8 @@ describe("Group Related Tests", function() {
 				done();
 			});
 	})
+
+	/* ACTUAL TESTS */
 
     //Test PUT /group/editGroup
     describe("PUT /group/editGroup", function() {
@@ -158,7 +164,255 @@ describe("Group Related Tests", function() {
 				});
 		});
 
+		it("Unsuccessful event add to group due to invalid permissions", function(done) {
+			chai.request(server)
+				.put("/group/editGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken2)
+				.send(groupEditForm)
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: Invalid group permissions")
+					done();
+				});
+		});
+
+		it("Unsuccessful event add to group due to non-existant group", function(done) {
+			chai.request(server)
+				.put("/group/editGroup?groupId=-1")
+				.set("Authorization", "Bearer " + userToken2)
+				.send(groupEditForm)
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: Invalid group id")
+					done();
+				});
+		});
+
     });
+
+
+	//Test POST /group/joinGroup and /group/leaveGroup (from user 2)
+	describe("POST /group/joingroup and POST /group/leavegroup", function() {
+
+		it("Successful group join", function(done) {
+			chai.request(server)
+				.post("/group/joinGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Successful group member join");
+					done();
+				});
+		});
+
+		it("Check that user groups was successfully updated", function(done) {
+			chai.request(server)
+				.get("/user/getGroups")
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("groups");
+					res.body.should.have.property("message");
+					res.body.message.should.eql("Successful group retrieval");
+					res.body.groups[0].id.should.eql(groupId);
+					done();
+				});
+		});
+
+		it("Successful group leave", function(done) {
+			chai.request(server)
+				.post("/group/leaveGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Successful group leave");
+					done();
+				});
+		});
+
+		it("Check that user groups was successfully updated", function(done) {
+			chai.request(server)
+				.get("/user/getGroups")
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("groups");
+					res.body.should.have.property("message");
+					res.body.message.should.eql("Successful group retrieval");
+					res.body.groups.length.should.eql(0);
+					done();
+				});
+		});
+
+		it("Unsuccessful group leave due to leader attempting to leave", function(done) {
+			chai.request(server)
+				.post("/group/leaveGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken1)
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: Leader of group cannot leave");
+					done();
+				});
+		});
+
+		it("Unsuccessful group leave because user is not in group", function(done) {
+			chai.request(server)
+				.post("/group/leaveGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: User is not a member of this group");
+					done();
+				});
+		});
+
+		it("Unsuccessful group leave due to non-existant group", function(done) {
+			chai.request(server)
+				.post("/group/leaveGroup?groupId=-1")
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: Invalid group id");
+					done();
+				});
+		});
+
+	});
+
+
+	//Test POST /group/joinGroup and /group/removeMember (from user 2)
+	describe("POST /group/joingroup and PUT /group/removeMember", function() {
+
+		it("Successful group join", function(done) {
+			chai.request(server)
+				.post("/group/joinGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Successful group member join");
+					done();
+				});
+		});
+
+		it("Check that user groups was successfully updated", function(done) {
+			chai.request(server)
+				.get("/user/getGroups")
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("groups");
+					res.body.should.have.property("message");
+					res.body.message.should.eql("Successful group retrieval");
+					res.body.groups[0].id.should.eql(groupId);
+					done();
+				});
+		});
+
+		it("Successful member removal", function(done) {
+			chai.request(server)
+				.put("/group/removeMember?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken1)
+				.send({userId: userId2})
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.eql("Successful member remove");
+					done();
+				});
+		});
+
+		it("Check that user groups was successfully updated", function(done) {
+			chai.request(server)
+				.get("/user/getGroups")
+				.set("Authorization", "Bearer " + userToken2)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("groups");
+					res.body.should.have.property("message");
+					res.body.message.should.eql("Successful group retrieval");
+					res.body.groups.length.should.eql(0);
+					done();
+				});
+		});
+
+		it("Unsuccessful member removal due to insufficient permissions", function(done) {
+			chai.request(server)
+				.put("/group/removeMember?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken2)
+				.send({userId: userId1})
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: Invalid group permissions")
+					done();
+				});
+		});
+
+		it("Unsuccessful member removal due to attempt to remove self", function(done) {
+			chai.request(server)
+				.put("/group/removeMember?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken1)
+				.send({userId: userId1})
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: User cannot remove self")
+					done();
+				});
+		});
+
+		it("Unsuccessful member removal due to attempt to remove nonexistant member", function(done) {
+			chai.request(server)
+				.put("/group/removeMember?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken1)
+				.send({userId: userId2})
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: User does not exist in group")
+					done();
+				});
+		});
+
+		it("Unsuccessful member removal due to non-existant group", function(done) {
+			chai.request(server)
+				.put("/group/removeMember?groupId=-1")
+				.set("Authorization", "Bearer " + userToken1)
+				.send({userId: userId2})
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Error: Invalid group id")
+					done();
+				});
+		});
+
+	});
 
 	// Empty the user test database after running this test suite
 	after(function(done) {

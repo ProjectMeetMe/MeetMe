@@ -38,6 +38,7 @@ yarn-error.log
 
 #
 venv/
+res/
 
 # BUCK
 buck-out/

@@ -24,7 +24,7 @@
 //       .getCurrentPackage(function(res) {
 //         assert.equals(res.value, "io.appium.android.apis");
 //       })
-//       .end()
+//       .pause(3000)
 //       .sessions(function(res) {
 //         assert.equals(res.value.length, 0);
 //       });

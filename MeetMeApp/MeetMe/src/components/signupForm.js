@@ -133,7 +133,8 @@ export default class SignupForm extends Component {
                     onChangeText= {(userPassword)  => this.setState({userPassword})}
                 /> 
 
-                <TouchableOpacity onPress={this.userSignup} style={styles.button}>
+                <TouchableOpacity onPress={this.userSignup} style={styles.button}
+                >
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
 

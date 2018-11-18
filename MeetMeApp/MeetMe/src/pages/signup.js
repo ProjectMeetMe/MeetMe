@@ -27,7 +27,8 @@ export default class Signup extends Component {
 				<SignupForm type="Signup"/>
 				<View style={styles.signupTextCont}>
 					<Text style={styles.signupText}>Already have an account?</Text>
-					<TouchableOpacity onPress={this.goBack}><Text style={styles.signupButton}> Sign in</Text></TouchableOpacity>
+					<TouchableOpacity onPress={this.goBack}
+          accessible={true} accessibilityLabel={'RedirectSignup'}><Text style={styles.signupButton}> Sign in</Text></TouchableOpacity>
 				</View>
 			</View>	
 			);

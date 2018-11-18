@@ -149,7 +149,8 @@ export default class LoginFrom extends Component {
                     onChangeText={(userPassword) => this.setState({userPassword})}
                 /> 
 
-                <TouchableOpacity style={styles.button} onPress={this.login}>
+                <TouchableOpacity style={styles.button} onPress={this.login}
+                accessible={true} accessibilityLabel={'Go Sign Up'}>
                     <Text style={styles.buttonText}>{this.props.type}</Text>
                 </TouchableOpacity>    
 

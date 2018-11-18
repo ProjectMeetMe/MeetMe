@@ -42,8 +42,8 @@ const androidWebCaps = {
 };
 
 const serverConfig = {
-  host: process.env.APPIUM_HOST || "localhost",
-  port: process.env.APPIUM_PORT || 4723,
+  host: "localhost",
+  port: 4723,
   logLevel: "verbose"
 };
 

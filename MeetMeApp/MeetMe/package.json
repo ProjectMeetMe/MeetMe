@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "mocha test/**/*.test.js",
+    "test": "mocha --timeout 6000000 test/basic",
     "appium": "appium",
     "appium-doctor": "appium-doctor"
   },

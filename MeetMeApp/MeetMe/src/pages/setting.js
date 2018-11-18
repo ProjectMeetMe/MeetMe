@@ -10,9 +10,57 @@ export default class Setting extends Component{
     super(props);
     this.state = {
       tableHead: ['', 'SUN', 'MON', 'TUE', 'WED', 'THUR', 'FRI', 'SAT'],
-      widthArr: [60, 50, 50, 50, 50, 50, 50, 50],
-      tableData: []
-    }
+      widthArr: [50, 50, 50, 50, 50, 50, 50, 50],
+      tableData: [ 
+      ['00:00', '', '', '', '', '', '', ''],
+      ['00:30', '', '', '', '', '', '', ''],
+      ['01:00', '', '', '', '', '', '', ''],
+      ['01:30', '', '', '', '', '', '', ''],
+      ['02:00', '', '', '', '', '', '', ''],
+      ['02:30', '', '', '', '', '', '', ''],
+      ['03:00', '', '', '', '', '', '', ''],
+      ['03:30', '', '', '', '', '', '', ''],
+      ['04:00', '', '', '', '', '', '', ''],
+      ['04:30', '', '', '', '', '', '', ''],
+      ['05:00', '', '', '', '', '', '', ''],
+      ['05:30', '', '', '', '', '', '', ''],
+      ['06:00', '', '', '', '', '', '', ''],
+      ['06:30', '', '', '', '', '', '', ''],
+      ['07:00', '', '', '', '', '', '', ''],
+      ['07:30', '', '', '', '', '', '', ''],
+      ['08:00', '', '', '', '', '', '', ''],
+      ['08:30', '', '', '', '', '', '', ''],
+      ['09:00', '', '', '', '', '', '', ''],
+      ['09:30', '', '', '', '', '', '', ''],
+      ['10:00', '', '', '', '', '', '', ''],
+      ['10:30', '', '', '', '', '', '', ''],
+      ['11:00', '', '', '', '', '', '', ''],
+      ['11:30', '', '', '', '', '', '', ''],
+      ['12:00', '', '', '', '', '', '', ''],
+      ['12:30', '', '', '', '', '', '', ''],
+      ['13:00', '', '', '', '', '', '', ''],
+      ['13:30', '', '', '', '', '', '', ''],
+      ['14:00', '', '', '', '', '', '', ''],
+      ['14:30', '', '', '', '', '', '', ''],
+      ['15:00', '', '', '', '', '', '', ''],
+      ['15:30', '', '', '', '', '', '', ''],
+      ['16:00', '', '', '', '', '', '', ''],
+      ['16:30', '', '', '', '', '', '', ''],
+      ['17:00', '', '', '', '', '', '', ''],
+      ['17:30', '', '', '', '', '', '', ''],
+      ['18:00', '', '', '', '', '', '', ''],
+      ['18:30', '', '', '', '', '', '', ''],
+      ['19:00', '', '', '', '', '', '', ''],
+      ['19:30', '', '', '', '', '', '', ''],
+      ['20:00', '', '', '', '', '', '', ''],
+      ['20:30', '', '', '', '', '', '', ''],
+      ['21:00', '', '', '', '', '', '', ''],
+      ['21:30', '', '', '', '', '', '', ''],
+      ['22:00', '', '', '', '', '', '', ''],
+      ['22:30', '', '', '', '', '', '', ''],
+      ['23:00', '', '', '', '', '', '', ''],
+      ['23:30', '', '', '', '', '', '', ''],
+    ]}
   }
 
 	_alertIndex(index) {
@@ -24,13 +72,13 @@ export default class Setting extends Component{
     const element = (data, index) => (
       <TouchableOpacity onPress={() => this._alertIndex(index)}>
         <View style={styles.btn}>
-          <Text style={styles.btnText}>button</Text>
+          <Text style={styles.btnText}> </Text>
         </View>
       </TouchableOpacity>
     );
 
     const state = this.state;
-    state.tableData = [];
+/*    state.tableData = [];
     var half_hour = false;
     for (let i = 0; i < 48; i += 1) {
       const rowData = [];
@@ -67,7 +115,7 @@ export default class Setting extends Component{
         half_hour = false;
     }
       state.tableData.push(rowData);
-    }
+    } */
     
 		return(
       <View style={{flex: 1}}>
@@ -83,18 +131,18 @@ export default class Setting extends Component{
                 
                 {
                   state.tableData.map((rowData, index) => (  
-                    <TableWrapper key={index} style={styles.row}> 
+                    <TableWrapper key={index} widthArr={state.widthArr} style={[styles.row, index%2 && {backgroundColor: '#F7F6E7'}]}> 
                     {
                       rowData.map((cellData, cellIndex) => (
-                        <Cell key={cellIndex} data={cellIndex === 3 ? element(cellData, index) : cellData} textStyle={styles.text}/>
+                        <Cell key={cellIndex} data={cellIndex === 2 ? element(cellData, index) : cellData} textStyle={styles.text}/> 
                       ))
                     }           
                       <Row
-                        key={index}
-                        data={rowData}
-                        widthArr={state.widthArr}
-                        style={[styles.row, index%2 && {backgroundColor: '#F7F6E7'}]}
-                        textStyle={styles.text2}
+               //         key={index}
+                //        data={rowData}
+                //        widthArr={state.widthArr}
+               //         style={[styles.row, index%2 && {backgroundColor: '#F7F6E7'}]}
+               //         textStyle={styles.text2}
                       />  
                     </TableWrapper>                   
                   ))
@@ -133,6 +181,7 @@ const styles = StyleSheet.create({
   header: { height: 50, backgroundColor: '#537791' },
   text2: { textAlign: 'center', fontWeight: '100' },
   dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' }
-  
+  row: {flexDirection: 'row', height: 40, backgroundColor: '#E7E6E1' },
+  btn: { width: 30, height: 18, backgroundColor: '#78B7BB',  borderRadius: 2 },
+  btnText: { textAlign: 'center', color: '#fff' }
 });

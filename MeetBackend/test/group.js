@@ -192,6 +192,17 @@ describe("Group Related Tests", function() {
 				});
 		});
 
+		it("Unsuccessful event add to group due to invalid token", function(done) {
+			chai.request(server)
+				.post("/group/leaveGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer 00000")
+				.send(groupEditForm)
+				.end(function(err, res) {
+					res.should.have.status(401);
+					done();
+				});
+		});
+
     });
 
 
@@ -289,6 +300,16 @@ describe("Group Related Tests", function() {
 					res.body.should.be.a("object");
 					res.body.should.have.property("message");
 					res.body.message.should.be.eql("Error: Invalid group id");
+					done();
+				});
+		});
+
+		it("Unsuccessful group leave add due to invalid token", function(done) {
+			chai.request(server)
+				.post("/group/leaveGroup?groupId=" + groupId)
+				.set("Authorization", "Bearer 00000")
+				.end(function(err, res) {
+					res.should.have.status(401);
 					done();
 				});
 		});
@@ -408,6 +429,17 @@ describe("Group Related Tests", function() {
 					res.body.should.be.a("object");
 					res.body.should.have.property("message");
 					res.body.message.should.be.eql("Error: Invalid group id")
+					done();
+				});
+		});
+
+		it("Unsuccessful member removal add due to invalid token", function(done) {
+			chai.request(server)
+				.put("/group/removeMember?groupId=" + groupId)
+				.set("Authorization", "Bearer 00000")
+				.send({userId: userId2})
+				.end(function(err, res) {
+					res.should.have.status(401);
 					done();
 				});
 		});

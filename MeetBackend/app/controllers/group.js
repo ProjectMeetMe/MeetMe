@@ -47,8 +47,9 @@ Gets events from group specified by req.group
  */
 exports.getEvents = function(req, res, next) {
     var group = req.group;
-    group.getEvents().then(function(events) {
-        var events = sortEvents(events);
+    group.getEvents({raw: true}).then(function(events) {
+
+        var events = exports.sortEvents(events);
         return res.status(200).json({
             events,
             message: "Successful event retrieval"
@@ -64,20 +65,26 @@ exports.getEvents = function(req, res, next) {
 Helper function for get events, sorts events in chronological order and
 categorized by date, with index and colour fields
  */
-sortEvents = function(events) {
+exports.sortEvents = function(events) {
+
+	if (events.constructor !== Array){
+		throw Error("Not an array");
+	}
+
     events.sort(function(a, b) { //sort raw events list by chronological order
-        return a.dataValues.startTime - b.dataValues.startTime
+        return new Date(a.startTime) - new Date (b.startTime);
     });
+
 	var sortedEvents = {}; //Contains return JSON object, containing both categorized and dot events
 	var categorizedEvents = {}; //Contains sorted event info grouped by sorted date
 	var dotEvents = {}; //Contains colours to represent events, grouped by sorted date
-	for (var i=0; i<events.length; i++){
-		var eventDate = moment.utc(events[i].dataValues.startTime).format("YYYY-MM-DD"); // no time
+	for (var i=0; i<events.length; i++) {
+		var eventDate = moment.utc(events[i].startTime).format("YYYY-MM-DD"); // no time
 		if(!(eventDate in categorizedEvents)){ //add key if doesnt exist
 			categorizedEvents[eventDate] = [];
 			dotEvents[eventDate] = {"dots": []};
 		}
-		categorizedEvents[eventDate].push(events[i].dataValues); //add event to correct key
+		categorizedEvents[eventDate].push(events[i]); //add event to correct key
 		dotEvents[eventDate]["dots"].push({color: colours[Math.floor(Math.random() * colours.length)]}); //assign random colour to dot event
 	}
 
@@ -174,25 +181,88 @@ exports.leaveGroup = function(req, res, next) {
     });
 }
 
-
 /*
 Takes into consideration all user schedules in a group and outputs optimal
 user schedules
  */
-exports.calculateAvailabilities = function(req, res, next) {
+exports.getAvailabilities = function(req, res, next) {
     var users = req.group.users;
 
+	//Replace below with calculateAvailabilities
+
+	var freeTimes = exports.calculateAvailabilities();
+/*
     for (var i = 0; i < users.length; i++) {
         console.log("TESTING")
         console.log(JSON.stringify(users[i].schedule));
+		//Perhaps encode schedule as an ARRAY of size 7
+		//For generating free times for all days:
+		//examine users[i].schedule.Mon -> users[i].schedule.Sun
+		//with encoding, we can simply loop users[i].schedule[j]{json obj}
+		for (var day in users[i].schedule){ //Loop through keys
+			users[i].schedule[day];
+			console.log(JSON.stringify(users[i].schedule[j]));
+		}
     }
-
-
+*/
     return res.status(200).json({
-        message: "TESTING"
+        freeTimes: freeTimes
     });
 }
 
+//Helper function to calculate free availabilties, given a threshold and array of user schedules
+exports.calculateAvailabilities = function(schedules, threshold){
+
+	var freqTable = { //entries to arrays are a key-val pair, key = time, obj = freq
+		Mon: {},
+		Tues: {},
+		Wed: {},
+		Thurs: {},
+		Fri: {},
+		Sat: {},
+		Sun: {}
+	};
+
+	var freeTimes = {
+		Mon: [],
+		Tues: [],
+		Wed: [],
+		Thurs: [],
+		Fri: [],
+		Sat: [],
+		Sun: []
+	};
+
+	//Construct a frequency table for availabilties
+	for (var schedule in schedules){ //Loop through keys
+		for (var day in schedules[schedule]){
+			//add entry for freq table
+			for (var ind in schedules[schedule][day]){
+				var timeSlot = schedules[schedule][day][ind]
+				if (freqTable[day][timeSlot]){
+					freqTable[day][timeSlot]++;
+				}
+				else{
+					freqTable[day][timeSlot] = 1;
+				}
+
+			}
+		}
+	}
+
+	//Use frequency table to construct final availabilties
+	for (var day in freqTable){
+		for (var timeSlot in freqTable[day]){
+			if (freqTable[day][timeSlot] >= threshold){ //Found a timeslot with acceptable number of people free
+				freeTimes[day].push(timeSlot);
+			}
+		}
+	}
+
+	return freeTimes;
+
+
+}
 
 
 

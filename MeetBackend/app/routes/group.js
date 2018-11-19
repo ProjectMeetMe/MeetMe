@@ -39,7 +39,7 @@ router.get("/getEvents", groupController.findGroup, groupController.checkMembers
 /////Work in progress:
 
 /* GET optimal availibilties for all users in group*/
-router.get("/getAvailabilities", groupController.findGroup, groupController.checkMembership, groupController.calculateAvailabilities);
+router.get("/getAvailabilities", groupController.findGroup, groupController.checkMembership, groupController.getAvailabilities);
 
 
 

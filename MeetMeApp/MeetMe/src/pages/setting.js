@@ -21,37 +21,69 @@ export default class Setting extends Component{
     Alert.alert(`This value is ${value}`);
   }
 
-  unselectButton(value) {
-    Alert.alert(`This value is ${value}`);
+  // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
+  //Calculations are all done using "value" 
+  unselectButton(value, X, Y) {
+    var dayInteger = value % 7;
+    var whichHour = (value - dayInteger) / 14;
+    var whichDay;
+    switch(dayInteger) {
+      case 0:
+        whichDay = "SUN";
+        break;
+      case 1:
+        whichDay = "MON";
+        break;
+      case 2:
+        whichDay = "TUE";
+        break;
+      case 3:
+        whichDay = "WED";
+        break;
+      case 4:
+        whichDay = "THUR";
+        break;
+      case 5:
+        whichDay = "FRI";
+        break;
+      case 6:
+        whichDay = "SAT";
+        break;
+      default: 
+        whichDay = "ERR";
+    }
+    Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
 
   }
 	
 	render(){
     const state = this.state;
 
-    const checkBox = (value) => (
-      <CheckBox
-        style={{flex: 1, padding: 10}}
-        onClick={()=>{
-          this.setState({
-            isChecked: !this.state.isChecked
-          })
-        }}
-        isChecked = {this.state.isChecked}
-      //  leftText = {"CheckBox"}
-      />
-    )
+    // const checkBox = (value) => (
+    //   <CheckBox
+    //     style={{flex: 1, padding: 10}}
+    //     onClick={()=>{
+    //       this.setState({
+    //         isChecked: !this.state.isChecked
+    //       })
+    //     }}
+    //     isChecked = {this.state.isChecked}
+    //   //  leftText = {"CheckBox"}
+    //   />
+    //)
 
     const selectButton = (value) => (
-      <TouchableOpacity onPress={() => this.selectButton(value)}>
+     
+      <TouchableOpacity onPress={() => this.selectButton(value)}>  
         <View style={styles.selectButton}>
           <Text style={styles.btnText}>*</Text>
         </View>
       </TouchableOpacity>
+      
     )
     
-    const unselectButton = (value) => (
-      <TouchableOpacity onPress={() => this.unselectButton(value)}>
+    const unselectButton = (value, X, Y) => (
+      <TouchableOpacity onPress={() => this.unselectButton(value, X, Y)}>
         <View 
          style={styles.unselectButton}>
           <Text style={styles.btnText}>!</Text>
@@ -69,12 +101,12 @@ export default class Setting extends Component{
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${0}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(checkBox('0')); 
+            rowData.push(unselectButton(7*i + fill, i, fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${0}${0}`);
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton('0')); 
+            rowData.push(unselectButton(7*i + fill, i, fill)); 
           }
         }
         half_hour = true;
@@ -84,12 +116,12 @@ export default class Setting extends Component{
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${3}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(checkBox('0')); 
+            rowData.push(unselectButton(7*i + fill, i, fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${3}${0}`);
-          for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton('0')); 
+          for (let fill = 0; fill < 7; fill++) { 
+            rowData.push(unselectButton(7*i + fill, i, fill)); 
           }
         }
         half_hour = false;

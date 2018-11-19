@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { AppRegistry,View,Text,StyleSheet, ScrollView, TouchableOpacity, Alert} from "react-native";
 import NavBar from "react-native-nav";
 import NavigationForm from "../components/navigationForm";
-import update from 'immutability-helper';
 import CheckBox from 'react-native-check-box'
 
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';

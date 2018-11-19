@@ -22,8 +22,37 @@ export default class Setting extends Component{
     Alert.alert(`This value is ${value}`);
   }
 
-  unselectButton(value) {
-    Alert.alert(`This value is ${value}`);
+  // CURRENTLY valueX and valueY ARE NOT IMPLEMENTED CORRECTLY. 
+  unselectButton(valueX, valueY) {
+    var dayInteger = valueX % 7;
+    var whichHour = (valueX - dayInteger) / 14;
+    var whichDay;
+    switch(dayInteger) {
+      case 0:
+        whichDay = "SUN";
+        break;
+      case 1:
+        whichDay = "MON";
+        break;
+      case 2:
+        whichDay = "TUE";
+        break;
+      case 3:
+        whichDay = "WED";
+        break;
+      case 4:
+        whichDay = "THUR";
+        break;
+      case 5:
+        whichDay = "FRI";
+        break;
+      case 6:
+        whichDay = "SAT";
+        break;
+      default: 
+        whichDay = "ERR";
+    }
+    Alert.alert(`the value is: ${valueX}. The day is: ${whichDay}. the hour is ${whichHour}`);
 
   }
 	
@@ -44,15 +73,17 @@ export default class Setting extends Component{
     )
 
     const selectButton = (value) => (
-      <TouchableOpacity onPress={() => this.selectButton(value)}>
+     
+      <TouchableOpacity onPress={() => this.selectButton(value)}>  
         <View style={styles.selectButton}>
           <Text style={styles.btnText}>*</Text>
         </View>
       </TouchableOpacity>
+      
     )
     
-    const unselectButton = (value) => (
-      <TouchableOpacity onPress={() => this.unselectButton(value)}>
+    const unselectButton = (valueX, valueY) => (
+      <TouchableOpacity onPress={() => this.unselectButton(valueX)}>
         <View 
          style={styles.unselectButton}>
           <Text style={styles.btnText}>!</Text>
@@ -70,12 +101,12 @@ export default class Setting extends Component{
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${0}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(checkBox('0')); 
+            rowData.push(unselectButton(7*i + fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${0}${0}`);
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton('0')); 
+            rowData.push(unselectButton(7*i + fill)); 
           }
         }
         half_hour = true;
@@ -85,12 +116,12 @@ export default class Setting extends Component{
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${3}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(checkBox('0')); 
+            rowData.push(unselectButton(7*i + fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${3}${0}`);
-          for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton('0')); 
+          for (let fill = 0; fill < 7; fill++) { 
+            rowData.push(unselectButton(7*i + fill)); 
           }
         }
         half_hour = false;

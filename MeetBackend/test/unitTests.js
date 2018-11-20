@@ -156,7 +156,7 @@ describe("Unit Tests for Sort Events Function", function() {
 
 });
 
-describe("Unit Tests for calculate availibilties (with day) function", function() {
+describe("Unit Tests for calculate availibilties function", function() {
 
 	schedule0 = {
 		Mon: [],
@@ -213,7 +213,7 @@ describe("Unit Tests for calculate availibilties (with day) function", function(
 		var schedules = [schedule1, schedule2, schedule3, schedule4];
 		var threshold = 2;
 		var day = "Mon";
-		optimalSchedule = groupController.calculateAvailabilitiesDay(schedules, threshold, day);
+		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold, day);
 		optimalSchedule.should.have.length(3);
 	});
 

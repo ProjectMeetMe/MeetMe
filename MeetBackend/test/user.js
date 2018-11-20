@@ -124,6 +124,7 @@ describe("User Account Related Tests", function() {
 
 
     //Tests for POST /user/editSchedule
+	/*
     describe("POST /user/editSchedule", function() {
 
         var scheduleForm = {
@@ -181,7 +182,7 @@ describe("User Account Related Tests", function() {
                     done();
                 });
         });
-    });
+    });*/
 
 	// Empty the user test database after running this test suite, and create a test account
 	after(function(done) {

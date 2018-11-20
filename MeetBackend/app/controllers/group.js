@@ -4,7 +4,9 @@ var moment = require("moment");
 const MAX_GROUP_USERS = 10; // Max allowed users per group
 
 //Colour array for dot events
-const colours = ["red", "orange", "yellow", "green", "blue", "purple"];
+const COLOURS = ["red", "orange", "yellow", "green", "blue", "purple"];
+
+const DAYS_IN_WEEK = ["Mon", "Tues", "wed", "Thurs", "Fri", "Sat", "Sun"];
 
 
 /* Middlewares for handling group related requests */
@@ -92,7 +94,7 @@ exports.sortEvents = function(events) {
         }
         categorizedEvents[eventDate].push(events[i]); //add event to correct key
         dotEvents[eventDate]["dots"].push({
-            color: colours[Math.floor(Math.random() * colours.length)]
+            color: COLOURS[Math.floor(Math.random() * COLOURS.length)]
         }); //assign random colour to dot event
     }
 
@@ -199,74 +201,28 @@ exports.getAvailabilities = function(req, res, next) {
 	var userSchedules = [];
     var users = req.group.users;
 
+	if (DAYS_IN_WEEK.indexOf(day) <= -1){
+		return res.status(400).json({
+			message: "Error: Invalid day field"
+		});
+	}
+
 	//Fill userschedules with schedules for all users in the group
 	for (var i=0; i<users.length; i++){
 		userSchedules.push(users[i].schedule);
 	}
 
-   var freeTimes = exports.calculateAvailabilitiesDay(userSchedules, threshold, day);
+   var freeTimes = exports.calculateAvailabilities(userSchedules, threshold, day);
 
     return res.status(200).json({
 		freeTimes: freeTimes,
+		numUsersInGroup: users.length,
         message: "Successful availabilities calculation"
     });
 }
 
-//Helper function to calculate free availabilties, given a threshold and array of user schedules
-//NOTE: may not need this
-exports.calculateAvailabilities = function(schedules, threshold) {
-
-    var freqTable = { //entries to arrays are a key-val pair, key = time, obj = freq
-        Mon: {},
-        Tues: {},
-        Wed: {},
-        Thurs: {},
-        Fri: {},
-        Sat: {},
-        Sun: {}
-    };
-
-    var freeTimes = {
-        Mon: [],
-        Tues: [],
-        Wed: [],
-        Thurs: [],
-        Fri: [],
-        Sat: [],
-        Sun: []
-    };
-
-    //Construct a frequency table for availabilties
-    for (var schedule in schedules) { //Loop through keys (individual user schedules)
-        for (var day in schedules[schedule]) {
-            //add entry for freq table
-            for (var ind in schedules[schedule][day]) {
-                var timeSlot = schedules[schedule][day][ind]
-                if (freqTable[day][timeSlot]) {
-                    freqTable[day][timeSlot]++;
-                } else {
-                    freqTable[day][timeSlot] = 1;
-                }
-
-            }
-        }
-    }
-
-    //Use frequency table to construct final availabilties
-    for (var day in freqTable) {
-        for (var timeSlot in freqTable[day]) {
-            if (freqTable[day][timeSlot] >= threshold) { //Found a timeslot with acceptable number of people free
-                freeTimes[day].push(timeSlot);
-            }
-        }
-    }
-
-    return freeTimes;
-}
-
-
 //Helper function to calculate free availabilties, given a threshold AND specified day AND array of user schedules
-exports.calculateAvailabilitiesDay = function(schedules, threshold, day) {
+exports.calculateAvailabilities = function(schedules, threshold, day) {
 
     var freqTable = {};
     var freeTimes = [];
@@ -295,14 +251,14 @@ exports.calculateAvailabilitiesDay = function(schedules, threshold, day) {
 
     //Convert frequency table to array form
     for (time in freqTable) {
-		var timeFreq = {timeSlot: time, frequency: freqTable[time]};
+		var timeFreq = {timeSlot: time, numUsersAvailable: freqTable[time]};
         //freeTimes.push([time, freqTable[time]])
 		freeTimes.push(timeFreq);
     }
 
 	//Order time slot + frequencies
     freeTimes.sort(function(a, b) {
-        return b.frequency - a.frequency;
+        return b.numUsersAvailable - a.numUsersAvailable;
     });
 
     return freeTimes;

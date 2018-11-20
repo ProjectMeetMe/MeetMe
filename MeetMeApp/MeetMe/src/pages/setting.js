@@ -62,6 +62,28 @@ export default class Setting extends Component{
     Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
 
   }
+
+  
+  saveFreeTime = () => {
+  
+    //Call saveFreeTime API, send the user free time slots to
+    //post API call with user token
+    fetch("http://104.42.79.90:2990/user/editSchedule",{
+        method:"put",
+        headers:{
+                  "Accept": "application/json",
+                  "Content-type": "application/json",
+                  "Authorization": "Bearer " + token,
+                },
+        body:JSON.stringify({
+          schedule: this.state.savedSchedule,
+                })	
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+            Toast.show(responseJson.message, Toast.LONG);
+        });
+}
 	
 	render(){
     const state = this.state;
@@ -138,31 +160,10 @@ export default class Setting extends Component{
     //    tableData: update(this.state.tableData, {1: {$set: '1'}})
      // })
     }
-
-    saveFreeTime = () => {
-  
-          //Call saveFreeTime API, send the user free time slots to
-          //post API call with user token
-          fetch("http://104.42.79.90:2990/user/editSchedule",{
-              method:"post",
-              headers:{
-                        "Accept": "application/json",
-                        "Content-type": "application/json",
-                        "Authorization": "Bearer " + token,
-                      },
-              body:JSON.stringify({
-                schedule: this.state.savedSchedule,
-                      })	
-            })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                  Toast.show(responseJson.message, Toast.LONG);
-              });
-  }
-    
+   
 		return(
       <View style={{flex: 1}}>
-      <NavBar style={styles}>          
+      <NavBar style={style}>          
             <NavButton style={styles.navButton}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}

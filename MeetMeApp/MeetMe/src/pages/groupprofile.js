@@ -200,16 +200,16 @@ export default class GroupProfile extends Component {
             style={{}}
           />
           { this.renderPopupDialog() }
-          <ActionButton buttonColor="rgba(231,76,60,1)">
+          {/* <ActionButton buttonColor="rgba(231,76,60,1)">
               <ActionButton.Item buttonColor="#9b59b6" title="Group Chat" 
                 textStyle = {styles.itemStyle}
                 textContainerStyle = {styles.itemStyle}
                 onPress={() => {Toast.show("Group Chat");
                 }}>
                 {<Icon name="message1" style={styles.actionButtonIcon} />}
-              </ActionButton.Item>
+              </ActionButton.Item> */}
               { this.renderCreateEvent() }
-            </ActionButton>
+          {/* </ActionButton> */}
         </View> 
       );
     }
@@ -230,6 +230,7 @@ export default class GroupProfile extends Component {
       if(this.state.userid === this.state.groupinfo.leaderId)
       {
         return(
+        <ActionButton buttonColor="rgba(231,76,60,1)">
           <ActionButton.Item buttonColor="#3498db" title="Create Event"
           textStyle = {styles.itemStyle} 
           textContainerStyle = {styles.itemStyle}
@@ -237,6 +238,7 @@ export default class GroupProfile extends Component {
           }}>
           <Icon name="pluscircleo" style={styles.actionButtonIcon} />
         </ActionButton.Item>
+        </ActionButton>
         );          
       }
     }

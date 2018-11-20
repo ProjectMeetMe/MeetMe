@@ -310,6 +310,11 @@ renderEndTime()
                     onChangeText={(description) => this.setState({description})}
                 />
 
+                <TouchableOpacity style={styles.button} onPress={() => {Actions.suggestevent({groupId: this.props.groupID})}}>
+                    <Text style={styles.buttonText}>{"Recommended Event Time"}</Text>
+                </TouchableOpacity> 
+
+
                 <TouchableOpacity style={styles.button} onPress={this.addEvent}>
                     <Text style={styles.buttonText}>{"Create Event"}</Text>
                 </TouchableOpacity>    

@@ -6,5 +6,11 @@
 		"name": "MEETME_TEST",
 		"host": "104.42.79.90",
 		"dialect": "mysql"
+	},
+	"pushConfig": {
+		"appId": "653652",
+		"key": "4ff35080c91cc7fb2b01",
+		"secret": "2fd072763a33ac73c3a5",
+		"cluster": "mt1"
 	}
 }

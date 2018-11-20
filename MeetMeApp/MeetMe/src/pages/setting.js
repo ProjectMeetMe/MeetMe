@@ -173,51 +173,33 @@ export default class Setting extends Component{
   }
 
   
-  async saveFreeTime(){
+  saveFreeTime = () =>{
     const {token, Mon, Tues, Wed, Thurs, Fri, Sat, Sun} = this.state;
-    var mySchedule = "{"+ "Mon:"+ Mon + "Tue:"+ Tues + "Wed:"+ Wed + 
-                          "Thu:"+ Thurs + "Fri:"+ Fri + "Sat:" + Sat + "Sun:" + Sun
-                      "}";
-    this.setState({
-      savedSchedule: mySchedule
-    })
-    const usertoken = await AsyncStorage.getItem("token");
-
+  
     console.log("user token" + token);
     //Call saveFreeTime API, send the user free time slots to
     //post API call with user token
-    var whatever = await fetch("http://104.42.79.90:2990/user/editSchedule",{
-        method:"put",
+    fetch("http://104.42.79.90:2990/user/editSchedule",{        method:"put",
         headers:{
                   "Accept": "application/json",
                   "Content-type": "application/json",
-                  "Authorization": "Bearer " + this.state.token,
+                  "Authorization": "Bearer " + token,
                 },
-        body:JSON.stringify({
-          schedule: { Mon : Mon,
+        body:JSON.stringify
+         ({
+                      Mon : Mon,
                       Tue : Tues,
                       Wed : Wed,
                       Thu : Thurs,
                       Fri : Fri, 
                       Sat : Sat, 
                       Sun : Sun,
-                    },
-          // Mon: Mon,
-          // Tues: Tues,
-          // Wed: Wed,
-          // Thurs: Thurs,
-          // Fri: Fri,
-          // Sat: Sat,
-          // Sun: Sun,
-        })	
-        
+        })
     })
-      const myWhatever = await whatever.json();
-      // .then((response) => response.json())
-      // .then((responseJson) => {
-            Toast.show(myWhatever.message, Toast.LONG);
-            console.log("whatever =========" + myWhatever.message);
-       // });
+    .then((response) => response.json())
+    .then((responseJson) => {
+      Toast.show(responseJson.message, Toast.LONG);
+  });
 }
 
 unselectButton = (value, X, Y) => (
@@ -297,7 +279,7 @@ selectButton = (value) => (
           {this.props.title}
           </NavTitle>
             <NavButton style={styles.navButton} 
-                onPress={() => this.saveFreeTime}>
+                onPress={this.saveFreeTime}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
                 source={require("../images/android_icon_save.png")}

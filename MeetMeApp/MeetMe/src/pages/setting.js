@@ -14,8 +14,14 @@ export default class Setting extends Component{
       tableHead: ['', 'SUN', 'MON', 'TUE', 'WED', 'THUR', 'FRI', 'SAT'],
       widthArr: [60, 50, 50, 50, 50, 50, 50, 50],
       tableData: [],
-      isChecked: false
+      isChecked: false,
+      token: '',
+      savedSchedule: ''
     }
+
+    AsyncStorage.getItem("token").then((value) => {
+      this.setState({token: value});
+    }).done();
   }
 
   selectButton(value) {
@@ -132,10 +138,56 @@ export default class Setting extends Component{
     //    tableData: update(this.state.tableData, {1: {$set: '1'}})
      // })
     }
+
+    saveFreeTime = () => {
+      var status = 400;
+  
+      // console.log("userid    " + userid);
+      // console.log("joinGroupID    " + joinGroupID);
+          //Call joinGroup API, send the group the user want to 
+          //and the user id as key value pair in the post API call
+          fetch("http://104.42.79.90:2990/group/joinGroup?groupId=" + joinGroupID,{
+              method:"post",
+              headers:{
+                        "Accept": "application/json",
+                        "Content-type": "application/json",
+                        "Authorization": "Bearer " + token,
+                      }	
+            })
+              .then((response) => {
+                  status = response.status;
+                  return response.json();
+              })
+              .then((responseJson) => {
+                  //display success / fail message
+                  if(status === 200)    //success
+                  {
+                     this.goBack();    
+                  }
+                  Toast.show(responseJson.message, Toast.LONG);
+              });
+      Keyboard.dismiss();
+  }
     
 		return(
       <View style={{flex: 1}}>
-      <NavigationForm title="Setting" type="setting"></NavigationForm>
+      <NavBar style={styles}>          
+            <NavButton style={styles.navButton}>
+            <Image style={{width:60, height: 45}}
+                resizeMode={"contain"}
+              />
+            </NavButton>
+          <NavTitle style={styles.title}>
+          {this.props.title}
+          </NavTitle>
+            <NavButton style={styles.navButton} 
+                onPress={this.joinGroup}>
+            <Image style={{width:60, height: 45}}
+                resizeMode={"contain"}
+                source={require("../images/android_icon_save.png")}
+              />
+            </NavButton>
+         </NavBar> 
         <ScrollView horizontal={true}>
           <View>
             <Table borderStyle={{borderColor: '#C1C0B9'}}>

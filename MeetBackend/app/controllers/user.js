@@ -1,4 +1,7 @@
 var db = require("../models/sequelize.js");
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
+var groupController = require("./group.js");
 
 /* Middlewares for handling user related requests */
 
@@ -35,10 +38,10 @@ exports.getGroups = function(req, res, next) {
 Edits the user schedule specified by req.body.schedule
  */
 exports.editSchedule = function(req, res, next) {
-	//TODO: should confirm that req.body.schedule is in correct format
+    //TODO: should confirm that req.body.schedule is in correct format
 
     db.user.update({
-        schedule: req.body.schedule
+        schedule: JSON.parse(req.body.schedule)
     }, {
         where: {
             id: req.user.id
@@ -60,3 +63,54 @@ exports.editSchedule = function(req, res, next) {
         });
     });
 };
+
+/*
+Gets events from all the groups this user belongs to
+ */
+exports.getEvents = function(req, res, next) {
+
+    db.user.findOne({
+        include: [{
+            model: db.group,
+            attributes: ["id"], //elements of the group that we want
+            through: {
+                attributes: []
+            }
+        }],
+        where: {
+            id: req.user.id //user must belong to group
+        }
+    }).then(function(userWithGroups) {
+
+        //construct groupid array
+        var groups = [];
+        for (var i = 0; i < userWithGroups.groups.length; i++) {
+            groups.push(userWithGroups.groups[i].id);
+        }
+
+        db.event.findAll({
+            where: {
+                groupId: {
+                    [Op.or]: groups //All events that belong to groupIds in groups
+                }
+            },
+            raw: true
+        }).then(function(events) {
+            events = groupController.sortEvents(events);
+
+            return res.status(200).json({
+                events,
+                message: "Successful events retrieval"
+            });
+        }).catch(function(err) {
+            return res.status(400).json({
+                message: "Error: Events could not be found"
+            });
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: User could not be found"
+        });
+    });
+
+}

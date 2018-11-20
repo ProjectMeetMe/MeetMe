@@ -41,8 +41,9 @@ exports.editSchedule = function(req, res, next) {
     //TODO: should confirm that req.body.schedule is in correct format
 
     db.user.update({
-        schedule: JSON.parse(req.body.schedule)
-    }, {
+        //schedule: JSON.parse(req.body.schedule)
+		schedule: req.body.schedule
+	}, {
         where: {
             id: req.user.id
         }
@@ -72,7 +73,7 @@ exports.getEvents = function(req, res, next) {
     db.user.findOne({
         include: [{
             model: db.group,
-            attributes: ["id"], //elements of the group that we want
+            attributes: ["id", "groupName"], //elements of the group that we want
             through: {
                 attributes: []
             }
@@ -81,11 +82,12 @@ exports.getEvents = function(req, res, next) {
             id: req.user.id //user must belong to group
         }
     }).then(function(userWithGroups) {
-
         //construct groupid array
         var groups = [];
+		var groupNames = {};
         for (var i = 0; i < userWithGroups.groups.length; i++) {
             groups.push(userWithGroups.groups[i].id);
+			groupNames[userWithGroups.groups[i].id] = userWithGroups.groups[i].groupName;
         }
 
         db.event.findAll({
@@ -96,6 +98,13 @@ exports.getEvents = function(req, res, next) {
             },
             raw: true
         }).then(function(events) {
+
+			//add a group name field to each event:
+			for (var i=0; i<events.length; i++){
+				var groupId = events[i].groupId;
+				events[i]["groupName"] = groupNames[groupId];
+			}
+
             events = groupController.sortEvents(events);
 
             return res.status(200).json({

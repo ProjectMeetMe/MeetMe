@@ -6,7 +6,6 @@ var jwt = require("jsonwebtoken");
 var passport = require("passport");
 var config = require("config");
 
-
 router.post("/signup", function(req, res, next) {
     //Custom callback
     passport.authenticate("local-signup", {
@@ -54,6 +53,7 @@ router.post("/signin", function(req, res, next) {
             //successful login:
             //1st param = payload, 2nd param = secret(for encryption), 3rd param = expiry date for jwt
             const token = jwt.sign(user, config.get("jwtSecret"), {expiresIn: "30d"});
+
             return res.status(200).json({ //give out a valid jwt token to frontend for authentication purposes
                 user,
                 token,

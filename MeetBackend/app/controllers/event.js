@@ -1,4 +1,5 @@
 var db = require("../models/sequelize.js");
+var pusher = require("../pushNotifications/pusher.js");
 
 /* Middlewares for handling event related requests */
 
@@ -15,6 +16,20 @@ exports.createEvent = function(req, res, next) {
     };
     db.event.create(event).then(function(newEvent) {
         var newEventInfo = newEvent.get();
+
+		//Trigger a push notification
+		var channel = newEventInfo.groupId;
+		var event = "newEvent";
+		var message = ("New event was added to group: " + channel + " or " +req.groupInfo.groupName);
+		pusher.trigger("my-channel", "my-event", {
+			"message": message
+		});
+		/*
+		pusher.trigger(channel, event, {
+			"message": message
+		});
+		*/
+
         return res.status(200).json({
             newEventInfo,
             message: "Successful event add"

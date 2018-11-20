@@ -1,5 +1,6 @@
 var db = require("../models/sequelize.js");
 var moment = require("moment");
+var pusher = require("../pushNotifications/pusher.js");
 
 const MAX_GROUP_USERS = 10; // Max allowed users per group
 
@@ -17,10 +18,25 @@ Group edit parameters are in req.body: (groupName)
  */
 exports.editGroup = function(req, res, next) {
     var group = req.group;
+	var oldName = group.groupName;
     group.update({
         groupName: req.body.groupName,
         description: req.body.groupDescription
     }).then(function(updatedInfo) {
+
+		//Trigger a push notification
+		var channel = req.query.groupId;
+		var event = "editGroup";
+		var message = ("Group info edited at group " + req.query.groupId + " or " + oldName);
+		pusher.trigger("my-channel", "my-event", {
+			"message": message
+		});
+		/*
+		pusher.trigger(channel, event, {
+			"message": message
+		});
+		*/
+
         return res.status(200).json({
             updatedInfo,
             message: "Successful group edit"

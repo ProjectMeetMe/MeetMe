@@ -19,9 +19,15 @@ require("./app/auth/passport.js");
 //Load routes
 app.use("/auth", require("./app/routes/auth.js"));
 //use authentication middleware for following routes:
-app.use("/user", passport.authenticate("jwt", {session: false}), require("./app/routes/user.js"));
-app.use("/group", passport.authenticate("jwt", {session: false}), require("./app/routes/group.js"));
-app.use("/event", passport.authenticate("jwt", {session: false}), require("./app/routes/event.js"));
+app.use("/user", passport.authenticate("jwt", {
+    session: false
+}), require("./app/routes/user.js"));
+app.use("/group", passport.authenticate("jwt", {
+    session: false
+}), require("./app/routes/group.js"));
+app.use("/event", passport.authenticate("jwt", {
+    session: false
+}), require("./app/routes/event.js"));
 
 
 //Start server

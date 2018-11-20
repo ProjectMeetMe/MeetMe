@@ -12,60 +12,60 @@ describe("User Account Related Tests", function() {
 
     this.timeout(5000); //sets allowance time to 5 seconds to receive responses
 
-	// Empty the user test database before running this test suite, and create a test account
-	before(function(done) {
-	    db.user.destroy({
-	        where: {}
-	    }).then(function() {
-	        done();
-	    })
-	});
-	before(function(done) {
-	    db.group.destroy({
-	        where: {}
-	    }).then(function() {
-	        done();
-	    })
-	});
-	before(function(done) {
-		this.timeout(5000);
-	    var userSignup = {
-	        email: "Test@test.com",
-	        password: "TestPass",
-	        firstname: "Alan",
-	        lastname: "Wayne"
-	    }
-	    chai.request(server)
-	        .post("/auth/signup")
-	        .send(userSignup)
-	        .end(function(err, res) {
-	            res.should.have.status(200);
-	            res.body.should.be.a("object");
-	            res.body.should.have.property("message");
-	            res.body.message.should.be.eql("Successful signup");
-	            done();
-	        });
-	});
-	before(function(done) {
-		this.timeout(5000);
-	    var userLogin = {
-	        email: "Test@test.com",
-	        password: "TestPass",
-	    }
-	    chai.request(server)
-	        .post("/auth/signin")
-	        .send(userLogin)
-	        .end(function(err, res) {
-	            res.should.have.status(200);
-	            res.body.should.be.a("object");
-	            userToken = res.body.token;
-	            done();
-	        });
-	});
+    // Empty the user test database before running this test suite, and create a test account
+    before(function(done) {
+        db.user.destroy({
+            where: {}
+        }).then(function() {
+            done();
+        })
+    });
+    before(function(done) {
+        db.group.destroy({
+            where: {}
+        }).then(function() {
+            done();
+        })
+    });
+    before(function(done) {
+        this.timeout(5000);
+        var userSignup = {
+            email: "Test@test.com",
+            password: "TestPass",
+            firstname: "Alan",
+            lastname: "Wayne"
+        }
+        chai.request(server)
+            .post("/auth/signup")
+            .send(userSignup)
+            .end(function(err, res) {
+                res.should.have.status(200);
+                res.body.should.be.a("object");
+                res.body.should.have.property("message");
+                res.body.message.should.be.eql("Successful signup");
+                done();
+            });
+    });
+    before(function(done) {
+        this.timeout(5000);
+        var userLogin = {
+            email: "Test@test.com",
+            password: "TestPass",
+        }
+        chai.request(server)
+            .post("/auth/signin")
+            .send(userLogin)
+            .end(function(err, res) {
+                res.should.have.status(200);
+                res.body.should.be.a("object");
+                userToken = res.body.token;
+                done();
+            });
+    });
 
     //Tests for GET /user/profile
     describe("GET /user/profile", function() {
-		//console.log("USER TEST:")
+        //console.log("USER TEST:")
         it("Successful retrieval to user profile info", function(done) {
             chai.request(server)
                 .get("/user/profile")
@@ -124,11 +124,11 @@ describe("User Account Related Tests", function() {
 
 
     //Tests for POST /user/editSchedule
-	/*
+
     describe("POST /user/editSchedule", function() {
 
         var scheduleForm = {
-            schedule: {
+            schedule: JSON.stringify({
                 Monday: [0, 1.5, 2],
                 Tuesday: [],
                 Wednesday: [15.5, 16],
@@ -136,9 +136,9 @@ describe("User Account Related Tests", function() {
                 Friday: [23.5],
                 Saturday: [],
                 Sunday: []
-            }
+            })
         };
-
+		/*
         it("Successful edit schedule", function(done) {
             chai.request(server)
                 .put("/user/editSchedule")
@@ -151,8 +151,8 @@ describe("User Account Related Tests", function() {
                     res.body.message.should.eql("Successful schedule update");
                     done();
                 });
-        });
-
+        });*/
+        /*
         it("Check that successful edit schedule has updated the DB", function(done) {
             chai.request(server)
                 .get("/user/profile")
@@ -181,23 +181,23 @@ describe("User Account Related Tests", function() {
                     res.should.have.status(401); //code for unauthorized
                     done();
                 });
-        });
-    });*/
+        });*/
+    });
 
-	// Empty the user test database after running this test suite, and create a test account
-	after(function(done) {
-	    db.user.destroy({
-	        where: {}
-	    }).then(function() {
-	        done();
-	    })
-	});
-	after(function(done) {
-	    db.group.destroy({
-	        where: {}
-	    }).then(function() {
-	        done();
-	    })
-	});
+    // Empty the user test database after running this test suite, and create a test account
+    after(function(done) {
+        db.user.destroy({
+            where: {}
+        }).then(function() {
+            done();
+        })
+    });
+    after(function(done) {
+        db.group.destroy({
+            where: {}
+        }).then(function() {
+            done();
+        })
+    });
 
 });

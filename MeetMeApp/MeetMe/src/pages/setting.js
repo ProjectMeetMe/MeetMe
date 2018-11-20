@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { AsyncStorage, AppRegistry, View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert} from "react-native";
 import NavigationForm from "../components/navigationForm";
-import update from 'immutability-helper';
 import CheckBox from 'react-native-check-box'
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
@@ -16,7 +15,14 @@ export default class Setting extends Component{
       tableData: [],
       isChecked: false,
       token: '',
-      savedSchedule: ''
+//      savedSchedule: '',
+      Mon: [],
+      Tues: [],
+      Wed: [],
+      Thurs: [],
+      Fri: [],
+      Sat: [],
+      Sun: [],
     }
 
     AsyncStorage.getItem("token").then((value) => {
@@ -37,6 +43,10 @@ export default class Setting extends Component{
     switch(dayInteger) {
       case 0:
         whichDay = "SUN";
+        let Sun = [...this.state.Sun];
+        Sun.push(whichHour);
+        this.setState({ Sun });
+        console.log("Sunday array is: " + this.state.Sun[0]);
         break;
       case 1:
         whichDay = "MON";
@@ -76,9 +86,16 @@ export default class Setting extends Component{
                   "Authorization": "Bearer " + token,
                 },
         body:JSON.stringify({
-          schedule: this.state.savedSchedule,
-                })	
-      })
+         // schedule: this.state.savedSchedule,
+          Mon: this.state.Mon,
+          Tues: this.state.Tues,
+          Wed: this.state.Wed,
+          Thurs: this.state.Thurs,
+          Fri: this.state.Fri,
+          Sat: this.state.Sat,
+          Sun: this.state.Sun,
+        })	
+    })
       .then((response) => response.json())
       .then((responseJson) => {
             Toast.show(responseJson.message, Toast.LONG);
@@ -87,19 +104,6 @@ export default class Setting extends Component{
 	
 	render(){
     const state = this.state;
-
-    // const checkBox = (value) => (
-    //   <CheckBox
-    //     style={{flex: 1, padding: 10}}
-    //     onClick={()=>{
-    //       this.setState({
-    //         isChecked: !this.state.isChecked
-    //       })
-    //     }}
-    //     isChecked = {this.state.isChecked}
-    //   //  leftText = {"CheckBox"}
-    //   />
-    //)
 
     const selectButton = (value) => (
      
@@ -163,7 +167,7 @@ export default class Setting extends Component{
    
 		return(
       <View style={{flex: 1}}>
-      <NavBar style={style}>          
+      <NavBar style={styles.navBar}>          
             <NavButton style={styles.navButton}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}

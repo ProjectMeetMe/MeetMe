@@ -39,6 +39,8 @@ router.get("/getEvents", groupController.findGroup, groupController.checkMembers
 /////Work in progress:
 
 /* GET optimal availibilties for all users in group*/
+//Request header: {groupId: <int>}
+//Body: {threshold: <int>, day: <string>}
 router.get("/getAvailabilities", groupController.findGroup, groupController.checkMembership, groupController.getAvailabilities);
 
 

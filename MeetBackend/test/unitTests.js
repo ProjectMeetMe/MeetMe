@@ -179,8 +179,8 @@ describe("Unit Tests for calculate availibilties function", function() {
 	};
 
 	schedule2 = {
-		Mon: [],
-		Tues: [9,9.5,11.5],
+		Mon: [9,9.5,11.5],
+		Tues: [9],
 		Wed: [],
 		Thurs: [],
 		Fri: [],
@@ -199,7 +199,7 @@ describe("Unit Tests for calculate availibilties function", function() {
 	};
 
 	schedule4 = {
-		Mon: [],
+		Mon: [10,9],
 		Tues: [],
 		Wed: [],
 		Thurs: [],
@@ -210,109 +210,11 @@ describe("Unit Tests for calculate availibilties function", function() {
 
 
 	it("No schedules with threshold 1", function() {
-		var schedules = [];
-		var threshold = 1;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(0);
-		optimalSchedule.Tues.should.have.length(0);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(0);
-		optimalSchedule.Sun.should.have.length(0);
-	});
-
-	it("1 schedule with threshold 1", function() {
-        var schedules = [schedule1];
-		var threshold = 1;
-        optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(4);
-		optimalSchedule.Tues.should.have.length(0);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(0);
-		optimalSchedule.Sun.should.have.length(0);
-    });
-
-	it("1 empty schedule with threshold 1", function() {
-		var schedules = [schedule0];
-		var threshold = 1;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(0);
-		optimalSchedule.Tues.should.have.length(0);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(0);
-		optimalSchedule.Sun.should.have.length(0);
-	});
-
-	it("1 empty schedule AND 1 regular schedule with threshold 1", function() {
-		var schedules = [schedule0, schedule1];
-		var threshold = 1;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(4);
-		optimalSchedule.Tues.should.have.length(0);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(0);
-		optimalSchedule.Sun.should.have.length(0);
-	});
-
-	it("2 schedules, no overlap, with threshold 1", function() {
-		var schedules = [schedule1, schedule2];
-		var threshold = 1;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(4);
-		optimalSchedule.Tues.should.have.length(3);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(0);
-		optimalSchedule.Sun.should.have.length(0);
-	});
-
-	it("4 schedules, some overlap, with threshold 2", function() {
 		var schedules = [schedule1, schedule2, schedule3, schedule4];
 		var threshold = 2;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(1);
-		optimalSchedule.Tues.should.have.length(1);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(1);
-		optimalSchedule.Sun.should.have.length(0);
+		var day = "Mon";
+		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold, day);
+		optimalSchedule.should.have.length(3);
 	});
-
-	it("4 schedules, some overlap but not sufficient, with threshold 4", function() {
-		var schedules = [schedule1, schedule2, schedule3, schedule4];
-		var threshold = 4;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(0);
-		optimalSchedule.Tues.should.have.length(0);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(0);
-		optimalSchedule.Sun.should.have.length(0);
-	});
-
-	it("5 schedules, threshold 0", function() {
-		var schedules = [schedule0, schedule1, schedule2, schedule3, schedule4];
-		var threshold = 0;
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold);
-		optimalSchedule.Mon.should.have.length(4);
-		optimalSchedule.Tues.should.have.length(3);
-		optimalSchedule.Wed.should.have.length(0);
-		optimalSchedule.Thurs.should.have.length(0);
-		optimalSchedule.Fri.should.have.length(0);
-		optimalSchedule.Sat.should.have.length(1);
-		optimalSchedule.Sun.should.have.length(1);
-	});
-
-
 
 });

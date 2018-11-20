@@ -30,4 +30,7 @@ router.get("/getGroups", userController.getGroups);
 //Body header: {schedule: <JSON object>}
 router.put("/editSchedule", userController.editSchedule);
 
+/* GET sorted events for all groups that user belongs to */
+router.get("/getEvents", userController.getEvents);
+
 module.exports = router;

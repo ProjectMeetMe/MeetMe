@@ -17,6 +17,8 @@
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "react": "16.5.0",
+    "react-addons-create-fragment": "^15.6.2",
+    "react-addons-update": "^15.6.2",
     "react-native": "0.57.1",
     "react-native-action-button": "^2.8.5",
     "react-native-calendars": "^1.21.0",

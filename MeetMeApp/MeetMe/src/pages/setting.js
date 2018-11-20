@@ -3,6 +3,8 @@ import { AppRegistry,View,Text,StyleSheet, ScrollView, TouchableOpacity, Alert} 
 import NavBar from "react-native-nav";
 import NavigationForm from "../components/navigationForm";
 import CheckBox from 'react-native-check-box'
+import createFragment from 'react-addons-create-fragment'; // ES6
+import update from 'react-addons-update';
 
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
@@ -13,7 +15,57 @@ export default class Setting extends Component{
       tableHead: ['', 'SUN', 'MON', 'TUE', 'WED', 'THUR', 'FRI', 'SAT'],
       widthArr: [60, 50, 50, 50, 50, 50, 50, 50],
       tableData: [],
-      isChecked: false
+      isChecked: false,
+      isChecledMap: {  0 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       1 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       2 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       3 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       4 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       5 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       6 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       7 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       8 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                       9 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      10 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      11 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      12 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      13 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      14 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      15 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      16 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      17 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      18 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      19 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      20 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      21 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      22 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      23 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      24 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      25 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      26 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      27 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      28 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      29 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      30 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      31 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      32 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      33 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      34 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      35 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      36 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      37 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      38 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      39 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      40 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      41 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      42 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      43 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      44 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      45 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      46 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false},
+                      47 : { 0:false, 1:false, 2:false, 3:false, 4:false, 5:false, 6:false}
+                    }
+                    
     }
   }
 
@@ -24,54 +76,43 @@ export default class Setting extends Component{
   // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
   //Calculations are all done using "value" 
   unselectButton(value, X, Y) {
-    var dayInteger = value % 7;
-    var whichHour = (value - dayInteger) / 14;
-    var whichDay;
-    switch(dayInteger) {
-      case 0:
-        whichDay = "SUN";
-        break;
-      case 1:
-        whichDay = "MON";
-        break;
-      case 2:
-        whichDay = "TUE";
-        break;
-      case 3:
-        whichDay = "WED";
-        break;
-      case 4:
-        whichDay = "THUR";
-        break;
-      case 5:
-        whichDay = "FRI";
-        break;
-      case 6:
-        whichDay = "SAT";
-        break;
-      default: 
-        whichDay = "ERR";
-    }
-    Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
+    this.setState({
+      isChecledMap: update(this.state.isChecledMap, {X: {Y: {$set: true}}})
+    });
+    // var dayInteger = value % 7;
+    // var whichHour = (value - dayInteger) / 14;
+    // var whichDay;
+    // switch(dayInteger) {
+    //   case 0:
+    //     whichDay = "SUN";
+    //     break;
+    //   case 1:
+    //     whichDay = "MON";
+    //     break;
+    //   case 2:
+    //     whichDay = "TUE";
+    //     break;
+    //   case 3:
+    //     whichDay = "WED";
+    //     break;
+    //   case 4:
+    //     whichDay = "THUR";
+    //     break;
+    //   case 5:
+    //     whichDay = "FRI";
+    //     break;
+    //   case 6:
+    //     whichDay = "SAT";
+    //     break;
+    //   default: 
+    //     whichDay = "ERR";
+    // }
+    // Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
 
   }
 	
 	render(){
     const state = this.state;
-
-    // const checkBox = (value) => (
-    //   <CheckBox
-    //     style={{flex: 1, padding: 10}}
-    //     onClick={()=>{
-    //       this.setState({
-    //         isChecked: !this.state.isChecked
-    //       })
-    //     }}
-    //     isChecked = {this.state.isChecked}
-    //   //  leftText = {"CheckBox"}
-    //   />
-    //)
-
     const selectButton = (value) => (
      
       <TouchableOpacity onPress={() => this.selectButton(value)}>  
@@ -185,12 +226,47 @@ const styles = StyleSheet.create({
     color:"#ffffff",
     textAlign:"center"
   },
-  header: { height: 50, backgroundColor: '#537791' },
-  text2: { textAlign: 'center', fontWeight: '100' },
-  dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' },
-  selectButton: { width: 40, height: 35, marginLeft: 5, backgroundColor: '#ffffff', borderRadius: 2 },
-  unselectButton: { width: 40, height: 35, marginLeft: 5, backgroundColor: '#c8e1ff', borderRadius: 2 },
-  btnText: { textAlign: 'center' }
+  header: { 
+    height: 50, 
+    backgroundColor: '#537791' 
+  },
+
+  text2: { 
+    textAlign: 'center', 
+    fontWeight: '100' 
+  },
+   
+  dataWrapper: { 
+    marginTop: -1 
+  },
+
+  row: { 
+    height: 40, 
+    backgroundColor: '#E7E6E1' 
+  },
+
+  selectButton: { 
+    // width: 40, 
+    // height: 35, 
+    //marginLeft: 5, 
+    //borderRadius: 2,
+    // backgroundColor: '#ffffff', 
+    backgroundColor: '#98fb98', 
+  },
+
+  unselectButton: { 
+    // width: 40, 
+    // height: 35, 
+    //marginLeft: 5, 
+    // borderRadius: 2 
+    // backgroundColor: '#c8e1ff', 
+    backgroundColor: '#A9A9A9', 
+  },
+
+  btnText: { 
+    textAlign: 'center' 
+  },
+
+
   
 });

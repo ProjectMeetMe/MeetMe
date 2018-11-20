@@ -5,6 +5,8 @@ import CheckBox from 'react-native-check-box'
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
 import {Image} from "react-native";
+import Toast from "react-native-simple-toast";
+
 
 export default class Setting extends Component{
   constructor(props) {
@@ -38,42 +40,135 @@ export default class Setting extends Component{
     Alert.alert(`This value is ${value}`);
   }
 
+
   // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
   //Calculations are all done using "value" 
   unselectButtonAction(value, X, Y) {
+    const state = this.state;
+
     var dayInteger = value % 7;
     var whichHour = (value - dayInteger) / 14;
     var whichDay;
+    var day, index;
+
     switch(dayInteger) {
       case 0:
         whichDay = "SUN";
-        // let Sun = [...this.state.Sun];
-        // Sun.push(whichHour);
-        // this.setState({ Sun });
-        // console.log("Sunday array is: " + this.state.Sun[0]);
+        day = state.Sun;
+        if(!day.includes(whichHour)) {
+          day.push(whichHour);
+          this.setState({ Sun: day });
+          Toast.show("Available - Sunday - " + whichHour + "h", Toast.SHORT);
+        } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Sun : day });
+          Toast.show("Unavailable - Sunday - " + whichHour + "h", Toast.SHORT);
+        }
+        console.log("Sunday array is: " + state.Sun);
+
         break;
       case 1:
         whichDay = "MON";
+        day = state.Mon;
+        if(!day.includes(whichHour)) {
+          day.push(whichHour);
+          this.setState({ Mon: day });;
+          Toast.show("Available - Monday - " + whichHour + "h", Toast.SHORT);
+
+        } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Mon : day });
+          Toast.show("Unavailable - Monday - " + whichHour + "h", Toast.SHORT);
+        }
+         console.log("Monday array is: " + state.Mon);
         break;
       case 2:
         whichDay = "TUE";
+        day = state.Tues;
+        if(!day.includes(whichHour)) {
+          day.push(whichHour);
+          this.setState({ Tues: day });
+          Toast.show("Available - Tuesday - " + whichHour + "h", Toast.SHORT);
+
+        } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Tue : day });
+          Toast.show("Unavailable - Tuesday - " + whichHour + "h", Toast.SHORT);
+        }
+        console.log("Tuesday array is: " + state.Tues);
         break;
       case 3:
         whichDay = "WED";
+        day = state.Wed;
+        if(!day.includes(whichHour)) {
+          day.push(whichHour);
+          this.setState({ Wed: day });
+          Toast.show("Available - Wednesday - " + whichHour + "h",Toast.SHORT);
+
+        } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Wed : day });
+          Toast.show("Unavailable - Wednesday - " + whichHour + "h", Toast.SHORT);
+        }
+         console.log("Wednesday array is: " + state.Wed);
         break;
       case 4:
         whichDay = "THUR";
+         day = state.Thurs;
+         if(!day.includes(whichHour)) {
+          day.push(whichHour);
+          this.setState({ Thurs: day });
+          Toast.show("Available - Thursday - " + whichHour + "h", Toast.SHORT);
+
+         } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Thurs : day });
+          Toast.show("Unavailable - Thursday - " + whichHour + "h", Toast.SHORT);
+        }
+         console.log("Thursday array is: " + state.Thurs);
         break;
       case 5:
         whichDay = "FRI";
+         day = state.Fri;
+        if(!day.includes(whichHour)) {
+         day.push(whichHour);
+         this.setState({ Fri: day });
+         Toast.show("Available - Friday - " + whichHour + "h", Toast.SHORT);
+
+        } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Fri : day });
+          Toast.show("Unavailable - Friday - " + whichHour + "h", Toast.SHORT);
+        }
+        console.log("Friday array is: " + state.Fri);
         break;
       case 6:
         whichDay = "SAT";
+         day = state.Sat;
+        if(!day.includes(whichHour)) {
+         day.push(whichHour);
+         this.setState({ Sat: day });
+         Toast.show("Available - Saturday - " + whichHour + "h", Toast.SHORT);
+
+        } else {
+          index = day.indexOf(whichHour);
+          day.splice(index, 1);
+          this.setState({ Sat : day });
+          Toast.show("Unavailable - Saturday - " + whichHour + "h", Toast.SHORT);
+        }
+        console.log("Saturday array is: " + state.Sat);
         break;
       default: 
         whichDay = "ERR";
     }
-    Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
+    
+    //Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
 
   }
 
@@ -145,7 +240,7 @@ selectButton = (value) => (
 )
 
 	renderTable() {
-    console.log("RE")
+
     var half_hour = false;
     for (let i = 0; i < 48; i += 1) {
       const rowData = [];
@@ -187,8 +282,8 @@ selectButton = (value) => (
 
   }
 	render(){
+    console.log("rendering");
     const state = this.state;
-    console.log("RENDER TABLE BEING CALLED");
 
 		return(
       <View style={{flex: 1}}>

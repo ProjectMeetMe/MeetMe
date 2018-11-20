@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { AppRegistry,View,Text,StyleSheet, ScrollView, TouchableOpacity, Alert} from "react-native";
-import NavBar from "react-native-nav";
+import { AsyncStorage, AppRegistry, View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert} from "react-native";
 import NavigationForm from "../components/navigationForm";
 import update from 'immutability-helper';
 import CheckBox from 'react-native-check-box'
-
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
+import {Image} from "react-native";
 
 export default class Setting extends Component{
   constructor(props) {
@@ -140,33 +140,24 @@ export default class Setting extends Component{
     }
 
     saveFreeTime = () => {
-      var status = 400;
   
-      // console.log("userid    " + userid);
-      // console.log("joinGroupID    " + joinGroupID);
-          //Call joinGroup API, send the group the user want to 
-          //and the user id as key value pair in the post API call
+          //Call saveFreeTime API, send the user free time slots to
+          //post API call with user token
           fetch("http://104.42.79.90:2990/group/joinGroup?groupId=" + joinGroupID,{
               method:"post",
               headers:{
                         "Accept": "application/json",
                         "Content-type": "application/json",
                         "Authorization": "Bearer " + token,
-                      }	
+                      },
+              body:JSON.stringify({
+                savedSchedule: this.state.savedSchedule,
+                      })	
             })
-              .then((response) => {
-                  status = response.status;
-                  return response.json();
-              })
-              .then((responseJson) => {
-                  //display success / fail message
-                  if(status === 200)    //success
-                  {
-                     this.goBack();    
-                  }
+            .then((response) => response.json())
+            .then((responseJson) => {
                   Toast.show(responseJson.message, Toast.LONG);
               });
-      Keyboard.dismiss();
   }
     
 		return(
@@ -181,7 +172,7 @@ export default class Setting extends Component{
           {this.props.title}
           </NavTitle>
             <NavButton style={styles.navButton} 
-                onPress={this.joinGroup}>
+                onPress={this.saveFreeTime}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
                 source={require("../images/android_icon_save.png")}
@@ -238,12 +229,75 @@ const styles = StyleSheet.create({
     color:"#ffffff",
     textAlign:"center"
   },
-  header: { height: 50, backgroundColor: '#537791' },
-  text2: { textAlign: 'center', fontWeight: '100' },
-  dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' },
-  selectButton: { width: 40, height: 35, marginLeft: 5, backgroundColor: '#ffffff', borderRadius: 2 },
-  unselectButton: { width: 40, height: 35, marginLeft: 5, backgroundColor: '#c8e1ff', borderRadius: 2 },
-  btnText: { textAlign: 'center' }
+  header: { 
+    height: 50, 
+    backgroundColor: '#537791' 
+  },
+
+  text2: { 
+    textAlign: 'center', 
+    fontWeight: '100' 
+  },
+
+  dataWrapper: { 
+    marginTop: -1 
+  },
+
+  row: { 
+    height: 40, 
+    backgroundColor: '#E7E6E1' 
+  },
+
+  selectButton: { 
+    width: 40, 
+    height: 35, 
+    marginLeft: 5, 
+    backgroundColor: '#ffffff', 
+    borderRadius: 2 
+  },
+
+  unselectButton: { 
+    width: 40, 
+    height: 35, 
+    marginLeft: 5, 
+    backgroundColor: '#c8e1ff', 
+    borderRadius: 2 
+  },
+
+  btnText: { 
+    textAlign: 'center' 
+  },
+
+  statusBar: {
+    backgroundColor: "#212121",
+  },
+  navBar: {
+    backgroundColor: "#212121",
+    borderTopWidth: 0,
+    borderBottomColor: "rgba(0, 0, 0, 0.1)",
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    padding: 0,
+  },
+  title: {
+    color: "#CECECE",
+    textAlign: 'center',
+  },
+  buttonText: {
+    color: "rgba(231, 37, 156, 0.5)",
+  },
+  navGroup: {
+    justifyContent: "flex-end",
+  },
+  navButton: {
+    flex: 1,
+    alignItems: "center",
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: 5,
+  },
   
 });

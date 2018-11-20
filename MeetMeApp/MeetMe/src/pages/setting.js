@@ -15,7 +15,7 @@ export default class Setting extends Component{
       tableData: [],
       isChecked: false,
       token: '',
-//      savedSchedule: '',
+      savedSchedule: {},
       Mon: [],
       Tues: [],
       Wed: [],
@@ -28,6 +28,10 @@ export default class Setting extends Component{
     AsyncStorage.getItem("token").then((value) => {
       this.setState({token: value});
     }).done();
+  }
+
+  componentDidMount() {
+    this.renderTable();
   }
 
   selectButtonAction(value) {
@@ -74,33 +78,51 @@ export default class Setting extends Component{
   }
 
   
-  saveFreeTime = () => {
+  async saveFreeTime(){
     const {token, Mon, Tues, Wed, Thurs, Fri, Sat, Sun} = this.state;
-  
+    var mySchedule = "{"+ "Mon:"+ Mon + "Tue:"+ Tues + "Wed:"+ Wed + 
+                          "Thu:"+ Thurs + "Fri:"+ Fri + "Sat:" + Sat + "Sun:" + Sun
+                      "}";
+    this.setState({
+      savedSchedule: mySchedule
+    })
+    const usertoken = await AsyncStorage.getItem("token");
+
+    console.log("user token" + token);
     //Call saveFreeTime API, send the user free time slots to
     //post API call with user token
-    fetch("http://104.42.79.90:2990/user/editSchedule",{
+    var whatever = await fetch("http://104.42.79.90:2990/user/editSchedule",{
         method:"put",
         headers:{
                   "Accept": "application/json",
                   "Content-type": "application/json",
-                  "Authorization": "Bearer " + token,
+                  "Authorization": "Bearer " + this.state.token,
                 },
         body:JSON.stringify({
-         // schedule: this.state.savedSchedule,
-          Mon: Mon,
-          Tues: Tues,
-          Wed: Wed,
-          Thurs: Thurs,
-          Fri: Fri,
-          Sat: Sat,
-          Sun: Sun,
+          schedule: { Mon : Mon,
+                      Tue : Tues,
+                      Wed : Wed,
+                      Thu : Thurs,
+                      Fri : Fri, 
+                      Sat : Sat, 
+                      Sun : Sun,
+                    },
+          // Mon: Mon,
+          // Tues: Tues,
+          // Wed: Wed,
+          // Thurs: Thurs,
+          // Fri: Fri,
+          // Sat: Sat,
+          // Sun: Sun,
         })	
+        
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-            Toast.show(responseJson.message, Toast.LONG);
-        });
+      const myWhatever = await whatever.json();
+      // .then((response) => response.json())
+      // .then((responseJson) => {
+            Toast.show(myWhatever.message, Toast.LONG);
+            console.log("whatever =========" + myWhatever.message);
+       // });
 }
 
 unselectButton = (value, X, Y) => (
@@ -123,7 +145,7 @@ selectButton = (value) => (
 )
 
 	renderTable() {
-
+    console.log("RE")
     var half_hour = false;
     for (let i = 0; i < 48; i += 1) {
       const rowData = [];
@@ -166,8 +188,8 @@ selectButton = (value) => (
   }
 	render(){
     const state = this.state;
+    console.log("RENDER TABLE BEING CALLED");
 
-    this.renderTable();
 		return(
       <View style={{flex: 1}}>
       <NavBar style={styles.navBar}>          
@@ -180,7 +202,7 @@ selectButton = (value) => (
           {this.props.title}
           </NavTitle>
             <NavButton style={styles.navButton} 
-                onPress={this.saveFreeTime}>
+                onPress={() => this.saveFreeTime}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
                 source={require("../images/android_icon_save.png")}

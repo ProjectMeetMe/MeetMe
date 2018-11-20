@@ -130,6 +130,8 @@ export default class SuggestEvent extends Component {
   addEvent = () => {
     const {token, pickedDate, groupId, duration, weekDay} = this.state;
     
+    console.log("token:   " + token);
+
     if(pickedDate == "")
     {
       Toast.show("Please input a date for your event.", Toast.LONG);
@@ -140,8 +142,8 @@ export default class SuggestEvent extends Component {
     }
     else
     {
-      fetch("http://104.42.79.90:2990/event/getAvailabilities?groupId=" + groupId,{
-			      method:"get",
+      fetch("http://104.42.79.90:2990/group/getAvailabilities?groupId=" + this.props.groupID,{
+			      method:"post",
 			      headers:{
 				              "Accept": "application/json",
                               "Content-type": "application/json",
@@ -172,7 +174,6 @@ hideDatePicker  = () => this.setState({ datePickerVisible: false });
 
 // Interpret start date
 handleDatePicked  = (date) => {
-  console.log("Start Time has been picked: ", date);
   var dateString = date.toString();
   // E.G: dateString = Sun Oct 21 2018 17:38:00 GMT-700 (PDT)
   var dateStringArray = dateString.split(" ",5);
@@ -226,8 +227,6 @@ handleDatePicked  = (date) => {
       pickedDate: dateOutString,
       weekDay: dateStringArray[0],
     });
-  console.log("weekDay: ============  " + dateStringArray[0]);
-  console.log("dateOutString: ============  " + dateOutString);
   this.hideDatePicker();
 };
 
@@ -283,7 +282,7 @@ renderTime()
                         this.inputRefs.picker2.togglePicker();
                     }}
                     style={styles.input}
-                    value={this.state.favColor}
+                    value={this.state.duration}
                     ref={(el) => {
                         this.inputRefs.picker = el;
                     }}

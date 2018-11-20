@@ -30,23 +30,23 @@ export default class Setting extends Component{
     }).done();
   }
 
-  selectButton(value) {
+  selectButtonAction(value) {
     Alert.alert(`This value is ${value}`);
   }
 
   // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
   //Calculations are all done using "value" 
-  unselectButton(value, X, Y) {
+  unselectButtonAction(value, X, Y) {
     var dayInteger = value % 7;
     var whichHour = (value - dayInteger) / 14;
     var whichDay;
     switch(dayInteger) {
       case 0:
         whichDay = "SUN";
-        let Sun = [...this.state.Sun];
-        Sun.push(whichHour);
-        this.setState({ Sun });
-        console.log("Sunday array is: " + this.state.Sun[0]);
+        // let Sun = [...this.state.Sun];
+        // Sun.push(whichHour);
+        // this.setState({ Sun });
+        // console.log("Sunday array is: " + this.state.Sun[0]);
         break;
       case 1:
         whichDay = "MON";
@@ -75,6 +75,7 @@ export default class Setting extends Component{
 
   
   saveFreeTime = () => {
+    const {token, Mon, Tues, Wed, Thurs, Fri, Sat, Sun} = this.state;
   
     //Call saveFreeTime API, send the user free time slots to
     //post API call with user token
@@ -87,13 +88,13 @@ export default class Setting extends Component{
                 },
         body:JSON.stringify({
          // schedule: this.state.savedSchedule,
-          Mon: this.state.Mon,
-          Tues: this.state.Tues,
-          Wed: this.state.Wed,
-          Thurs: this.state.Thurs,
-          Fri: this.state.Fri,
-          Sat: this.state.Sat,
-          Sun: this.state.Sun,
+          Mon: Mon,
+          Tues: Tues,
+          Wed: Wed,
+          Thurs: Thurs,
+          Fri: Fri,
+          Sat: Sat,
+          Sun: Sun,
         })	
     })
       .then((response) => response.json())
@@ -101,28 +102,27 @@ export default class Setting extends Component{
             Toast.show(responseJson.message, Toast.LONG);
         });
 }
-	
-	render(){
-    const state = this.state;
 
-    const selectButton = (value) => (
+unselectButton = (value, X, Y) => (
+  <TouchableOpacity onPress={() => this.unselectButtonAction(value, X, Y)}>
+    <View 
+     style={styles.unselectButton}>
+      <Text style={styles.btnText}>!</Text>
+    </View>
+  </TouchableOpacity>
+);
+
+selectButton = (value) => (
      
-      <TouchableOpacity onPress={() => this.selectButton(value)}>  
-        <View style={styles.selectButton}>
-          <Text style={styles.btnText}>*</Text>
-        </View>
-      </TouchableOpacity>
-      
-    )
-    
-    const unselectButton = (value, X, Y) => (
-      <TouchableOpacity onPress={() => this.unselectButton(value, X, Y)}>
-        <View 
-         style={styles.unselectButton}>
-          <Text style={styles.btnText}>!</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  <TouchableOpacity onPress={() => this.selectButtonAction(value)}>  
+    <View style={styles.selectButton}>
+      <Text style={styles.btnText}>*</Text>
+    </View>
+  </TouchableOpacity>
+  
+)
+
+	renderTable() {
 
     var half_hour = false;
     for (let i = 0; i < 48; i += 1) {
@@ -134,12 +134,12 @@ export default class Setting extends Component{
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${0}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${0}${0}`);
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
           }
         }
         half_hour = true;
@@ -149,22 +149,25 @@ export default class Setting extends Component{
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${3}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${3}${0}`);
           for (let fill = 0; fill < 7; fill++) { 
-            rowData.push(unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
           }
         }
         half_hour = false;
     }
-      state.tableData.push(rowData);
-  //    this.setState({
-    //    tableData: update(this.state.tableData, {1: {$set: '1'}})
-     // })
+      this.state.tableData.push(rowData);
     }
-   
+
+
+  }
+	render(){
+    const state = this.state;
+
+    this.renderTable();
 		return(
       <View style={{flex: 1}}>
       <NavBar style={styles.navBar}>          
@@ -184,6 +187,7 @@ export default class Setting extends Component{
               />
             </NavButton>
          </NavBar> 
+
         <ScrollView horizontal={true}>
           <View>
             <Table borderStyle={{borderColor: '#C1C0B9'}}>

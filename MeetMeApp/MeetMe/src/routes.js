@@ -14,6 +14,7 @@ import CreateEvent from "./pages/createevent";
 import GroupMember from "./pages/groupmember";
 import GroupSummary from "./pages/groupsummary";
 import SuggestEvent from "./pages/suggestevent";
+import UserCalendar from "./pages/usercalendar";
 import {YellowBox} from 'react-native';
 
 export default class Routes extends Component{
@@ -59,6 +60,7 @@ export default class Routes extends Component{
 			    <Scene key="signup" component={Signup} title="Register"/>
 					<Scene key="home" component={Home} title="HomePage" initial={this.state.logged}/>
 					<Scene key="profile" component={Profile} title="ProfilePage"/>
+					<Scene key="usercalendar" component={UserCalendar} title="UserCalendar"/>
 					<Scene key="creategroup" component={CreateGroup} title="CreateGroup"/>
 					<Scene key="joingroup" component={JoinGroup} title="JoinGroup"/>
 					<Scene key="groupprofile" component={GroupProfile} title="GroupProfile"/>

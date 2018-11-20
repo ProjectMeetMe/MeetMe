@@ -30,7 +30,9 @@ export default class SuggestEvent extends Component {
             groupId: this.props.groupID,
             datePickerVisible: false,
             duration: 0,
-
+            weekDay:"",
+            suggestions:{},
+            suggestionDisplay: false,
             items: [
                 {
                     label: ' 0.5',
@@ -126,7 +128,7 @@ export default class SuggestEvent extends Component {
   //pickedDate and endTime as key value pair in the post API 
   //call and allow user to sign up a new account
   addEvent = () => {
-    const {token, pickedDate, groupId, duration} = this.state;
+    const {token, pickedDate, groupId, duration, weekDay} = this.state;
     
     if(pickedDate == "")
     {
@@ -138,26 +140,27 @@ export default class SuggestEvent extends Component {
     }
     else
     {
-      fetch("http://104.42.79.90:2990/event/addEvent?groupId=" + groupId,{
-			      method:"post",
+      fetch("http://104.42.79.90:2990/event/getAvailabilities?groupId=" + groupId,{
+			      method:"get",
 			      headers:{
 				              "Accept": "application/json",
                               "Content-type": "application/json",
                               "Authorization": "Bearer " + token,
-			      },
-			      body:JSON.stringify({
-                      groupId:         groupId,
-                      eventName:       eventName, 
-                      description:     description,
-                      pickedDate:       pickedDate,
-                      endTime:         endTime,
-            })			
+                  },
+                  body:JSON.stringify({
+                    day: duration,
+                    threshold: weekDay,
+          })				
 		      })
 		      .then((response) => response.json())
 		      .then((responseJson) => {
                     console.log("responseJson:  " + responseJson);
                     console.log("responseJson.message:  " + responseJson.message);
-                    Toast.show(responseJson.message, Toast.LONG);		
+
+                    this.setState({
+                      suggestions: responseJson,
+                      suggestionDisplay: true,
+                    });	
           });
     }
     Keyboard.dismiss();
@@ -169,7 +172,7 @@ hideDatePicker  = () => this.setState({ datePickerVisible: false });
 
 // Interpret start date
 handleDatePicked  = (date) => {
-  //console.log("Start Time has been picked: ", date);
+  console.log("Start Time has been picked: ", date);
   var dateString = date.toString();
   // E.G: dateString = Sun Oct 21 2018 17:38:00 GMT-700 (PDT)
   var dateStringArray = dateString.split(" ",5);
@@ -219,7 +222,11 @@ handleDatePicked  = (date) => {
           month = 13;
       }
   dateOutString = year + "-" + month + "-" + day;
-  this.setState({pickedDate: dateOutString});
+  this.setState({
+      pickedDate: dateOutString,
+      weekDay: dateStringArray[0],
+    });
+  console.log("weekDay: ============  " + dateStringArray[0]);
   console.log("dateOutString: ============  " + dateOutString);
   this.hideDatePicker();
 };

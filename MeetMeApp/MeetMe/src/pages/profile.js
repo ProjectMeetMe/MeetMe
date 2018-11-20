@@ -70,10 +70,11 @@ login() {
         <View  style={{flex: 1}}>
         <NavigationForm title="Profile" type="profile"></NavigationForm>
           <View style={styles.container}>
-              {/* <Text style={styles.Text}>I am profile page. </Text>
-              <Text style={styles.Text}>{this.state.name}</Text>
-              <Text style={styles.Text}>{this.state.email}</Text>
-              <Text style={styles.Text}>{this.state.id}</Text> */}
+
+              <TouchableOpacity style={styles.scheduleButton}  onPress={() => {Actions.usercalendar()}}>
+                  <Text style={styles.buttonText}>My Schedule</Text>
+              </TouchableOpacity> 
+
               <TouchableOpacity style={styles.button} onPress={this.logout}>
                   <Text style={styles.buttonText}>Log Out</Text>
               </TouchableOpacity>  
@@ -85,11 +86,10 @@ login() {
 
 const styles = StyleSheet.create({
   container : {
-    flexGrow: 1,
-    justifyContent:"center",
-    alignItems: "center",
     backgroundColor:"#455a64",
-    flexDirection: "row",
+    flex: 1,
+    alignItems:"center",
+    justifyContent :"center"
   },
 
   profileTextCont : {
@@ -110,10 +110,21 @@ const styles = StyleSheet.create({
   button: {
     width:300,
     backgroundColor:"#CB3333",
-     borderRadius: 10,
-      marginVertical: 10,
-      paddingVertical: 13
+    borderRadius: 25,
+    marginVertical: 10,
+    paddingVertical: 13,
+    paddingHorizontal:16,
   },
+
+  scheduleButton: {
+    width:300,
+    backgroundColor:"#90EE90",
+    borderRadius: 25,
+    marginVertical: 10,
+    paddingVertical: 13,
+    paddingHorizontal:16,
+  },
+  
   buttonText: {
     fontSize:16,
     fontWeight:"500",

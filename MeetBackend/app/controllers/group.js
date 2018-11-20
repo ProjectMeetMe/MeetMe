@@ -42,12 +42,15 @@ exports.getGroupInfo = function(req, res, next) {
     });
 };
 
+
 /*
 Gets events from group specified by req.group
  */
 exports.getEvents = function(req, res, next) {
     var group = req.group;
-    group.getEvents({raw: true}).then(function(events) {
+    group.getEvents({
+        raw: true
+    }).then(function(events) {
 
         var events = exports.sortEvents(events);
         return res.status(200).json({
@@ -61,35 +64,40 @@ exports.getEvents = function(req, res, next) {
     });
 }
 
+
 /*
 Helper function for get events, sorts events in chronological order and
 categorized by date, with index and colour fields
  */
 exports.sortEvents = function(events) {
 
-	if (events.constructor !== Array){
-		throw Error("Not an array");
-	}
+    if (events.constructor !== Array) {
+        throw Error("Not an array");
+    }
 
     events.sort(function(a, b) { //sort raw events list by chronological order
-        return new Date(a.startTime) - new Date (b.startTime);
+        return new Date(a.startTime) - new Date(b.startTime);
     });
 
-	var sortedEvents = {}; //Contains return JSON object, containing both categorized and dot events
-	var categorizedEvents = {}; //Contains sorted event info grouped by sorted date
-	var dotEvents = {}; //Contains colours to represent events, grouped by sorted date
-	for (var i=0; i<events.length; i++) {
-		var eventDate = moment.utc(events[i].startTime).format("YYYY-MM-DD"); // no time
-		if(!(eventDate in categorizedEvents)){ //add key if doesnt exist
-			categorizedEvents[eventDate] = [];
-			dotEvents[eventDate] = {"dots": []};
-		}
-		categorizedEvents[eventDate].push(events[i]); //add event to correct key
-		dotEvents[eventDate]["dots"].push({color: colours[Math.floor(Math.random() * colours.length)]}); //assign random colour to dot event
-	}
+    var sortedEvents = {}; //Contains return JSON object, containing both categorized and dot events
+    var categorizedEvents = {}; //Contains sorted event info grouped by sorted date
+    var dotEvents = {}; //Contains colours to represent events, grouped by sorted date
+    for (var i = 0; i < events.length; i++) {
+        var eventDate = moment.utc(events[i].startTime).format("YYYY-MM-DD"); // no time
+        if (!(eventDate in categorizedEvents)) { //add key if doesnt exist
+            categorizedEvents[eventDate] = [];
+            dotEvents[eventDate] = {
+                "dots": []
+            };
+        }
+        categorizedEvents[eventDate].push(events[i]); //add event to correct key
+        dotEvents[eventDate]["dots"].push({
+            color: colours[Math.floor(Math.random() * colours.length)]
+        }); //assign random colour to dot event
+    }
 
-	sortedEvents["categorizedEvents"] = categorizedEvents;
-	sortedEvents["dotEvents"] = dotEvents;
+    sortedEvents["categorizedEvents"] = categorizedEvents;
+    sortedEvents["dotEvents"] = dotEvents;
     return sortedEvents;
 }
 
@@ -158,11 +166,11 @@ Removes self user (specified by req.user.id) from target group instance specifie
  */
 exports.leaveGroup = function(req, res, next) {
     var group = req.group;
-	if (group.leaderId == req.user.id){
-		return res.status(400).json({
-			message: "Error: Leader of group cannot leave"
-		});
-	}
+    if (group.leaderId == req.user.id) {
+        return res.status(400).json({
+            message: "Error: Leader of group cannot leave"
+        });
+    }
 
     group.removeUser(req.user.id).then(function(success) {
         if (success) {
@@ -186,84 +194,119 @@ Takes into consideration all user schedules in a group and outputs optimal
 user schedules
  */
 exports.getAvailabilities = function(req, res, next) {
+	var threshold = req.body.threshold;
+	var day = req.body.day;
+	var userSchedules = [];
     var users = req.group.users;
 
-	//Replace below with calculateAvailabilities
+	//Fill userschedules with schedules for all users in the group
+	for (var i=0; i<users.length; i++){
+		userSchedules.push(users[i].schedule);
+	}
 
-	var freeTimes = exports.calculateAvailabilities();
-/*
-    for (var i = 0; i < users.length; i++) {
-        console.log("TESTING")
-        console.log(JSON.stringify(users[i].schedule));
-		//Perhaps encode schedule as an ARRAY of size 7
-		//For generating free times for all days:
-		//examine users[i].schedule.Mon -> users[i].schedule.Sun
-		//with encoding, we can simply loop users[i].schedule[j]{json obj}
-		for (var day in users[i].schedule){ //Loop through keys
-			users[i].schedule[day];
-			console.log(JSON.stringify(users[i].schedule[j]));
-		}
-    }
-*/
+   var freeTimes = exports.calculateAvailabilitiesDay(userSchedules, threshold, day);
+
     return res.status(200).json({
-        freeTimes: freeTimes
+		freeTimes: freeTimes,
+        message: "Successful availabilities calculation"
     });
 }
 
 //Helper function to calculate free availabilties, given a threshold and array of user schedules
-exports.calculateAvailabilities = function(schedules, threshold){
+//NOTE: may not need this
+exports.calculateAvailabilities = function(schedules, threshold) {
 
-	var freqTable = { //entries to arrays are a key-val pair, key = time, obj = freq
-		Mon: {},
-		Tues: {},
-		Wed: {},
-		Thurs: {},
-		Fri: {},
-		Sat: {},
-		Sun: {}
-	};
+    var freqTable = { //entries to arrays are a key-val pair, key = time, obj = freq
+        Mon: {},
+        Tues: {},
+        Wed: {},
+        Thurs: {},
+        Fri: {},
+        Sat: {},
+        Sun: {}
+    };
 
-	var freeTimes = {
-		Mon: [],
-		Tues: [],
-		Wed: [],
-		Thurs: [],
-		Fri: [],
-		Sat: [],
-		Sun: []
-	};
+    var freeTimes = {
+        Mon: [],
+        Tues: [],
+        Wed: [],
+        Thurs: [],
+        Fri: [],
+        Sat: [],
+        Sun: []
+    };
 
-	//Construct a frequency table for availabilties
-	for (var schedule in schedules){ //Loop through keys
-		for (var day in schedules[schedule]){
-			//add entry for freq table
-			for (var ind in schedules[schedule][day]){
-				var timeSlot = schedules[schedule][day][ind]
-				if (freqTable[day][timeSlot]){
-					freqTable[day][timeSlot]++;
-				}
-				else{
-					freqTable[day][timeSlot] = 1;
-				}
+    //Construct a frequency table for availabilties
+    for (var schedule in schedules) { //Loop through keys (individual user schedules)
+        for (var day in schedules[schedule]) {
+            //add entry for freq table
+            for (var ind in schedules[schedule][day]) {
+                var timeSlot = schedules[schedule][day][ind]
+                if (freqTable[day][timeSlot]) {
+                    freqTable[day][timeSlot]++;
+                } else {
+                    freqTable[day][timeSlot] = 1;
+                }
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	//Use frequency table to construct final availabilties
-	for (var day in freqTable){
-		for (var timeSlot in freqTable[day]){
-			if (freqTable[day][timeSlot] >= threshold){ //Found a timeslot with acceptable number of people free
-				freeTimes[day].push(timeSlot);
-			}
-		}
-	}
+    //Use frequency table to construct final availabilties
+    for (var day in freqTable) {
+        for (var timeSlot in freqTable[day]) {
+            if (freqTable[day][timeSlot] >= threshold) { //Found a timeslot with acceptable number of people free
+                freeTimes[day].push(timeSlot);
+            }
+        }
+    }
 
-	return freeTimes;
-
-
+    return freeTimes;
 }
 
+
+//Helper function to calculate free availabilties, given a threshold AND specified day AND array of user schedules
+exports.calculateAvailabilitiesDay = function(schedules, threshold, day) {
+
+    var freqTable = {};
+    var freeTimes = [];
+
+    //Construct a frequency table for availabilties
+    for (var schedule in schedules) { //Loop through keys
+        //add entry for freq table
+        for (var ind in schedules[schedule][day]) {
+            var timeSlot = schedules[schedule][day][ind]
+            if (freqTable[timeSlot]) {
+                freqTable[timeSlot]++;
+            } else {
+                freqTable[timeSlot] = 1;
+            }
+
+        }
+    }
+
+    //Filter frequency table those above min threshold
+    for (var timeSlot in freqTable) {
+        if (freqTable[timeSlot] < threshold) { //Found a timeslot with acceptable number of people free
+            delete freqTable[timeSlot];
+            //freeTimes.push(timeSlot);
+        }
+    }
+
+    //Convert frequency table to array form
+    for (time in freqTable) {
+		var timeFreq = {timeSlot: time, frequency: freqTable[time]};
+        //freeTimes.push([time, freqTable[time]])
+		freeTimes.push(timeFreq);
+    }
+
+	//Order time slot + frequencies
+    freeTimes.sort(function(a, b) {
+        return b.frequency - a.frequency;
+    });
+
+    return freeTimes;
+}
 
 
 

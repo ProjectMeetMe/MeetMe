@@ -143,7 +143,7 @@ export default class Setting extends Component{
   
           //Call saveFreeTime API, send the user free time slots to
           //post API call with user token
-          fetch("http://104.42.79.90:2990/group/joinGroup?groupId=" + joinGroupID,{
+          fetch("http://104.42.79.90:2990/user/editSchedule",{
               method:"post",
               headers:{
                         "Accept": "application/json",
@@ -151,7 +151,7 @@ export default class Setting extends Component{
                         "Authorization": "Bearer " + token,
                       },
               body:JSON.stringify({
-                savedSchedule: this.state.savedSchedule,
+                schedule: this.state.savedSchedule,
                       })	
             })
             .then((response) => response.json())

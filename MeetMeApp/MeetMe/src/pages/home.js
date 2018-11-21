@@ -41,6 +41,7 @@ export default class Home extends Component{
 		Actions.groupprofile();
   }
 
+
   //Call getGroups API, get all the groups the user has 
   //joined
   async getGroups()
@@ -94,17 +95,17 @@ export default class Home extends Component{
     );
   };
 
-  // Display searchbar
-  renderHeader = () => {
-    return <SearchBar 
-            platform={"android"}
-            clearIcon={{ color: "grey" }}
-            placeholder="Search Here..." 
-            inputContainerStyle={styles.container} 
-            round
-            onChangeText={this.handleSearch}
-            />;
-  };
+  // // Display searchbar
+  // renderHeader = () => {
+  //   return <SearchBar 
+  //           platform={"android"}
+  //           clearIcon={{ color: "grey" }}
+  //           placeholder="Search Here..." 
+  //           inputContainerStyle={styles.container} 
+  //           round
+  //           onChangeText={this.handleSearch}
+  //           />;
+  // };
 
   // Display loading icon
   renderFooter = () => {
@@ -155,7 +156,7 @@ export default class Home extends Component{
             )}
             keyExtractor={(item) => item.groupName}
             ItemSeparatorComponent={this.renderSeparator}
-            ListHeaderComponent={this.renderHeader}
+         //   ListHeaderComponent={this.renderHeader}
             ListFooterComponent={this.renderFooter}
             //TODO: Format the text to appear in center of page
             ListEmptyComponent={this.renderEmptyList}

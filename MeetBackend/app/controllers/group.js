@@ -254,9 +254,6 @@ exports.calculateAvailabilities = function(schedules, day, userThreshold, timeTh
 
     var freqTable = {};
     var freeTimes = [];
-
-    var numBlocks = timeThreshold * 2; //num blocks needed for a timeblock to be suitable
-
     //Construct a frequency table for availabilties
     for (var schedule in schedules) { //Loop through keys
         //add entry for freq table
@@ -300,9 +297,9 @@ exports.calculateAvailabilities = function(schedules, day, userThreshold, timeTh
         freeTimes.push(timeFreq);
     }
 
-    //Order time slot + frequencies based on highest freqs first
+    //Order time slot + frequencies based on highest freqs first, then if equal freqs sort by first timeSlots first
     freeTimes.sort(function(a, b) {
-        return b.numUsersAvailable - a.numUsersAvailable;
+        return b.numUsersAvailable - a.numUsersAvailable || a.timeSlot - b.timeSlot;
     });
 
     return freeTimes;

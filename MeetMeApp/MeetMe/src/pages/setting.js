@@ -172,7 +172,8 @@ export default class Setting extends Component{
     console.log("user token" + token);
     //Call saveFreeTime API, send the user free time slots to
     //post API call with user token
-    fetch("http://104.42.79.90:2990/user/editSchedule",{        method:"put",
+    fetch("http://104.42.79.90:2990/user/editSchedule",{       
+      method:"put",
         headers:{
                   "Accept": "application/json",
                   "Content-type": "application/json",
@@ -181,7 +182,7 @@ export default class Setting extends Component{
         body:JSON.stringify
          ({
            schedule: {
-             Mon : Mon,
+            Mon : Mon,
             Tue : Tues,
             Wed : Wed,
             Thu : Thurs,
@@ -249,7 +250,6 @@ button = (value, X, Y) => (
 
   }
 	render(){
-    console.log("rendering");
     const state = this.state;
 
 		return(
@@ -261,7 +261,7 @@ button = (value, X, Y) => (
               />
             </NavButton>
           <NavTitle style={styles.title}>
-          {this.props.title}
+          {"Settings"}
           </NavTitle>
             <NavButton style={styles.navButton} 
                 onPress={this.saveFreeTime}>

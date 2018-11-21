@@ -64,11 +64,9 @@ router.post("/signin", function(req, res, next) {
     })(req, res);
 });
 
-
-
-router.post("/forgotPassword", function(req, res, next) {
-
-
-});
+/*
+Requires email
+ */
+router.post("/forgotPassword", authController.forgotPassword);
 
 module.exports = router;

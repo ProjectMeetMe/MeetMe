@@ -35,8 +35,8 @@ router.put("/removeMember", groupController.findGroup, groupController.checkPerm
 router.get("/getEvents", groupController.findGroup, groupController.checkMembership, groupController.getEvents);
 
 
+router.delete("/destroyGroup", groupController.findGroup, groupController.checkPermissions, groupController.destroyGroup);
 
-/////Work in progress:
 
 /* GET optimal availibilties for all users in group*/
 //Request header: {groupId: <int>}

@@ -148,6 +148,14 @@ exports.changePassword = function(req, res, next) {
 			message: "Error: New passwords do not match"
 		});
 	}
+	next();
+};
+
+//Changes a user's password, given an email
+exports.updateDBPass = function(req, res, next){
+
+	var oldPass = req.body.oldPass;
+	var newPass = req.body.newPass;
 
 	db.user.findOne({
         where: {
@@ -195,4 +203,4 @@ exports.changePassword = function(req, res, next) {
             message: "Error: User could not be retrieved"
         });
     });
-};
+}

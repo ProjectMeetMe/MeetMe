@@ -12,5 +12,9 @@
 		"key": "DUMMY",
 		"secret": "DUMMY",
 		"cluster": "mt1"
+	},
+	"email": {
+		"email": "Dummy",
+		"password": "Dummy"
 	}
 }

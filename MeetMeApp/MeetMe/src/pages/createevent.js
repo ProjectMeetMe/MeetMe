@@ -108,6 +108,7 @@ export default class CreateEvent extends Component {
           });
     }
         Keyboard.dismiss();
+        Actions.pop();
   }
 }
 

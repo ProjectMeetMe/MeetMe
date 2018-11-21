@@ -19,6 +19,14 @@ passport.use("local-signup", new LocalStrategy({
         passReqToCallback: true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
+
+        if (password.length < 4) {
+            return done(null, false, {
+                message: "Error: Password must be at least 4 characters"
+            });
+        }
+
+
         //encrypts password
         var generateHash = function(password) {
             return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
@@ -41,7 +49,7 @@ passport.use("local-signup", new LocalStrategy({
                     password: userPassword,
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
-					schedule: {}
+                    schedule: {}
                 };
 
                 db.user.create(userData).then(function(newuser) {

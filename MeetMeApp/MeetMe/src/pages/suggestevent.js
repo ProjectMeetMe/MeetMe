@@ -9,13 +9,16 @@ import {
   TouchableOpacity,
   Keyboard ,
   AutoGrowingTextInput,
-  ScrollView 
+  ScrollView,
+  FlatList
 } from "react-native";
 import Toast from "react-native-simple-toast";
 import {Actions} from "react-native-router-flux";
 import NavigationForm from "../components/navigationForm";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import RNPickerSelect from 'react-native-picker-select';
+import Icon from "react-native-vector-icons/Foundation";
+import {List, ListItem, SearchBar } from "react-native-elements";
 
 export default class SuggestEvent extends Component {
 
@@ -33,6 +36,8 @@ export default class SuggestEvent extends Component {
             weekDay:"",
             suggestions:{},
             suggestionDisplay: false,
+            loading: false,
+            refreshing: false,
             items: [
                 {
                     label: ' 0.5',
@@ -244,6 +249,112 @@ renderTime()
     } 
 }
 
+ // Pull-down refresh
+ handleRefresh = () => {
+  this.setState(
+    {
+      refreshing: true
+    },
+    () => {
+      this.getGroupInfo();
+    }
+  );
+};
+
+// TODO: Implement searchbar functionality
+/*
+handleSearch = (text) => {
+  const formatQuery = text.toLowerCase();
+  const data = _.filter(this.state.fullData, (user) => {
+    return contains(user, formatQuery);
+  })
+  this.setState({ query: formatQuery, data});
+};
+*/
+
+renderSeparator = () => {
+  return (
+    <View style={styles.renderSeparator}/>
+  );
+};
+
+// Display searchbar
+renderHeader = () => {
+  return <SearchBar 
+          platform={"android"}
+          clearIcon={{ color: "grey" }}
+          placeholder="Search Here..." 
+          inputContainerStyle={styles.container} 
+          round
+          />;
+};
+
+// Display loading icon
+renderFooter = () => {
+  if (!this.state.loading) {
+      return null;
+  }
+
+  return (
+    <View style={styles.renderFooter}>
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
+};
+
+// Display empty group list text
+renderEmptyList = () => {
+  if (this.state.loading) {
+    return null;
+  }
+  return (
+    <View style={styles.container}>
+      <Text style={styles.Text}>No time suggestion found. Try to
+            change the date or duration!</Text>
+    </View>
+  );
+};
+
+renderRightIcon(startTime, endTime){
+    return(
+      <Icon name="x" style={styles.iconClose}                
+       onPress={() => {Toast.show(startTime + "    " + endTime);}}
+       />
+    ); 
+}
+
+renderSuggestions()
+{
+  if(this.state.suggestionDisplay == true)
+  {
+    return(
+      <FlatList
+      data={this.state.suggestions.freeTimes}
+      renderItem={({ item }) => (
+        <ListItem 
+          containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
+          roundAvatar
+          titleStyle={styles.titleText}
+          title={item.timeSlot}
+          subtitleStyle={styles.subtitleText}
+          subtitle={item.numUsersAvailable}
+          rightIcon={this.renderRightIcon(item.timeSlot, item.timeSlot + "end")}
+          >
+        </ListItem>
+      )}
+      keyExtractor={(item) => item.timeSlot}
+      ItemSeparatorComponent={this.renderSeparator}
+      ListFooterComponent={this.renderFooter}
+      ListEmptyComponent={this.renderEmptyList}
+      onRefresh={this.handleRefresh}
+      refreshing={this.state.refreshing}
+      onEndReached={this.handleLoadMore}
+      onEndReachedThreshold={50}
+    />   
+    );
+  }
+}
+
 	render(){
 		return(
       <View style={{flex: 1, backgroundColor: "#455a64"}}>
@@ -290,7 +401,11 @@ renderTime()
 
                 <TouchableOpacity style={styles.button} onPress={this.addEvent}>
                     <Text style={styles.buttonText}>{"Get Recommended Event Time"}</Text>
-                </TouchableOpacity>    
+                </TouchableOpacity> 
+
+                <Text>{"\n"}</Text>
+
+                {this.renderSuggestions()} 
   		</View>
       </ScrollView>
       </View>
@@ -346,6 +461,45 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: 'white',
     color: 'black',
+},
+
+iconClose: {
+  marginRight: 10,
+  fontSize: 24,
+  height: 22,
+  color: "#CB3333",
+},
+
+renderFooter:
+{
+  paddingVertical: 20,
+  borderTopWidth: 1,
+  borderColor: "#455a64",
+},
+
+renderSeparator:
+{
+  height: 1,
+  width: "95%",
+  backgroundColor: "grey",
+  marginLeft: "2.5%",
+},
+
+Text: {
+  fontSize:16,
+  fontWeight:"500",
+  color:"#ffffff",
+  textAlign:"center",
+},
+titleText: {
+  color:"#ffffff",
+  fontWeight: "300",
+  fontSize:18
+},
+subtitleText: {
+  color:"#ced0ce",
+  fontSize:14,
+  fontWeight: "100"
 },
   
 });

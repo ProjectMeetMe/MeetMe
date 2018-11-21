@@ -41,11 +41,15 @@ export default class CreateEvent extends Component {
 
   //Call addEvent API, send groupId, eventName, description
   //startTime and endTime as key value pair in the post API 
-  //call and allow user to sign up a new account
+
   addEvent = () => {
     const {token, eventName, description, startTime, 
             endTime, groupId} = this.state;
-
+    
+    if(eventName === "" || startTime === "" || endTime === "") {
+      Toast.show("Please fill in the required* information", Toast.LONG);
+    }
+    else {
     // var groupId = this.props.groupID;		
     //console.log("groupId:  " + this.state.groupId);
     
@@ -104,6 +108,7 @@ export default class CreateEvent extends Component {
           });
     }
         Keyboard.dismiss();
+  }
 }
 
 showStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: true });
@@ -235,7 +240,7 @@ renderStartTime()
 {
     if(this.state.startTime === "")
     {
-      return("Start Time");
+      return("Start Time*");
     }
     else
     {
@@ -249,7 +254,7 @@ renderEndTime()
 {
     if(this.state.endTime === "")
     {
-      return("End Time");
+      return("End Time*");
     }
     else
     {
@@ -266,11 +271,10 @@ renderEndTime()
 
                     <TextInput style={styles.inputBox} 
                     underlineColorAndroid="rgba(0,0,0,0)" 
-                    placeholder="Event Name"
+                    placeholder="Event Name*"
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={() => this.password.focus()}
                     onChangeText={(eventName) => this.setState({eventName})}
                     />
                     
@@ -306,7 +310,6 @@ renderEndTime()
                     placeholderTextColor = "#ffffff"
                     selectionColor="#fff"
                     keyboardType="email-address"
-                    onSubmitEditing={() => this.password.focus()}
                     onChangeText={(description) => this.setState({description})}
                 />
 

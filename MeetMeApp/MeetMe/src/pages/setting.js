@@ -175,7 +175,8 @@ export default class Setting extends Component{
   
   saveFreeTime = () =>{
     const {token, Mon, Tues, Wed, Thurs, Fri, Sat, Sun} = this.state;
-  
+    console.log("monday ---> ", Mon);
+    console.log("sunday ----> ",  Sun);
     console.log("user token" + token);
     //Call saveFreeTime API, send the user free time slots to
     //post API call with user token
@@ -187,13 +188,21 @@ export default class Setting extends Component{
                 },
         body:JSON.stringify
          ({
-                      Mon : Mon,
-                      Tue : Tues,
-                      Wed : Wed,
-                      Thu : Thurs,
-                      Fri : Fri, 
-                      Sat : Sat, 
-                      Sun : Sun,
+           schedule: {
+             Mon : Mon,
+            Tue : Tues,
+            Wed : Wed,
+            Thu : Thurs,
+            Fri : Fri, 
+            Sat : Sat, 
+            Sun : Sun,}
+                      // Mon : Mon,
+                      // Tue : Tues,
+                      // Wed : Wed,
+                      // Thu : Thurs,
+                      // Fri : Fri, 
+                      // Sat : Sat, 
+                      // Sun : Sun,
         })
     })
     .then((response) => response.json())

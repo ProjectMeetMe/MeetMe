@@ -160,9 +160,9 @@ describe("Unit Tests for calculate availibilties function", function() {
 
 	schedule0 = {
 		Mon: [],
-		Tues: [],
+		Tue: [],
 		Wed: [],
-		Thurs: [],
+		Thu: [],
 		Fri: [],
 		Sat: [],
 		Sun: []
@@ -170,9 +170,9 @@ describe("Unit Tests for calculate availibilties function", function() {
 
 	schedule1 = {
 		Mon: [10,10.5,11,11.5],
-		Tues: [],
+		Tue: [],
 		Wed: [],
-		Thurs: [],
+		Thu: [],
 		Fri: [],
 		Sat: [],
 		Sun: []
@@ -180,9 +180,9 @@ describe("Unit Tests for calculate availibilties function", function() {
 
 	schedule2 = {
 		Mon: [9,9.5,11.5],
-		Tues: [9],
+		Tue: [9],
 		Wed: [],
-		Thurs: [],
+		Thu: [],
 		Fri: [],
 		Sat: [],
 		Sun: []
@@ -190,9 +190,9 @@ describe("Unit Tests for calculate availibilties function", function() {
 
 	schedule3 = {
 		Mon: [10],
-		Tues: [9],
+		Tue: [9],
 		Wed: [],
-		Thurs: [],
+		Thu: [],
 		Fri: [],
 		Sat: [11.5],
 		Sun: []
@@ -200,9 +200,9 @@ describe("Unit Tests for calculate availibilties function", function() {
 
 	schedule4 = {
 		Mon: [10,9],
-		Tues: [],
+		Tue: [],
 		Wed: [],
-		Thurs: [],
+		Thu: [],
 		Fri: [],
 		Sat: [11.5],
 		Sun: [12]
@@ -213,7 +213,7 @@ describe("Unit Tests for calculate availibilties function", function() {
 		var schedules = [schedule1, schedule2, schedule3, schedule4];
 		var threshold = 2;
 		var day = "Mon";
-		optimalSchedule = groupController.calculateAvailabilities(schedules, threshold, day);
+		optimalSchedule = groupController.calculateAvailabilities(schedules, day, threshold);
 		optimalSchedule.should.have.length(3);
 	});
 

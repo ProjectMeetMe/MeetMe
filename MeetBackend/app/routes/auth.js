@@ -6,6 +6,8 @@ var jwt = require("jsonwebtoken");
 var passport = require("passport");
 var config = require("config");
 
+var authController = require("../controllers/auth.js");
+
 router.post("/signup", function(req, res, next) {
     //Custom callback
     passport.authenticate("local-signup", {
@@ -26,7 +28,6 @@ router.post("/signup", function(req, res, next) {
         });
     })(req, res, next);
 });
-
 
 
 router.post("/signin", function(req, res, next) {
@@ -62,5 +63,15 @@ router.post("/signin", function(req, res, next) {
         });
     })(req, res);
 });
+
+
+
+router.post("/forgotPassword", function(req, res, next) {
+
+
+});
+
+
+router.post("/resetPassword", authController.resetPassword);
 
 module.exports = router;

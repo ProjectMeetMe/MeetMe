@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { AsyncStorage, AppRegistry, View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert} from "react-native";
 import NavigationForm from "../components/navigationForm";
-import CheckBox from 'react-native-check-box'
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Table, Row, } from 'react-native-table-component';
 import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
 import {Image} from "react-native";
 import Toast from "react-native-simple-toast";
@@ -15,7 +14,7 @@ export default class Setting extends Component{
       tableHead: ['', 'SUN', 'MON', 'TUE', 'WED', 'THUR', 'FRI', 'SAT'],
       widthArr: [60, 50, 50, 50, 50, 50, 50, 50],
       tableData: [],
-      isChecked: false,
+
       token: '',
       savedSchedule: {},
       Mon: [],
@@ -36,14 +35,9 @@ export default class Setting extends Component{
     this.renderTable();
   }
 
-  selectButtonAction(value) {
-    Alert.alert(`This value is ${value}`);
-  }
-
-
   // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
   //Calculations are all done using "value" 
-  unselectButtonAction(value, X, Y) {
+  buttonAction(value, X, Y) {
     const state = this.state;
 
     var dayInteger = value % 7;
@@ -167,9 +161,7 @@ export default class Setting extends Component{
       default: 
         whichDay = "ERR";
     }
-    
     //Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
-
   }
 
   
@@ -195,14 +187,8 @@ export default class Setting extends Component{
             Thu : Thurs,
             Fri : Fri, 
             Sat : Sat, 
-            Sun : Sun,}
-                      // Mon : Mon,
-                      // Tue : Tues,
-                      // Wed : Wed,
-                      // Thu : Thurs,
-                      // Fri : Fri, 
-                      // Sat : Sat, 
-                      // Sun : Sun,
+            Sun : Sun,
+          }
         })
     })
     .then((response) => response.json())
@@ -211,24 +197,14 @@ export default class Setting extends Component{
   });
 }
 
-unselectButton = (value, X, Y) => (
-  <TouchableOpacity onPress={() => this.unselectButtonAction(value, X, Y)}>
+button = (value, X, Y) => (
+  <TouchableOpacity onPress={() => this.buttonAction(value, X, Y)}>
     <View 
-     style={styles.unselectButton}>
-      <Text style={styles.btnText}>!</Text>
+     style={styles.button}>
+      <Text style={styles.btnText}> </Text>
     </View>
   </TouchableOpacity>
 );
-
-selectButton = (value) => (
-     
-  <TouchableOpacity onPress={() => this.selectButtonAction(value)}>  
-    <View style={styles.selectButton}>
-      <Text style={styles.btnText}>*</Text>
-    </View>
-  </TouchableOpacity>
-  
-)
 
 	renderTable() {
 
@@ -242,12 +218,12 @@ selectButton = (value) => (
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${0}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.button(7*i + fill, i, fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${0}${0}`);
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.button(7*i + fill, i, fill)); 
           }
         }
         half_hour = true;
@@ -257,12 +233,12 @@ selectButton = (value) => (
         if(time <= 9) {
           rowData.push(`${0}${time}${':'}${3}${0}`);  
           for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.button(7*i + fill, i, fill)); 
           }
         } else {
           rowData.push(`${time}${':'}${3}${0}`);
           for (let fill = 0; fill < 7; fill++) { 
-            rowData.push(this.unselectButton(7*i + fill, i, fill)); 
+            rowData.push(this.button(7*i + fill, i, fill)); 
           }
         }
         half_hour = false;
@@ -278,7 +254,7 @@ selectButton = (value) => (
 
 		return(
       <View style={{flex: 1}}>
-      <NavBar style={styles.navBar}>          
+      <NavBar style={styles}>          
             <NavButton style={styles.navButton}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
@@ -333,13 +309,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  button: {
-    width:300,
-    backgroundColor:"#1c313a",
-     borderRadius: 25,
-      marginVertical: 10,
-      paddingVertical: 13
-  },
   Text: {
     fontSize:16,
     fontWeight:"500",
@@ -365,20 +334,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#E7E6E1' 
   },
 
-  selectButton: { 
-    width: 40, 
-    height: 35, 
-    marginLeft: 5, 
-    backgroundColor: '#ffffff', 
-    borderRadius: 2 
-  },
-
-  unselectButton: { 
-    width: 40, 
-    height: 35, 
-    marginLeft: 5, 
+  button: { 
+    width: 49, 
+    height: 39, 
+    marginLeft: 0, 
     backgroundColor: '#c8e1ff', 
-    borderRadius: 2 
+    borderRadius: 0 
   },
 
   btnText: { 

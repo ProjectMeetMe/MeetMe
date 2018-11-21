@@ -40,8 +40,7 @@ export default class Home extends Component{
   groupprofile() {
 		Actions.groupprofile();
   }
-  
-  
+
   //Call getGroups API, get all the groups the user has 
   //joined
   async getGroups()

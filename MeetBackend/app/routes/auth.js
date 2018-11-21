@@ -67,6 +67,6 @@ router.post("/signin", function(req, res, next) {
 /*
 Requires email
  */
-router.post("/forgotPassword", authController.forgotPassword);
+router.post("/forgotPassword", authController.sendEmail, authController.resetDBPass);
 
 module.exports = router;

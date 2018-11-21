@@ -1,6 +1,10 @@
-var db = require("../models/sequelize.js");
 var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+var bCrypt = require("bcrypt-nodejs");
+var jwt = require("jsonwebtoken");
+var config = require("config");
+
+var db = require("../models/sequelize.js");
 var groupController = require("./group.js");
 
 /* Middlewares for handling user related requests */
@@ -123,3 +127,72 @@ exports.getEvents = function(req, res, next) {
     });
 
 }
+
+exports.changePassword = function(req, res, next) {
+	var oldPass = req.body.oldPass;
+	var newPass = req.body.newPass;
+	var confirmPass = req.body.confirmPass;
+
+	if (!oldPass){
+		return res.status(400).json({
+			message: "Error: Old password is required"
+		});
+	}
+	if (newPass.length < 4) {
+		return res.status(400).json({
+			message: "Error: New password must be at least 4 characters"
+		});
+	}
+	if (newPass !== confirmPass){ //new passwords don't match
+		return res.status(400).json({
+			message: "Error: New passwords do not match"
+		});
+	}
+
+	db.user.findOne({
+        where: {
+            id: req.user.id //user must belong to group
+        }
+    }).then(function(user) {
+		if (!user) { //no user found
+			return res.status(400).json({
+	            message: "Error: User does not exist"
+	        });
+		}
+		if (!bCrypt.compareSync(oldPass, user.password)) { //user found but passwords dont match
+			return res.status(400).json({
+	            message: "Error: Old password is incorrect"
+	        });
+		}
+
+		var encrypNewPass = bCrypt.hashSync(newPass, bCrypt.genSaltSync(10), null);
+		user.update({ //Update entry in database
+			password: encrypNewPass
+		}).then(function(updatedUser) {
+	        if (!updatedUser) {
+	            return res.status(400).json({
+	                message: "Error: password could not be updated"
+	            });
+	        } else {
+				var updatedUser = updatedUser.get();
+				const token = jwt.sign(updatedUser, config.get("jwtSecret"), {expiresIn: "30d"});
+
+	            return res.status(200).json({
+					user: updatedUser,
+					token: token,
+	                message: "Successful password update"
+	            });
+	        }
+	    }).catch(function(err) {
+	        return res.status(400).json({
+	            message: "Some error occured",
+	            error: err
+	        });
+	    });
+
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: User could not be retrieved"
+        });
+    });
+};

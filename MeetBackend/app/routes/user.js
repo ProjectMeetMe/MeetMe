@@ -33,4 +33,9 @@ router.put("/editSchedule", userController.editSchedule);
 /* GET sorted events for all groups that user belongs to */
 router.get("/getEvents", userController.getEvents);
 
+/* POST for changing password, confirm pass should == new pass */
+//Body: {oldPass: <string>, newPass: <string>, confirmPass: <string>}
+router.post("/changePassword", userController.changePassword);
+
+
 module.exports = router;

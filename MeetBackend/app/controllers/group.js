@@ -18,24 +18,24 @@ Group edit parameters are in req.body: (groupName)
  */
 exports.editGroup = function(req, res, next) {
     var group = req.group;
-	var oldName = group.groupName;
+    var oldName = group.groupName;
     group.update({
         groupName: req.body.groupName,
         description: req.body.groupDescription
     }).then(function(updatedInfo) {
 
-		//Trigger a push notification
-		var channel = req.query.groupId;
-		var event = "editGroup";
-		var message = ("Group info edited at group " + req.query.groupId + " or " + oldName);
-		pusher.trigger("my-channel", "my-event", {
-			"message": message
-		});
-		/*
-		pusher.trigger(channel, event, {
-			"message": message
-		});
-		*/
+        //Trigger a push notification
+        var channel = req.query.groupId;
+        var event = "editGroup";
+        var message = ("Group info edited at group " + req.query.groupId + " or " + oldName);
+        pusher.trigger("my-channel", "my-event", {
+            "message": message
+        });
+        /*
+        pusher.trigger(channel, event, {
+        	"message": message
+        });
+        */
 
         return res.status(200).json({
             updatedInfo,
@@ -212,54 +212,80 @@ Takes into consideration all user schedules in a group and outputs optimal
 user schedules
  */
 exports.getAvailabilities = function(req, res, next) {
-	var threshold = req.body.threshold;
-	var day = req.body.day;
-	var userSchedules = [];
+    var userThreshold = req.body.userThreshold;
+    var timeThreshold = req.body.timeThreshold;
+    var day = req.body.day;
+    var userSchedules = [];
     var users = req.group.users;
 
-	if (DAYS_IN_WEEK.indexOf(day) <= -1){
-		return res.status(400).json({
-			message: "Error: Invalid day field"
-		});
-	}
+    if (DAYS_IN_WEEK.indexOf(day) <= -1) {
+        return res.status(400).json({
+            message: "Error: Invalid day field"
+        });
+    }
 
-	//Fill userschedules with schedules for all users in the group
-	for (var i=0; i<users.length; i++){
-		userSchedules.push(users[i].schedule);
-	}
+    //Fill userschedules with schedules for all users in the group
+    for (var i = 0; i < users.length; i++) {
+        userSchedules.push(users[i].schedule);
+    }
 
-   var freeTimes = exports.calculateAvailabilities(userSchedules, threshold, day);
+    //If userthreshold is not supplied, set it to 1
+    if (!userThreshold) {
+        userThreshold = 1;
+    }
+
+    if (!timeThreshold) {
+        timeThreshold = 0.5;
+    } else { //Round up to nearest 0.5
+        timeThreshold = Math.ceil(timeThreshold * 2) / 2.0;
+    }
+
+    var freeTimes = exports.calculateAvailabilities(userSchedules, day, userThreshold, timeThreshold);
 
     return res.status(200).json({
-		freeTimes: freeTimes,
-		numUsersInGroup: users.length,
+        freeTimes: freeTimes,
+        numUsersInGroup: users.length,
         message: "Successful availabilities calculation"
     });
 }
 
-//Helper function to calculate free availabilties, given a threshold AND specified day AND array of user schedules
-exports.calculateAvailabilities = function(schedules, threshold, day) {
+//Helper function to calculate free availabilties, given a userThreshold AND specified day AND array of user schedules
+exports.calculateAvailabilities = function(schedules, day, userThreshold, timeThreshold) {
 
     var freqTable = {};
     var freeTimes = [];
+
+    var numBlocks = timeThreshold * 2; //num blocks needed for a timeblock to be suitable
 
     //Construct a frequency table for availabilties
     for (var schedule in schedules) { //Loop through keys
         //add entry for freq table
         for (var ind in schedules[schedule][day]) {
-            var timeSlot = schedules[schedule][day][ind]
-            if (freqTable[timeSlot]) {
-                freqTable[timeSlot]++;
-            } else {
-                freqTable[timeSlot] = 1;
+            var timeSlot = schedules[schedule][day][ind];
+
+			//Check that enough contigent time blocks exist such that user can be free
+            var timeValid = true;
+            for (var offset = 0.5; offset < timeThreshold; offset += 0.5) {
+				if (!schedules[schedule][day].includes(timeSlot + offset)){
+					timeValid = false;
+					break;
+				}
             }
 
+            //Add a timeslot to the freq table if it has enough contigent blocks
+            if (timeValid) {
+                if (freqTable[timeSlot]) {
+                    freqTable[timeSlot]++;
+                } else {
+                    freqTable[timeSlot] = 1;
+                }
+            }
         }
     }
 
-    //Filter frequency table those above min threshold
+    //Filter frequency table those above min userThreshold
     for (var timeSlot in freqTable) {
-        if (freqTable[timeSlot] < threshold) { //Found a timeslot with acceptable number of people free
+        if (freqTable[timeSlot] < userThreshold) { //Found a timeslot with acceptable number of people free
             delete freqTable[timeSlot];
             //freeTimes.push(timeSlot);
         }
@@ -267,12 +293,14 @@ exports.calculateAvailabilities = function(schedules, threshold, day) {
 
     //Convert frequency table to array form
     for (time in freqTable) {
-		var timeFreq = {timeSlot: time, numUsersAvailable: freqTable[time]};
-        //freeTimes.push([time, freqTable[time]])
-		freeTimes.push(timeFreq);
+        var timeFreq = {
+            timeSlot: time,
+            numUsersAvailable: freqTable[time]
+        };
+        freeTimes.push(timeFreq);
     }
 
-	//Order time slot + frequencies
+    //Order time slot + frequencies
     freeTimes.sort(function(a, b) {
         return b.numUsersAvailable - a.numUsersAvailable;
     });

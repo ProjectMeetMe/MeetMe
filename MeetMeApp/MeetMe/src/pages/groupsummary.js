@@ -110,11 +110,32 @@ export default class GroupSummary extends Component{
     Actions.popTo("home");
   }
   
-  // Delete group from database and remove all members
-  destroyGroup() 
+  async destroyGroup() 
   {
-    Toast.show("Destroy Group function to be implemented", Toast.LONG);
+    const usertoken = await AsyncStorage.getItem("token");
+    var groupId = this.props.groupID;
+    
+    console.log("usertoken+++++++" + usertoken);
+    console.log("groupId+++++++" + groupId);
+    var destroyGroup = await fetch("http://104.42.79.90:2990/group/destroyGroup?groupId=" + groupId, {
+          method: "delete",
+          headers:{
+            "Accept": "application.json",
+            "Content-type": "application.json",
+            "Authorization": "Bearer " + usertoken,
+          },
+        });
+  
+    const destroyGroupJson = await destroyGroup.json();
+    Toast.show(destroyGroupJson.message, Toast.LONG);
+    Actions.popTo("home");
   }
+
+  // Delete group from database and remove all members
+  // destroyGroup() 
+  // {
+  //   Toast.show("Destroy Group function to be implemented", Toast.LONG);
+  // }
   // Pull-down refresh
   handleRefresh = () => {
     this.setState(

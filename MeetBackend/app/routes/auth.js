@@ -71,7 +71,4 @@ router.post("/forgotPassword", function(req, res, next) {
 
 });
 
-
-router.post("/resetPassword", authController.resetPassword);
-
 module.exports = router;

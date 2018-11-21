@@ -26,6 +26,9 @@ export default class Home extends Component{
     };
   }
 
+  componentDidMount() {
+    this.getGroups();
+  }
   //Redirect page to creategroup view
   creategroup() {
 		Actions.creategroup();
@@ -123,7 +126,7 @@ export default class Home extends Component{
 	render(){
 
     const { groups, token } = this.state;
-    this.getGroups();
+
       return(
         <View style={{flex: 1, backgroundColor: "#455a64"}}>          
           <NavigationForm title="My Groups" type="home"></NavigationForm>

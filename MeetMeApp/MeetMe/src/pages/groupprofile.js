@@ -402,7 +402,7 @@ export default class GroupProfile extends Component {
         <View style={[styles.emptyDate]}>
           <View>
               <View><Text style={styles.emptyDateText}>
-                    {"No event found at that day for group " + this.props.groupName}
+                    {"There are no events today"}
               </Text></View>
           </View>
         </View>

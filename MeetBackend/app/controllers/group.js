@@ -207,6 +207,25 @@ exports.leaveGroup = function(req, res, next) {
     });
 }
 
+exports.destroyGroup = function(req, res, next) {
+	var group = req.group;
+	group.destroy().then(function(success){
+		if (success) {
+			return res.status(200).json({
+				message: "Successful group destroy"
+			});
+		} else {
+			return res.status(400).json({
+				message: "Error: Group could not be destroyed"
+			});
+		}
+	}).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Group could not be destroyed"
+        });
+    });
+}
+
 /*
 Takes into consideration all user schedules in a group and outputs optimal
 user schedules

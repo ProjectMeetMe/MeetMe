@@ -41,11 +41,6 @@ export default class Home extends Component{
 		Actions.groupprofile();
   }
 
-  //at the begining of this page execute below functions
-  componentDidMount() {
-    this.getGroups();
-  }
-
   //Call getGroups API, get all the groups the user has 
   //joined
   async getGroups()
@@ -140,6 +135,7 @@ export default class Home extends Component{
 	render(){
 
     const { groups, token } = this.state;
+    this.getGroups();
       return(
         <View style={{flex: 1, backgroundColor: "#455a64"}}>          
           <NavigationForm title="My Groups" type="home"></NavigationForm>

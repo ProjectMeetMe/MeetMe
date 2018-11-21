@@ -35,6 +35,7 @@ export default class SuggestEvent extends Component {
             weekDay:"",
             suggestions:{},
             suggestionDisplay: false,
+            suggestionDuration: 0,
             loading: false,
             refreshing: false,
             items: [
@@ -165,8 +166,9 @@ export default class SuggestEvent extends Component {
                     console.log("responseJson.message:  " + responseJson.message);
 
                     this.setState({
-                      suggestions: responseJson,
+                      suggestions: responseJson.freeTimes,
                       suggestionDisplay: true,
+                      suggestionDuration: duration,
                     });	
           });
     }
@@ -235,6 +237,21 @@ handleDatePicked  = (date) => {
   this.hideDatePicker();
 };
 
+startTimeConvert(startTime)
+{
+  if(!startTime.includes("."))
+  {
+    return "" + startTime + ":00:00";
+  }
+  else
+    return startTime.subString(0, startTime.indexOf(".")) + ":30:00";
+}
+
+endTimeConvert(startTime, duration)
+{
+
+}
+
 //if user has input a start time, then use the user input to 
 //display, otherwise, display "Start Time"
 renderTime()
@@ -249,44 +266,10 @@ renderTime()
     } 
 }
 
- // Pull-down refresh
- handleRefresh = () => {
-  this.setState(
-    {
-      refreshing: true
-    },
-    () => {
-      this.getGroupInfo();
-    }
-  );
-};
-
-// TODO: Implement searchbar functionality
-/*
-handleSearch = (text) => {
-  const formatQuery = text.toLowerCase();
-  const data = _.filter(this.state.fullData, (user) => {
-    return contains(user, formatQuery);
-  })
-  this.setState({ query: formatQuery, data});
-};
-*/
-
 renderSeparator = () => {
   return (
     <View style={styles.renderSeparator}/>
   );
-};
-
-// Display searchbar
-renderHeader = () => {
-  return <SearchBar 
-          platform={"android"}
-          clearIcon={{ color: "grey" }}
-          placeholder="Search Here..." 
-          inputContainerStyle={styles.container} 
-          round
-          />;
 };
 
 // Display loading icon
@@ -329,13 +312,13 @@ renderSuggestions()
   {
     return(
       <FlatList
-      data={this.state.suggestions.freeTimes}
+      data={this.state.suggestions}
       renderItem={({ item }) => (
         <ListItem 
           containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
           roundAvatar
           titleStyle={styles.titleText}
-          title={item.timeSlot}
+          title={ this.startTimeConvert(item.timeSlot)}
           subtitleStyle={styles.subtitleText}
           subtitle={item.numUsersAvailable}
           rightIcon={this.renderRightIcon(item.timeSlot, item.timeSlot + "end")}
@@ -346,7 +329,6 @@ renderSuggestions()
       ItemSeparatorComponent={this.renderSeparator}
       ListFooterComponent={this.renderFooter}
       ListEmptyComponent={this.renderEmptyList}
-      onRefresh={this.handleRefresh}
       refreshing={this.state.refreshing}
       onEndReached={this.handleLoadMore}
       onEndReachedThreshold={50}
@@ -405,8 +387,8 @@ renderSuggestions()
 
                 <Text>{"\n"}</Text>
 
-                {this.renderSuggestions()} 
   		</View>
+      {this.renderSuggestions()} 
       </ScrollView>
       </View>
 			);

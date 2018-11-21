@@ -30,7 +30,6 @@ export default class SuggestEvent extends Component {
             
             token: "",
             pickedDate: "",
-            groupId: this.props.groupID,
             datePickerVisible: false,
             duration: 0,
             weekDay:"",
@@ -135,7 +134,8 @@ export default class SuggestEvent extends Component {
   addEvent = () => {
     const {token, pickedDate, groupId, duration, weekDay} = this.state;
     
-    console.log("token:   " + token);
+    //console.log("token:   " + token);
+    //console.log("weekDay:   " + weekDay);
 
     if(pickedDate == "")
     {
@@ -155,8 +155,8 @@ export default class SuggestEvent extends Component {
                               "Authorization": "Bearer " + token,
                   },
                   body:JSON.stringify({
-                    day: duration,
-                    threshold: weekDay,
+                    day: weekDay,
+                    threshold: duration,
           })				
 		      })
 		      .then((response) => response.json())

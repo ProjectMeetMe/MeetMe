@@ -7,7 +7,7 @@ const MAX_GROUP_USERS = 10; // Max allowed users per group
 //Colour array for dot events
 const COLOURS = ["red", "orange", "yellow", "green", "blue", "purple"];
 
-const DAYS_IN_WEEK = ["Mon", "Tues", "wed", "Thurs", "Fri", "Sat", "Sun"];
+const DAYS_IN_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 
 /* Middlewares for handling group related requests */
@@ -236,8 +236,8 @@ exports.getAvailabilities = function(req, res, next) {
 
     if (!timeThreshold) {
         timeThreshold = 0.5;
-    } else { //Round up to nearest 0.5
-        timeThreshold = Math.ceil(timeThreshold * 2) / 2.0;
+    } else {
+        timeThreshold = Math.ceil(timeThreshold * 2) / 2.0; //Round up to nearest 0.5
     }
 
     var freeTimes = exports.calculateAvailabilities(userSchedules, day, userThreshold, timeThreshold);
@@ -300,7 +300,7 @@ exports.calculateAvailabilities = function(schedules, day, userThreshold, timeTh
         freeTimes.push(timeFreq);
     }
 
-    //Order time slot + frequencies
+    //Order time slot + frequencies based on highest freqs first
     freeTimes.sort(function(a, b) {
         return b.numUsersAvailable - a.numUsersAvailable;
     });

@@ -35,7 +35,7 @@ router.get("/getEvents", userController.getEvents);
 
 /* POST for changing password, confirm pass should == new pass */
 //Body: {oldPass: <string>, newPass: <string>, confirmPass: <string>}
-router.post("/changePassword", userController.changePassword);
+router.post("/changePassword", userController.changePassword, userController.updateDBPass);
 
 
 module.exports = router;

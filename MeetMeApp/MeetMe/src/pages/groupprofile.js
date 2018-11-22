@@ -17,6 +17,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import Dialog, {
   DialogTitle,
   DialogButton,
+  DialogContent,
 } from 'react-native-popup-dialog';
 import {YellowBox} from 'react-native';
 
@@ -39,6 +40,9 @@ export default class GroupProfile extends Component {
         items: {},
         dotEvents: {},
         customBackgroundDialog: false,
+        editDialog: false,
+        curDescription: "",
+        newDescription: "",
     };
   }
 
@@ -88,6 +92,7 @@ export default class GroupProfile extends Component {
     });
   }
 
+
   //Get current date
   getDate()
   {
@@ -126,6 +131,33 @@ export default class GroupProfile extends Component {
       userid: curuserid,
       groupID: groupId,
     });
+  }
+
+  
+  async updateEventDescription()
+  {
+    console.log("eventId:  " + this.state.deleteEventId );
+    const usertoken = await AsyncStorage.getItem("token");
+  
+    var eventUpdate = await fetch("http://104.42.79.90:2990/event/editEvent?eventId=" + this.state.deleteEventId, {
+          method: "put",
+          headers:{
+            "Accept": "application/json",
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + usertoken,
+          },
+          body:JSON.stringify
+          ({
+            description: this.state.newDescription 
+          })
+        });
+
+    const eventUpdateJson = await eventUpdate.json();
+    Toast.show(eventUpdateJson.message, Toast.LONG);
+
+   
+
+    this.handleRefresh();
   }
 
   async deleteGroupEvent()
@@ -200,6 +232,8 @@ export default class GroupProfile extends Component {
             style={{}}
           />
           { this.renderPopupDialog() }
+          { this.renderEditDialog() }
+          
           {/* <ActionButton buttonColor="rgba(231,76,60,1)">
               <ActionButton.Item buttonColor="#9b59b6" title="Group Chat" 
                 textStyle = {styles.itemStyle}
@@ -321,8 +355,8 @@ export default class GroupProfile extends Component {
               this.setState({ customBackgroundDialog: false });
             }}
             width={0.75}
+            rounded={false}
             visible={this.state.customBackgroundDialog}
-            rounded
             dialogTitle={
               <DialogTitle
                 title={"Delete event " + this.state.deleteEventName + " from this group?"}
@@ -358,6 +392,67 @@ export default class GroupProfile extends Component {
       }    
       }
 
+      renderEditDialog() {
+          return(
+            <Dialog
+              //dialogStyle={styles.dialogStyle}
+              onDismiss={() => {
+                this.setState({ editDialog: false });
+              }}
+              onTouchOutside={() => {
+                this.setState({ editDialog: false });
+              }}
+              rounded={false}
+              width={0.9}
+              visible={this.state.editDialog}
+              dialogTitle={
+                <DialogTitle
+                  title={"Update Event Notes"}
+                  textStyle={styles.dialogTitle}
+                  hasTitleBar={this.state.editDialog}
+                  align="center"
+                />
+              }
+              actions={[
+                <DialogButton
+                  text="CANCEL"
+                  onPress={() => {
+                    this.setState({ editDialog: false });
+                  }}
+                  key="cancel"
+                  style={styles.dialogButton}
+                  textStyle={styles.cancelButtonText}
+                />,
+                <DialogButton
+                  text="SAVE"
+                  onPress={() => {
+                    //INSERT API CALL TO UPDATE EVENT DESCRIPTION HERE
+                    this.updateEventDescription();
+                    this.setState({ editDialog: false });
+                  }}
+                  key="save"
+                  style={styles.dialogButton}
+                  textStyle={styles.deleteButtonText}
+                />,
+              ]}
+            >
+            <DialogContent>
+              {
+                <TextInput style={styles.longInputBox} 
+                multiline={true}
+                textAlignVertical={"top"}
+                underlineColorAndroid="rgba(0,0,0,0)" 
+                defaultValue={this.state.curDescription}
+                selectionColor="#000000"
+                keyboardType="email-address"
+                onChangeText={(newDescription) => this.setState({newDescription})}
+            />
+              }
+            </DialogContent>
+            </Dialog>
+          );   
+        }    
+
     renderItem(item) {
       if(this.state.userid == this.state.groupinfo.leaderId)
       {
@@ -377,8 +472,30 @@ export default class GroupProfile extends Component {
                               console.log("after clicked: ", this.state.customBackgroundDialog);
                           }}/>
                   </View>
-                  <View><Text>{item.eventName}</Text></View>
-                  <View><Text>{item.description}</Text></View>
+                  <View>
+                    <TouchableOpacity onPress={() => {
+                      this.setState({ 
+                        editDialog: true, 
+                        // We use deleteEventId for convenience. Name of variable does not matter
+                        deleteEventId: item.id, 
+                        curDescription: item.description,
+                      })
+                    }}>	
+						          <Text style={styles.eventNameText}>{item.eventName}</Text>
+				          	</TouchableOpacity>
+                  </View>
+                  <View>
+                    <TouchableOpacity onPress={() => {
+                      this.setState({ 
+                        editDialog: true, 
+                        // We use deleteEventId for convenience. Name of variable does not matter
+                        deleteEventId: item.id, 
+                        curDescription: item.description
+                      })
+                    }}>	
+						          <Text>{item.description}</Text>
+				          	</TouchableOpacity>
+                  </View>
               </View>
             </View>
         );
@@ -534,5 +651,25 @@ const styles = StyleSheet.create({
   dialogButton: {
     backgroundColor: "#CB3333",
 },
+
+  longInputBox: {
+    minHeight: 100,
+    width:290,
+    backgroundColor:"rgb(240,240,240)",
+    borderRadius: 0,
+    paddingHorizontal:10,
+    fontSize:16,
+    color:"#000000",
+    marginVertical: 10
+},
+
+descriptionText: {
+  fontSize:16,
+  color:"#ffffff",
+  textAlign:"left"
+},
+eventNameText: {
+  fontWeight: "bold",
+}, 
   
 });

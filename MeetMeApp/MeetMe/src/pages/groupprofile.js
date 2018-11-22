@@ -180,12 +180,21 @@ export default class GroupProfile extends Component {
     this.handleRefresh();
   }
 
+  wait(ms){
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+   }
+ }
+
   handleRefresh = () => {
     this.setState(
       {
         refreshing: true
       },
       () => {
+        //this.wait(300);
         this.getDate();
         this.getEvents();
       }

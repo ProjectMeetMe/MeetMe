@@ -15,6 +15,7 @@ import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import ActionButton from "react-native-action-button";
 import Icon from "react-native-vector-icons/AntDesign";
 import {YellowBox} from 'react-native';
+import { NetInfo } from 'react-native';
 
 export default class UserCalendar extends Component {
 
@@ -36,11 +37,37 @@ export default class UserCalendar extends Component {
   }
 
   //at the begining of this page execute below functions
-  componentDidMount() {
+  async componentDidMount() {
     YellowBox.ignoreWarnings(['Warning: Failed prop type: Prop']);
 
     this.getDate();
-    this.getEvents();
+
+    await NetInfo.isConnected.fetch().then(async (isConnected) => {
+      if(isConnected)
+      {
+        this.getEvents();
+      }
+      else
+      {
+        //const userSchedule = AsyncStorage.getItem("userSchedule");
+        //const useritems = await AsyncStorage.getItem("useritems");
+        //const userdotEvents = await AsyncStorage.getItem("userdotEvents");
+        // console.log("userSchedule: =====" + JSON.stringify(userSchedule));
+        // console.log("useritems: =====" + JSON.stringify(useritems));
+        // console.log("userdotEvents: =====" + JSON.stringify(userdotEvents));
+        // const userSchedule = await AsyncStorage.getItem("userSchedule").then(async (value) => {
+        //   return JSON.parse(value);
+        //   });
+        const userSchedule = await AsyncStorage.getItem("userSchedule");
+        this.setState({
+           items: userSchedule.events.categorizedEvents,
+           dotEvents: userSchedule.events.dotEvents,
+          // items: JSON.parse(useritems),
+          // dotEvents: JSON.parse(userdotEvents),
+        });
+      }
+    })
+    //this.getEvents();
 
     this.setState({
       loading: false,
@@ -48,6 +75,30 @@ export default class UserCalendar extends Component {
     });
   }
   
+  async saveUserSchedule(value) {
+    try {
+      await AsyncStorage.setItem("userSchedule", JSON.stringify(value));
+    } catch (error) {
+      //console.log("Error saving data" + error);
+    }
+  }
+
+  async saveUserItems(value) {
+    try {
+      await AsyncStorage.setItem("useritems", JSON.stringify(value));
+    } catch (error) {
+      //console.log("Error saving data" + error);
+    }
+  }
+
+  async saveUserDotEvents(value) {
+    try {
+      await AsyncStorage.setItem("userdotEvents", JSON.stringify(value));
+    } catch (error) {
+      //console.log("Error saving data" + error);
+    }
+  }
+
   //Call getEvents API, add groupId to URL 
   //call and allow user to get all events in this group
   async getEvents()
@@ -68,12 +119,17 @@ export default class UserCalendar extends Component {
     // console.log(userevents.events);
     // console.log(userevent.events);
     //store events array
+    //this.saveUserSchedule(userevent);
+
     this.setState({
       items: userevent.events.categorizedEvents,
       dotEvents: userevent.events.dotEvents,
       refreshing: false,
       token: this.usertoken,
     });
+    this.saveUserSchedule(userevent);
+    this.saveUserItems(userevent.events.categorizedEvents);
+    this.saveUserDotEvents(userevent.events.dotEvents);
   }
 
   //Get current date
@@ -152,7 +208,7 @@ export default class UserCalendar extends Component {
           <View style={[styles.item]}>
               <View>
                   <View><Text>{item.startTime.substring(11, 16) + " - " + item.endTime.substring(11, 16)}</Text></View>
-                  <View><Text>{item.eventName}</Text></View>
+                  <View><Text>{item.groupName + "  " + item.eventName}</Text></View>
                   <View><Text>{item.description}</Text></View>
               </View>
             </View>

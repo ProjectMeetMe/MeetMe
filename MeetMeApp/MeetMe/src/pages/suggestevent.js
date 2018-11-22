@@ -38,8 +38,8 @@ export default class SuggestEvent extends Component {
             suggestionDuration: 0,
             loading: false,
             refreshing: false,
-            selectedStartTime: "",
-            selectedEndTime: "",
+            startTime: "",
+            endTime: "",
             items: [
                 {
                     label: ' 0.5',
@@ -168,7 +168,7 @@ export default class SuggestEvent extends Component {
                     console.log("responseJson.message:  " + responseJson.message);
 
                     this.setState({
-                      suggestions: responseJson.freeTimes,
+                      suggestions: responseJson,
                       suggestionDisplay: true,
                       suggestionDuration: duration,
                     });	
@@ -258,15 +258,16 @@ timeToString(time) {
 }
 
 // Set state variables "selectedStartTime" and "selectedEndTime" based on start time chosen and duration
-setStartEndTime(startTime, duration)
+setStartTime(startTime, duration)
 {
     var myStartTime = this.timeToString(startTime);
+    return myStartTime;
+}
+
+setEndTime(startTime, duration)
+{
     var endTime = parseFloat(startTime) + parseFloat(duration);
     var myEndTime = this.timeToString(endTime);
-    this.setState({
-      selectedStartTime: myStartTime,
-      selectedEndTime: myEndTime
-    }) 
     return myEndTime;
 }
 
@@ -316,13 +317,34 @@ renderEmptyList = () => {
   );
 };
 
-renderRightIcon(startTime, endTime){
+renderRightIcon(eventStartTime, eventEndTime){
     return(
-      <Icon name="x" style={styles.iconClose}                
-       onPress={() => {Toast.show(startTime + "    " + endTime);}}
-       />
+      <TouchableOpacity style={styles.addbutton} 
+      onPress={() => {
+                      // Actions.createevent({startTime: eventStartTime, 
+                      //                      endTime: eventEndTime})
+                      //Actions.suggestevent({});
+                      // Actions.pop(setState.({this.prop.startTime: eventStartTime, 
+                      //   endTime: eventEndTime}));
+                      //Actions.refresh({key:SCENE_KEY, ..data})
+                      //Actions.home2({loading:this.state.loading} )
+                      //this.props.callbackFromParent(eventStartTime, eventEndTime);
+                      //Actions.pop();
+                    //Toast.show(this.state.pickedDate + " " + eventStartTime);
+                    //Toast.show(this.state.pickedDate + " " + eventEndTime);
+                  }}>
+      <Text style={styles.buttonText}>Add
+      </Text>
+    </TouchableOpacity>   
     ); 
 }
+
+// componentWillReceiveProps(newProps) {
+//   this.setState({
+//     startTime: newProps.startTime,
+//     endTime: newProps.endTime
+//   });
+// }
 
 renderSuggestions()
 {
@@ -330,16 +352,18 @@ renderSuggestions()
   {
     return(
       <FlatList
-      data={this.state.suggestions}
+      data={this.state.suggestions.freeTimes}
       renderItem={({ item }) => (
         <ListItem 
           containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
           roundAvatar
           titleStyle={styles.titleText}
-          title={ this.setStartEndTime(item.timeSlot, this.state.suggestionDuration)}
+          title={this.setStartTime(item.timeSlot, this.state.suggestionDuration).substring(0, 5) + " - " + 
+                  this.setEndTime(item.timeSlot, this.state.suggestionDuration).substring(0, 5)}
           subtitleStyle={styles.subtitleText}
-          subtitle={item.numUsersAvailable}
-          rightIcon={this.renderRightIcon(item.timeSlot, item.timeSlot + "end")}
+          subtitle={item.numUsersAvailable + "/" + this.state.suggestions.numUsersInGroup + " people are free"}
+          rightIcon={this.renderRightIcon(this.setStartTime(item.timeSlot, this.state.suggestionDuration), 
+            this.setEndTime(item.timeSlot, this.state.suggestionDuration))}
           >
         </ListItem>
       )}
@@ -494,12 +518,21 @@ Text: {
 titleText: {
   color:"#ffffff",
   fontWeight: "300",
-  fontSize:18
+  fontSize:16
 },
 subtitleText: {
   color:"#ced0ce",
   fontSize:14,
   fontWeight: "100"
+},
+
+addbutton: {
+  width:50,
+  height:36,
+  textAlign:"center",
+  backgroundColor:"#1c313a",
+  borderRadius: 25,
+  paddingVertical: 6
 },
   
 });

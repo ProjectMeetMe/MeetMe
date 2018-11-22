@@ -39,6 +39,13 @@ export default class CreateEvent extends Component {
 
   }
 
+  // myCallback = (eventStartTime, eventEndTime) => {
+  //   this.setState({ 
+  //                     startTime: eventStartTime,
+  //                     endTime: eventEndTime,    
+  //                   });
+  // }
+
   //Call addEvent API, send groupId, eventName, description
   //startTime and endTime as key value pair in the post API 
 
@@ -264,6 +271,13 @@ renderEndTime()
 }
 
 	render(){
+    // if(this.props.startTime != "")
+    // {
+    //   this.setState({
+    //     startTime : this.props.startTime,
+    //     endTime : this.props.endTime,
+    //   })
+    // }
 		return(
       <View style={{flex: 1, backgroundColor: "#455a64"}}>
       <NavigationForm title="Create New Event" type="createEvent"></NavigationForm>
@@ -314,7 +328,10 @@ renderEndTime()
                     onChangeText={(description) => this.setState({description})}
                 />
 
-                <TouchableOpacity style={styles.button} onPress={() => {Actions.suggestevent({groupID: this.props.groupID})}}>
+                <TouchableOpacity style={styles.button} onPress={() => {Actions.suggestevent({
+                                                                              groupID: this.props.groupID, 
+                                                                              startTime: this.state.startTime,
+                                                                              endTime: this.state.endTime})}}>
                     <Text style={styles.buttonText}>{"Recommended Event Time"}</Text>
                 </TouchableOpacity> 
 

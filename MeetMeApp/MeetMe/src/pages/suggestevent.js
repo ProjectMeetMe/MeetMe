@@ -38,6 +38,8 @@ export default class SuggestEvent extends Component {
             suggestionDuration: 0,
             loading: false,
             refreshing: false,
+            selectedStartTime: "",
+            selectedEndTime: "",
             items: [
                 {
                     label: ' 0.5',
@@ -237,19 +239,35 @@ handleDatePicked  = (date) => {
   this.hideDatePicker();
 };
 
-startTimeConvert(startTime)
-{
-  if(!startTime.includes("."))
-  {
-    return "" + startTime + ":00:00";
+// Take a numeric value for time - i.e. 1.5 and convert to a timeString - 01:30:00
+timeToString(time) {
+  var timeString
+  if(time < 10) {
+    timeString = "0" + time.toString();
+  } else {
+    timeString = time.toString();
   }
-  else
-    return startTime.subString(0, startTime.indexOf(".")) + ":30:00";
+  
+  if(!timeString.includes(".")) {
+    return timeString + ":00:00";
+  } else {
+    //remove the ".5" from timeString
+    timeString = timeString.slice(0,-2);
+    return timeString + ":30:00";
+  }
 }
 
-endTimeConvert(startTime, duration)
+// Set state variables "selectedStartTime" and "selectedEndTime" based on start time chosen and duration
+setStartEndTime(startTime, duration)
 {
-
+    var myStartTime = this.timeToString(startTime);
+    var endTime = parseFloat(startTime) + parseFloat(duration);
+    var myEndTime = this.timeToString(endTime);
+    this.setState({
+      selectedStartTime: myStartTime,
+      selectedEndTime: myEndTime
+    }) 
+    return myEndTime;
 }
 
 //if user has input a start time, then use the user input to 
@@ -318,7 +336,7 @@ renderSuggestions()
           containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
           roundAvatar
           titleStyle={styles.titleText}
-          title={ this.startTimeConvert(item.timeSlot)}
+          title={ this.setStartEndTime(item.timeSlot, this.state.suggestionDuration)}
           subtitleStyle={styles.subtitleText}
           subtitle={item.numUsersAvailable}
           rightIcon={this.renderRightIcon(item.timeSlot, item.timeSlot + "end")}

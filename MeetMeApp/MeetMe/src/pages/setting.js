@@ -5,7 +5,7 @@ import { Table, Row, } from 'react-native-table-component';
 import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
 import {Image} from "react-native";
 import Toast from "react-native-simple-toast";
-
+import update from 'react-addons-update';
 
 export default class Setting extends Component{
   constructor(props) {
@@ -15,6 +15,7 @@ export default class Setting extends Component{
       widthArr: [60, 50, 50, 50, 50, 50, 50, 50],
       tableData: [],
 
+      isRendered: false,
       token: '',
       savedSchedule: {},
       Mon: [],
@@ -24,6 +25,56 @@ export default class Setting extends Component{
       Fri: [],
       Sat: [],
       Sun: [],
+      boxChoose:[
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0],
+                ]
     }
 
     AsyncStorage.getItem("token").then((value) => {
@@ -34,6 +85,25 @@ export default class Setting extends Component{
   componentDidMount() {
     this.renderTable();
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state.profileOrError === null) {
+  //     // At this point, we're in the "commit" phase, so it's safe to load the new data.
+  //     this._loadUserData();
+  //   }
+  // }
+
+  // componentDidUpdate()
+  // {
+  //   this.renderTable();
+  // }
+
+  // updateStateboxChoose(whichDay, whichHour, bool)
+  // {
+  //   this.setState({
+  //     boxChoose: update(this.state.boxChoose, {whichDay: {whichHour: bool}})
+  //   })
+  // }
 
   // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
   //Calculations are all done using "value" 
@@ -52,29 +122,37 @@ export default class Setting extends Component{
         if(!day.includes(whichHour)) {
           day.push(whichHour);
           this.setState({ Sun: day });
-          Toast.show("Available - Sunday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 1;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
-          this.setState({ Sun : day });
-          Toast.show("Unavailable - Sunday - " + whichHour + "h", Toast.SHORT);
+          this.setState({ boxChoose : day });
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
-        console.log("Sunday array is: " + state.Sun);
-
+        //console.log("Sunday array is: " + state.Sun);
+        //console.log("boxChoose is: " + this.state.boxChoose);
+        //console.log("tableData is: " + this.state.tableData);
         break;
       case 1:
         whichDay = "MON";
         day = state.Mon;
         if(!day.includes(whichHour)) {
           day.push(whichHour);
-          this.setState({ Mon: day });;
-          Toast.show("Available - Monday - " + whichHour + "h", Toast.SHORT);
-
+          this.setState({ Mon: day });
+          this.state.boxChoose[X][Y] = 1;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
           this.setState({ Mon : day });
-          Toast.show("Unavailable - Monday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
          console.log("Monday array is: " + state.Mon);
         break;
@@ -84,13 +162,16 @@ export default class Setting extends Component{
         if(!day.includes(whichHour)) {
           day.push(whichHour);
           this.setState({ Tues: day });
-          Toast.show("Available - Tuesday - " + whichHour + "h", Toast.SHORT);
-
+          this.state.boxChoose[X][Y] = 1;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
           this.setState({ Tue : day });
-          Toast.show("Unavailable - Tuesday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
         console.log("Tuesday array is: " + state.Tues);
         break;
@@ -100,13 +181,16 @@ export default class Setting extends Component{
         if(!day.includes(whichHour)) {
           day.push(whichHour);
           this.setState({ Wed: day });
-          Toast.show("Available - Wednesday - " + whichHour + "h",Toast.SHORT);
-
+          this.state.boxChoose[X][Y] = 1;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
           this.setState({ Wed : day });
-          Toast.show("Unavailable - Wednesday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
          console.log("Wednesday array is: " + state.Wed);
         break;
@@ -116,13 +200,16 @@ export default class Setting extends Component{
          if(!day.includes(whichHour)) {
           day.push(whichHour);
           this.setState({ Thurs: day });
-          Toast.show("Available - Thursday - " + whichHour + "h", Toast.SHORT);
-
+          this.state.boxChoose[X][Y] = 1;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
          } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
           this.setState({ Thurs : day });
-          Toast.show("Unavailable - Thursday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
          console.log("Thursday array is: " + state.Thurs);
         break;
@@ -132,13 +219,16 @@ export default class Setting extends Component{
         if(!day.includes(whichHour)) {
          day.push(whichHour);
          this.setState({ Fri: day });
-         Toast.show("Available - Friday - " + whichHour + "h", Toast.SHORT);
-
+         this.state.boxChoose[X][Y] = 1;
+         this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+         this.forceUpdate();
         } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
           this.setState({ Fri : day });
-          Toast.show("Unavailable - Friday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
         console.log("Friday array is: " + state.Fri);
         break;
@@ -148,19 +238,24 @@ export default class Setting extends Component{
         if(!day.includes(whichHour)) {
          day.push(whichHour);
          this.setState({ Sat: day });
-         Toast.show("Available - Saturday - " + whichHour + "h", Toast.SHORT);
-
+         this.state.boxChoose[X][Y] = 1;
+         this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+         this.forceUpdate();
         } else {
           index = day.indexOf(whichHour);
           day.splice(index, 1);
           this.setState({ Sat : day });
-          Toast.show("Unavailable - Saturday - " + whichHour + "h", Toast.SHORT);
+          this.state.boxChoose[X][Y] = 0;
+          this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
+          this.forceUpdate();
         }
         console.log("Saturday array is: " + state.Sat);
         break;
       default: 
         whichDay = "ERR";
     }
+    this.forceUpdate();
+    console.log("boxChoose is: " + this.state.boxChoose);
     //Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
   }
 
@@ -198,10 +293,19 @@ export default class Setting extends Component{
   });
 }
 
+
 button = (value, X, Y) => (
-  <TouchableOpacity onPress={() => this.buttonAction(value, X, Y)}>
+  <TouchableOpacity onPress={() => {this.buttonAction(value, X, Y);
+                                    // if(this.state.boxChoose[X][Y])
+                                    // {this.state.boxChoose[X][Y] == 0;}
+                                    // else
+                                    // {
+                                    //   this.state.boxChoose[X][Y] == 1;
+                                    // }
+                                    // this.forceUpdate();
+                                    }}>
     <View 
-     style={styles.button}>
+     style={this.state.boxChoose[X][Y] ? styles.greenbutton : styles.greybutton}>
       <Text style={styles.btnText}> </Text>
     </View>
   </TouchableOpacity>
@@ -210,47 +314,52 @@ button = (value, X, Y) => (
 	renderTable() {
 
     var half_hour = false;
-    for (let i = 0; i < 48; i += 1) {
-      const rowData = [];
-      time = Math.floor(i /2);
-
-      // WHOLE HOUR
-      if(half_hour == false) {
-        if(time <= 9) {
-          rowData.push(`${0}${time}${':'}${0}${0}`);  
-          for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(this.button(7*i + fill, i, fill)); 
+    if(this.state.isRendered == false)
+    {
+      for (let i = 0; i < 48; i += 1) {
+        const rowData = [];
+        time = Math.floor(i /2);
+  
+        // WHOLE HOUR
+        if(half_hour == false) {
+          if(time <= 9) {
+            rowData.push(`${0}${time}${':'}${0}${0}`);  
+            for (let fill = 0; fill < 7; fill++ ) { 
+              rowData.push(this.button(7*i + fill, i, fill)); 
+            }
+          } else {
+            rowData.push(`${time}${':'}${0}${0}`);
+            for (let fill = 0; fill < 7; fill++ ) { 
+              rowData.push(this.button(7*i + fill, i, fill)); 
+            }
           }
-        } else {
-          rowData.push(`${time}${':'}${0}${0}`);
-          for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(this.button(7*i + fill, i, fill)); 
+          half_hour = true;
+  
+        // HALF HOUR
+        } else if(half_hour == true) {
+          if(time <= 9) {
+            rowData.push(`${0}${time}${':'}${3}${0}`);  
+            for (let fill = 0; fill < 7; fill++ ) { 
+              rowData.push(this.button(7*i + fill, i, fill)); 
+            }
+          } else {
+            rowData.push(`${time}${':'}${3}${0}`);
+            for (let fill = 0; fill < 7; fill++) { 
+              rowData.push(this.button(7*i + fill, i, fill)); 
+            }
           }
+          half_hour = false;
         }
-        half_hour = true;
+        this.state.tableData.push(rowData);
+      }
 
-      // HALF HOUR
-      } else if(half_hour == true) {
-        if(time <= 9) {
-          rowData.push(`${0}${time}${':'}${3}${0}`);  
-          for (let fill = 0; fill < 7; fill++ ) { 
-            rowData.push(this.button(7*i + fill, i, fill)); 
-          }
-        } else {
-          rowData.push(`${time}${':'}${3}${0}`);
-          for (let fill = 0; fill < 7; fill++) { 
-            rowData.push(this.button(7*i + fill, i, fill)); 
-          }
-        }
-        half_hour = false;
+      this.setState({ isRendered: true });
     }
-      this.state.tableData.push(rowData);
-    }
-
-
   }
+
 	render(){
     const state = this.state;
+    //this.renderTable();
 
 		return(
       <View style={{flex: 1}}>
@@ -376,6 +485,23 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
     marginTop: 5,
+  },
+
+  greybutton: { 
+    width: 49, 
+    height: 39, 
+    marginLeft: 0, 
+    backgroundColor: '#808080', 
+    //backgroundColor: '#000000', 
+    borderRadius: 0 
+  },
+
+  greenbutton: { 
+    width: 49, 
+    height: 39, 
+    marginLeft: 0, 
+    backgroundColor: '#D3FFCE', 
+    borderRadius: 0 
   },
   
 });

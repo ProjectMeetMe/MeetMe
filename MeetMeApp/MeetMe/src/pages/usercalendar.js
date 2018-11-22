@@ -49,21 +49,12 @@ export default class UserCalendar extends Component {
       }
       else
       {
-        //const userSchedule = AsyncStorage.getItem("userSchedule");
-        //const useritems = await AsyncStorage.getItem("useritems");
-        //const userdotEvents = await AsyncStorage.getItem("userdotEvents");
-        // console.log("userSchedule: =====" + JSON.stringify(userSchedule));
-        // console.log("useritems: =====" + JSON.stringify(useritems));
-        // console.log("userdotEvents: =====" + JSON.stringify(userdotEvents));
-        // const userSchedule = await AsyncStorage.getItem("userSchedule").then(async (value) => {
-        //   return JSON.parse(value);
-        //   });
-        const userSchedule = await AsyncStorage.getItem("userSchedule");
+        const useritems = await AsyncStorage.getItem("useritems");
+        const userdotEvents = await AsyncStorage.getItem("userdotEvents");
         this.setState({
-           items: userSchedule.events.categorizedEvents,
-           dotEvents: userSchedule.events.dotEvents,
-          // items: JSON.parse(useritems),
-          // dotEvents: JSON.parse(userdotEvents),
+
+          items: JSON.parse(useritems),
+          dotEvents: JSON.parse(userdotEvents),
         });
       }
     })
@@ -116,18 +107,13 @@ export default class UserCalendar extends Component {
 
     const userevent = await userevents.json();
 
-    // console.log(userevents.events);
-    // console.log(userevent.events);
-    //store events array
-    //this.saveUserSchedule(userevent);
-
     this.setState({
       items: userevent.events.categorizedEvents,
       dotEvents: userevent.events.dotEvents,
       refreshing: false,
       token: this.usertoken,
     });
-    this.saveUserSchedule(userevent);
+    //this.saveUserSchedule(userevent);
     this.saveUserItems(userevent.events.categorizedEvents);
     this.saveUserDotEvents(userevent.events.dotEvents);
   }

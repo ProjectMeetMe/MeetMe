@@ -234,7 +234,7 @@ export default class GroupProfile extends Component {
           <ActionButton.Item buttonColor="#3498db" title="Create Event"
           textStyle = {styles.itemStyle} 
           textContainerStyle = {styles.itemStyle}
-          onPress={() => {Actions.createevent({groupID: this.props.groupID});
+          onPress={() => {Actions.suggestevent({groupID: this.props.groupID});
           }}>
           <Icon name="pluscircleo" style={styles.actionButtonIcon} />
         </ActionButton.Item>

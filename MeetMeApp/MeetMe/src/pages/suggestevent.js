@@ -129,6 +129,34 @@ export default class SuggestEvent extends Component {
           this.setState({token: value});
       }).done();
 
+  //  this.removeItemValue("startTime");
+  //  this.removeItemValue("endTime");
+  }
+
+  // async removeItemValue(key) {
+  //   try {
+  //     await AsyncStorage.removeItem(key);
+  //     return true;
+  //   }
+  //   catch(exception) {
+  //     return false;
+  //   }
+  // }
+
+  async saveStartTime(value) {
+    try {
+      await AsyncStorage.setItem("startTime", value);
+    } catch (error) {
+      //console.log("Error saving data" + error);
+    }
+  }
+
+  async saveEndTime(value) {
+    try {
+      await AsyncStorage.setItem("endTime", value);
+    } catch (error) {
+      //console.log("Error saving data" + error);
+    }
   }
 
   //Call addEvent API, send groupId, eventName, description
@@ -320,18 +348,10 @@ renderEmptyList = () => {
 renderRightIcon(eventStartTime, eventEndTime){
     return(
       <TouchableOpacity style={styles.addbutton} 
-      onPress={() => {
-                      // Actions.createevent({startTime: eventStartTime, 
-                      //                      endTime: eventEndTime})
-                      //Actions.suggestevent({});
-                      // Actions.pop(setState.({this.prop.startTime: eventStartTime, 
-                      //   endTime: eventEndTime}));
-                      //Actions.refresh({key:SCENE_KEY, ..data})
-                      //Actions.home2({loading:this.state.loading} )
-                      //this.props.callbackFromParent(eventStartTime, eventEndTime);
-                      //Actions.pop();
-                    //Toast.show(this.state.pickedDate + " " + eventStartTime);
-                    //Toast.show(this.state.pickedDate + " " + eventEndTime);
+      onPress={() => {  
+                      Actions.createevent({startTime: this.state.pickedDate + " " + eventStartTime, 
+                                            endTime: this.state.pickedDate + " " + eventEndTime,
+                                            groupID: this.props.groupID})
                   }}>
       <Text style={styles.buttonText}>Add
       </Text>
@@ -422,6 +442,13 @@ renderSuggestions()
                         this.inputRefs.picker = el;
                     }}
                 />
+
+                <TouchableOpacity style={styles.button} 
+                    onPress={() => {Actions.createevent({groupID: this.props.groupID,
+                                                          startTime: "", 
+                                                          endTime: "", })}}>
+                    <Text style={styles.buttonText}>{"Customize Event Time"}</Text>
+                </TouchableOpacity> 
 
                 <TouchableOpacity style={styles.button} onPress={this.addEvent}>
                     <Text style={styles.buttonText}>{"Get Recommended Event Time"}</Text>

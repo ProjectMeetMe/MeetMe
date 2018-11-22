@@ -25,8 +25,8 @@ export default class CreateEvent extends Component {
             token: "",
             eventName: "",
             description: "",
-            startTime: "",
-            endTime: "",
+            startTime: this.props.startTime,
+            endTime: this.props.endTime,
             groupId: this.props.groupID,
             startDateTimePickerVisible: false,
             endDateTimePickerVisible: false,
@@ -37,13 +37,18 @@ export default class CreateEvent extends Component {
           this.setState({token: value});
       }).done();
 
+    // this.removeItemValue("startTime");
+    // this.removeItemValue("endTime");
   }
 
-  // myCallback = (eventStartTime, eventEndTime) => {
-  //   this.setState({ 
-  //                     startTime: eventStartTime,
-  //                     endTime: eventEndTime,    
-  //                   });
+  // async removeItemValue(key) {
+  //   try {
+  //     await AsyncStorage.removeItem(key);
+  //     return true;
+  //   }
+  //   catch(exception) {
+  //     return false;
+  //   }
   // }
 
   //Call addEvent API, send groupId, eventName, description
@@ -107,15 +112,22 @@ export default class CreateEvent extends Component {
                       endTime:         endTime,
             })			
 		      })
-		      .then((response) => response.json())
+          .then((response) => {
+            status = response.status;
+            return response.json();
+          })
 		      .then((responseJson) => {
                     console.log("responseJson:  " + responseJson);
                     console.log("responseJson.message:  " + responseJson.message);
+                    if(status === 200)    //success
+                    {
+                      Toast.show(responseJson.message, Toast.LONG);	
+                      Keyboard.dismiss();
+                      Actions.popTo("groupprofile");    
+                    }
                     Toast.show(responseJson.message, Toast.LONG);		
           });
     }
-        Keyboard.dismiss();
-        Actions.pop();
   }
 }
 
@@ -327,14 +339,6 @@ renderEndTime()
                     keyboardType="email-address"
                     onChangeText={(description) => this.setState({description})}
                 />
-
-                <TouchableOpacity style={styles.button} onPress={() => {Actions.suggestevent({
-                                                                              groupID: this.props.groupID, 
-                                                                              startTime: this.state.startTime,
-                                                                              endTime: this.state.endTime})}}>
-                    <Text style={styles.buttonText}>{"Recommended Event Time"}</Text>
-                </TouchableOpacity> 
-
 
                 <TouchableOpacity style={styles.button} onPress={this.addEvent}>
                     <Text style={styles.buttonText}>{"Create Event"}</Text>

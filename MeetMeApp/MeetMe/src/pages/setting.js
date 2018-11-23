@@ -6,6 +6,8 @@ import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-nati
 import {Image} from "react-native";
 import Toast from "react-native-simple-toast";
 import update from 'react-addons-update';
+import {Actions} from "react-native-router-flux";
+
 
 export default class Setting extends Component{
   constructor(props) {
@@ -290,7 +292,9 @@ export default class Setting extends Component{
     .then((response) => response.json())
     .then((responseJson) => {
       Toast.show(responseJson.message, Toast.LONG);
-  });
+    });
+
+    Actions.popTo("home");
 }
 
 

@@ -250,7 +250,8 @@ exports.getAvailabilities = function(req, res, next) {
 
     //If userthreshold is not supplied, set it to 1
     if (!userThreshold) {
-        userThreshold = 1;
+		const PERCENT_REQUIRED = 0.6; //default user threshold is 0.6 of total members in group
+        userThreshold = Math.ceil(users.length * PERCENT_REQUIRED);
     }
 
     if (!timeThreshold) {

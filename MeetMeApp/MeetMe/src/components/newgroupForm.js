@@ -31,7 +31,9 @@ export default class NewGroupForm extends Component {
   }
 
   goBack() {
+    Actions.reset("home");
     Actions.pop();
+    
   }
 
   //Call newGroup API, send groupName as key value pair 

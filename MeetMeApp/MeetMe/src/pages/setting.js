@@ -6,6 +6,8 @@ import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-nati
 import {Image} from "react-native";
 import Toast from "react-native-simple-toast";
 import update from 'react-addons-update';
+import {Actions} from "react-native-router-flux";
+
 
 export default class Setting extends Component{
   constructor(props) {
@@ -14,7 +16,7 @@ export default class Setting extends Component{
       tableHead: ['', 'SUN', 'MON', 'TUE', 'WED', 'THUR', 'FRI', 'SAT'],
       widthArr: [60, 50, 50, 50, 50, 50, 50, 50],
       tableData: [],
-
+      oldAvailability: {},
       isRendered: false,
       token: '',
       savedSchedule: {},
@@ -83,6 +85,8 @@ export default class Setting extends Component{
   }
 
   componentDidMount() {
+    this.getUserAvailability();
+    console.log("THIS IS THE OLD AVAIL +++++++" + this.state.oldAvailability);
     this.renderTable();
   }
 
@@ -259,7 +263,28 @@ export default class Setting extends Component{
     //Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
   }
 
-  
+  async getUserAvailability()
+  {
+
+   // const {profile, token, name, email, id} = this.state;
+    const usertoken = await AsyncStorage.getItem("token");
+
+    var userprofile = await fetch("http://104.42.79.90:2990/user/profile", {
+      method: "GET",
+      headers:{
+        "Authorization": "Bearer " + usertoken
+      }
+    });
+
+    var profilejson = await userprofile.json();
+    //console.log("profilejson:", profilejson);
+
+    this.setState({
+      token: usertoken,
+      oldAvailability: profilejson.schedule,
+    });
+  }
+
   saveFreeTime = () =>{
     const {token, Mon, Tues, Wed, Thurs, Fri, Sat, Sun} = this.state;
     console.log("monday ---> ", Mon);
@@ -290,7 +315,9 @@ export default class Setting extends Component{
     .then((response) => response.json())
     .then((responseJson) => {
       Toast.show(responseJson.message, Toast.LONG);
-  });
+    });
+
+    Actions.popTo("home");
 }
 
 

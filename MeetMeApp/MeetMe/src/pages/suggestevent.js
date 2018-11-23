@@ -181,6 +181,7 @@ export default class SuggestEvent extends Component {
     else
     {
       fetch("http://104.42.79.90:2990/group/getAvailabilities?groupId=" + this.props.groupID,{
+        
 			      method:"post",
 			      headers:{
 				              "Accept": "application/json",
@@ -188,6 +189,7 @@ export default class SuggestEvent extends Component {
                               "Authorization": "Bearer " + token,
                   },
                   body:JSON.stringify({
+                    date: pickedDate,
                     day: weekDay,
                     timeThreshold: duration,
           })				
@@ -404,7 +406,7 @@ renderSuggestions()
 	render(){
 		return(
       <View style={{flex: 1, backgroundColor: "#455a64"}}>
-      <NavigationForm title="Find Recommended Event Time" type="suggestEvent"></NavigationForm>
+      <NavigationForm title="Find an Event Time" type="suggestEvent"></NavigationForm>
       <ScrollView contentContainerStyle={styles.contentContainer}>
 			<View style={styles.container}>
                     
@@ -505,15 +507,15 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    fontSize: 16,
+    fontSize: 30,
     paddingTop: 13,
     paddingHorizontal: 10,
     paddingBottom: 12,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: 'white',
     borderRadius: 4,
     backgroundColor: 'white',
-    color: 'black',
+    color: 'white',
 },
 
 iconClose: {

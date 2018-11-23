@@ -245,12 +245,17 @@ exports.getAvailabilities = function(req, res, next) {
 
     //Fill userschedules with schedules for all users in the group
     for (var i = 0; i < users.length; i++) {
+
+		//TODO: Check user events (from groups they are in) and subtract any that occur
+		//on this day (add additional input for specific day?)
+
         userSchedules.push(users[i].schedule);
     }
 
     //If userthreshold is not supplied, set it to 1
     if (!userThreshold) {
-        userThreshold = 1;
+		const PERCENT_REQUIRED = 0.6; //default user threshold is 0.6 of total members in group
+        userThreshold = Math.ceil(users.length * PERCENT_REQUIRED);
     }
 
     if (!timeThreshold) {

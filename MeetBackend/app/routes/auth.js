@@ -65,8 +65,23 @@ router.post("/signin", function(req, res, next) {
 });
 
 /*
-Requires email
- */
+POST request to reset password if user forgot password
+Request body: {email: <string>}
+*/
 router.post("/forgotPassword", authController.sendEmail, authController.resetDBPass);
+
+
+
+//For testing notifications
+router.post("/triggerNotification", function(req, res, next) {
+    //Custom callback
+	var channel = 1;
+	var event = "testEvent";
+	var message = ("Test notification");
+	pusher.trigger(channel, event, {
+		"message": message
+	});
+});
+
 
 module.exports = router;

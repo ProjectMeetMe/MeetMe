@@ -40,85 +40,87 @@ export default class SuggestEvent extends Component {
             refreshing: false,
             startTime: "",
             endTime: "",
+            datePicked: false,
+            date: "",
             items: [
                 {
-                    label: ' 0.5',
+                    label: ' 30 minutes',
                     value:    0.5,
                 },
                 {
-                    label: ' 1.0',
+                    label: ' 1 hour',
                     value:      1,
                 },
                 {
-                    label: ' 1.5',
+                    label: ' 1 hour 30 minutes',
                     value:    1.5,
                 },
                 {
-                    label: ' 2.0',
+                    label: ' 2.0 Hours',
                     value:      2,
                 },
                 {
-                    label: ' 2.5',
+                    label: ' 2.5 Hours',
                     value:    2.5,
                 },
                 {
-                    label: ' 3.0',
+                    label: ' 3.0 Hours',
                     value:      3,
                 },
                 {
-                    label: ' 3.5',
+                    label: ' 3.5 Hours',
                     value:    3.5,
                 },
                 {
-                    label: ' 4.0',
+                    label: ' 4.0 Hours',
                     value:      4,
                 },
                 {
-                    label: ' 4.5',
+                    label: ' 4.5 Hours',
                     value:    4.5,
                 },
                 {
-                    label: ' 5.0',
+                    label: ' 5.0 Hours',
                     value:      5,
                 },
                 {
-                  label: ' 5.5',
+                  label: ' 5.5 Hours',
                   value:    5.5,
               },
               {
-                  label: ' 6.0',
+                  label: ' 6.0 Hours',
                   value:      6,
               },
               {
-                  label: ' 6.5',
+                  label: ' 6.5 Hours',
                   value:    6.5,
               },
               {
-                  label: ' 7.0',
+                  label: ' 7.0 Hours',
                   value:      7,
               },
               {
-                  label: ' 7.5',
+                  label: ' 7.5 Hours',
                   value:    7.5,
               },
               {
-                  label: ' 8.0',
+                  label: ' 8.0 Hours',
                   value:      8,
               },
               {
-                  label: ' 8.5',
+                  label: ' 8.5 Hours',
                   value:    8.5,
               },
               {
-                  label: ' 9.0',
+                  label: ' 9.0 Hours',
                   value:      9,
               },
               {
-                  label: '10.0',
+                  label: '10.0 Hours',
                   value:    10,
               },
               {
-                  label: '10.5',
+                  label: '10.5 Hours',
                   value:   10.5,
               },
             ],
@@ -187,7 +189,7 @@ export default class SuggestEvent extends Component {
                   },
                   body:JSON.stringify({
                     day: weekDay,
-                    threshold: duration,
+                    timeThreshold: duration,
           })				
 		      })
 		      .then((response) => response.json())
@@ -421,7 +423,7 @@ renderSuggestions()
                 <View style={{ paddingVertical: 5 }} />
                 <RNPickerSelect
                     placeholder={{
-                        label: 'Choose a date for event',
+                        label: 'Event Length',
                         value: 0,
                     }}
                     items={this.state.items}
@@ -442,17 +444,17 @@ renderSuggestions()
                         this.inputRefs.picker = el;
                     }}
                 />
-
+                <TouchableOpacity style={styles.button} onPress={this.addEvent}>
+                    <Text style={styles.buttonText}>{"Get Recommended Event Time"}</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.button} 
                     onPress={() => {Actions.createevent({groupID: this.props.groupID,
                                                           startTime: "", 
                                                           endTime: "", })}}>
-                    <Text style={styles.buttonText}>{"Customize Event Time"}</Text>
+                    <Text style={styles.buttonText}>{"Manually Set Event Time"}</Text>
                 </TouchableOpacity> 
 
-                <TouchableOpacity style={styles.button} onPress={this.addEvent}>
-                    <Text style={styles.buttonText}>{"Get Recommended Event Time"}</Text>
-                </TouchableOpacity> 
+                 
 
                 <Text>{"\n"}</Text>
 

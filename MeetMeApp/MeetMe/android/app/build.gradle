@@ -134,13 +134,37 @@ android {
             }
         }
     }
+
+    subprojects {
+        project.configurations.all {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex') ) {
+                        details.useVersion "26.1.0"
+                    }
+            }
+        }
+    }
+
+}
+
+subprojects {
+  project.configurations.all {
+     resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'com.android.support'
+              && !details.requested.name.contains('multidex') ) {
+           details.useVersion "26.1.0"
+        }
+     }
+  }
 }
 
 dependencies {
+    compile project(':react-native-background-task')
     compile project(':react-native-vector-icons')
     compile project(':react-native-google-signin')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:appcompat-v7:26.1.0"
     implementation "com.facebook.react:react-native:+"  // From node_modules
 }
 

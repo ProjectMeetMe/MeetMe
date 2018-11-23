@@ -5,6 +5,7 @@ var router = express.Router();
 var jwt = require("jsonwebtoken");
 var passport = require("passport");
 var config = require("config");
+var pusher = require("../pushNotifications/pusher.js");
 
 var authController = require("../controllers/auth.js");
 

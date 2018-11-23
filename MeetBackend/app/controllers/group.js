@@ -1,3 +1,5 @@
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 var db = require("../models/sequelize.js");
 var moment = require("moment");
 var pusher = require("../pushNotifications/pusher.js");
@@ -208,18 +210,18 @@ exports.leaveGroup = function(req, res, next) {
 }
 
 exports.destroyGroup = function(req, res, next) {
-	var group = req.group;
-	group.destroy().then(function(success){
-		if (success) {
-			return res.status(200).json({
-				message: "Successful group destroy"
-			});
-		} else {
-			return res.status(400).json({
-				message: "Error: Group could not be destroyed"
-			});
-		}
-	}).catch(function(err) {
+    var group = req.group;
+    group.destroy().then(function(success) {
+        if (success) {
+            return res.status(200).json({
+                message: "Successful group destroy"
+            });
+        } else {
+            return res.status(400).json({
+                message: "Error: Group could not be destroyed"
+            });
+        }
+    }).catch(function(err) {
         return res.status(400).json({
             message: "Error: Group could not be destroyed"
         });
@@ -236,6 +238,7 @@ exports.getAvailabilities = function(req, res, next) {
     var day = req.body.day;
     var userSchedules = [];
     var users = req.group.users;
+    var date = req.body.date;
 
     if (DAYS_IN_WEEK.indexOf(day) <= -1) {
         return res.status(400).json({
@@ -246,15 +249,18 @@ exports.getAvailabilities = function(req, res, next) {
     //Fill userschedules with schedules for all users in the group
     for (var i = 0; i < users.length; i++) {
 
-		//TODO: Check user events (from groups they are in) and subtract any that occur
-		//on this day (add additional input for specific day?)
+        //TODO: Check user events (from groups they are in) and subtract any that occur
+        //on this day (add additional input for specific day?)
+        //modify users[i].schedule by SUBTRACTING any events that happen on that day
+        sched = exports.filterSchedule(users[i].schedule, date, day, users[i].id);
+		console.log("RETURNED SCHEDULE: " + JSON.stringify(sched));
 
-        userSchedules.push(users[i].schedule);
+        userSchedules.push(sched);
     }
 
     //If userthreshold is not supplied, set it to 1
     if (!userThreshold) {
-		const PERCENT_REQUIRED = 0.6; //default user threshold is 0.6 of total members in group
+        const PERCENT_REQUIRED = 0.6; //default user threshold is 0.6 of total members in group
         userThreshold = Math.ceil(users.length * PERCENT_REQUIRED);
     }
 
@@ -273,6 +279,60 @@ exports.getAvailabilities = function(req, res, next) {
     });
 }
 
+//Helper function to merge user's weekly availability schedule with any events for groups they
+//belong to, for a specific day of the week
+exports.filterSchedule = function(schedule, date, day, userId) {
+
+	/*
+    console.log("Schedule: " + JSON.stringify(schedule));
+    console.log("Date: " + JSON.stringify(date));
+    console.log("Day: " + JSON.stringify(day));
+    console.log("UserID: " + userId);
+	*/
+
+    db.user.findOne({
+        include: [{
+            model: db.group,
+            attributes: ["id"], //elements of the group that we want
+            through: {
+                attributes: []
+            }
+        }],
+        where: {
+            id: userId //user must belong to group
+        }
+    }).then(function(userWithGroups) {
+        //construct groupid array
+        var groupIds = [];
+        for (var i = 0; i < userWithGroups.groups.length; i++) {
+            groupIds.push(userWithGroups.groups[i].id);
+        }
+		//console.log("GroupIDs: " + groupIds)
+
+        db.event.findAll({
+            where: {
+                groupId: {
+                    [Op.or]: groupIds //All events that belong to groupIds in groups
+                }
+            },
+            raw: true
+        }).then(function(events) {
+
+            //console.log("EVENTS: " + JSON.stringify(events))
+			console.log("RETURNING SCHEDULE: " + JSON.stringify(schedule));
+            return schedule;
+
+        }).catch(function(err) {
+			console.log("ERROR@")
+            return schedule;
+
+        });
+    }).catch(function(err) { //recoverable error, just don't filter
+		console.log("ERROR!")
+        return schedule;
+    });
+}
+
 //Helper function to calculate free availabilties, given a userThreshold AND specified day AND array of user schedules
 exports.calculateAvailabilities = function(schedules, day, userThreshold, timeThreshold) {
 
@@ -284,13 +344,13 @@ exports.calculateAvailabilities = function(schedules, day, userThreshold, timeTh
         for (var ind in schedules[schedule][day]) {
             var timeSlot = schedules[schedule][day][ind];
 
-			//Check that enough contigent time blocks exist such that user can be free
+            //Check that enough contigent time blocks exist such that user can be free
             var timeValid = true;
             for (var offset = 0.5; offset < timeThreshold; offset += 0.5) {
-				if (!schedules[schedule][day].includes(timeSlot + offset)){
-					timeValid = false;
-					break;
-				}
+                if (!schedules[schedule][day].includes(timeSlot + offset)) {
+                    timeValid = false;
+                    break;
+                }
             }
 
             //Add a timeslot to the freq table if it has enough contigent blocks

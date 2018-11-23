@@ -10,6 +10,7 @@ import Dialog, {
 } from 'react-native-popup-dialog';
 import {Actions} from "react-native-router-flux";
 import SimpleToast from "react-native-simple-toast";
+import Toast from "react-native-simple-toast";
 
 export default class Login extends Component {
 	constructor(props){
@@ -27,7 +28,7 @@ export default class Login extends Component {
 	}
 
 	forgotPassword() {
-		SimpleToast.show("forgot password");
+		Toast.show("forgot password");
 	}
 	resetPassword = () =>{
 		//console.log(this.state.email)
@@ -121,16 +122,24 @@ export default class Login extends Component {
 			<View style={styles.container}>
 				<Logo/>
 				<LoginFrom type="Login"/>
-				<View style={styles.signupTextCont}>
+				{/* <View style={styles.signupTextCont}>
 					<TouchableOpacity onPress={this.showDialog}>	 
 						<Text style={styles.signupButton}>Forgot my password</Text>
 					</TouchableOpacity> 
-				</View>
-				<View style={styles.signupTextCont}>
-					<Text style={styles.signupText}>Don't have an account yet?</Text>
-					<TouchableOpacity onPress={this.signup}>	
-						<Text style={styles.signupButton}> Signup</Text>
-					</TouchableOpacity>
+				</View> */}
+				<View style={styles.container}>
+					<View style={styles.signupTextCont}>
+						<Text style={styles.signupText}>Forgot your password?</Text>
+						<TouchableOpacity onPress={this.showDialog}>	 
+							<Text style={styles.signupButton}> Reset password</Text>
+						</TouchableOpacity>
+					</View> 
+					<View style={styles.signupTextCont}>
+						<Text style={styles.signupText}>Don't have an account yet?</Text>
+						<TouchableOpacity onPress={this.signup}>	
+							<Text style={styles.signupButton}> Signup</Text>
+						</TouchableOpacity>
+					</View>
 					{ this.renderPasswordDialog() }
 					
 				</View>
@@ -148,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent :"center"
   },
   signupTextCont : {
-  	flexGrow: 1,
+  	flex: 1,
     alignItems:"flex-end",
     justifyContent :"center",
     paddingVertical:16,

@@ -9,7 +9,6 @@ import Dialog, {
   DialogContent,
 } from 'react-native-popup-dialog';
 import {Actions} from "react-native-router-flux";
-import SimpleToast from "react-native-simple-toast";
 import Toast from "react-native-simple-toast";
 
 export default class Login extends Component {
@@ -122,12 +121,7 @@ export default class Login extends Component {
 			<View style={styles.container}>
 				<Logo/>
 				<LoginFrom type="Login"/>
-				{/* <View style={styles.signupTextCont}>
-					<TouchableOpacity onPress={this.showDialog}>	 
-						<Text style={styles.signupButton}>Forgot my password</Text>
-					</TouchableOpacity> 
-				</View> */}
-				<View style={styles.container}>
+
 					<View style={styles.signupTextCont}>
 						<Text style={styles.signupText}>Forgot your password?</Text>
 						<TouchableOpacity onPress={this.showDialog}>	 
@@ -141,9 +135,6 @@ export default class Login extends Component {
 						</TouchableOpacity>
 					</View>
 					{ this.renderPasswordDialog() }
-					
-				</View>
-				
 			</View>	
 			
 			);

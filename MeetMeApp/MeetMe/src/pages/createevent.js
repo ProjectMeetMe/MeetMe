@@ -30,6 +30,9 @@ export default class CreateEvent extends Component {
             groupId: this.props.groupID,
             startDateTimePickerVisible: false,
             endDateTimePickerVisible: false,
+            
+            datePicked: false,
+            date: "",
     };
 
     //retrieve token from AsyncStorage
@@ -188,11 +191,25 @@ handleStartDatePicked  = (date) => {
           month = 13;
       }
   dateOutString = year + "-" + month + "-" + day + " " + time;
-  this.setState({startTime: dateOutString});
+  this.setState({
+    startTime: dateOutString,
+    datePicked: true,
+    date: year + "-" + month + "-" + day + " ",
+  });
   this.hideStartDateTimePicker();
 };
 
-showEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: true });
+showEndDateTimePicker  = () => 
+{
+  if(this.state.datePicked == false)
+  {
+    Toast.show("Please choose start time first.", Toast.LONG);
+  }
+  else
+  {
+    this.setState({ endDateTimePickerVisible: true });
+  }
+}
 
 hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false });
 
@@ -202,55 +219,9 @@ handleEndDatePicked  = (date) => {
   var dateString = date.toString();
   //[0] = dayName; [1] = month; [2] = dayNum; [3] yearNum, [4] time
   var dateStringArray = dateString.split(" ",5);
-  var day = dateStringArray[2];
-  var month;
-  var year = dateStringArray[3];
   var time = dateStringArray[4];
-  var dateOutString;
-      switch(dateStringArray[1]) {
-        case "Jan":
-          month = 1;
-          break;
-        case "Feb":
-          month = 2;
-          break;
-        case "Mar":
-          month = 3;
-          break;
-        case "Apr":
-          month = 4;
-          break;
-        case "May":
-          month = 5;
-          break;
-        case "Jun":
-          month = 6;
-          break;
-        case "Jul":
-          month = 7;
-          break;
-        case "Aug":
-          month = 8;
-          break;
-        case "Sep":
-          month = 9;
-          break;
-        case "Oct":
-          month = 10;
-          break;
-        case "Nov":
-          month = 11;
-          break;
-        case "Dec":
-          month = 12;
-          break;
-        // In case of ERROR
-        default:
-          month = 13;
-      }
-  dateOutString = year + "-" + month + "-" + day + " " + time;
 
-  this.setState({endTime: dateOutString});
+  this.setState({endTime: this.state.date + time});
   this.hideEndDateTimePicker();
 };
 
@@ -323,7 +294,7 @@ renderEndTime()
                     </Text>
                     </TouchableOpacity> 
                     <DateTimePicker 
-                        mode="datetime"
+                        mode="time"
                         isVisible={this.state.endDateTimePickerVisible}
                         onConfirm={this.handleEndDatePicked }
                         onCancel={this.hideEndDateTimePicker}

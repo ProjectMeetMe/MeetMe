@@ -40,6 +40,8 @@ export default class SuggestEvent extends Component {
             refreshing: false,
             startTime: "",
             endTime: "",
+            datePicked: false,
+            date: "",
             items: [
                 {
                     label: ' 30 minutes',

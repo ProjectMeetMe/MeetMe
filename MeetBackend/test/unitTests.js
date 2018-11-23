@@ -208,8 +208,7 @@ describe("Unit Tests for calculate availibilties function", function() {
 		Sun: [12]
 	};
 
-
-	it("No schedules with threshold 1", function() {
+	it("4 schedules with threshold 2", function() {
 		var schedules = [schedule1, schedule2, schedule3, schedule4];
 		var threshold = 2;
 		var day = "Mon";

@@ -10,6 +10,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import {Actions} from "react-native-router-flux";
 import {YellowBox} from "react-native";
 import _ from "lodash";
+import BackgroundTask from 'react-native-background-task'
 
 export default class Home extends Component{
   
@@ -27,8 +28,38 @@ export default class Home extends Component{
   }
 
   componentDidMount() {
+    BackgroundTask.schedule();
+    this.checkStatus();
     this.getGroups();
+    this.timer = setInterval(()=> this.refreshUserData(), 30000)
   }
+
+  async checkStatus() {
+    const status = await BackgroundTask.statusAsync()
+    console.log("status.available:      " + status.available)
+  }
+
+  async refreshUserData(){
+
+    console.log("Periocally get calls start:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    const usertoken = await AsyncStorage.getItem("token");
+
+    console.log("usertoken:   " + usertoken);
+
+    var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
+          method: "get",
+          headers:{
+            "Authorization": "Bearer " + usertoken,
+          }
+        });
+    const userevent = await userevents.json();
+
+    await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
+    await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
+   
+    console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+   }
+  
   //Redirect page to creategroup view
   creategroup() {
 		Actions.creategroup();
@@ -172,6 +203,31 @@ export default class Home extends Component{
     
 	}
 }
+
+BackgroundTask.define(
+  async () => {
+    console.log('Background task start:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+
+    const usertoken = await AsyncStorage.getItem("token");
+
+    console.log("usertoken:   " + usertoken);
+
+    var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
+          method: "get",
+          headers:{
+            "Authorization": "Bearer " + usertoken,
+          }
+        });
+    const userevent = await userevents.json();
+
+    await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
+    await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents)); 
+
+    console.log('Background task Finish:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+
+    BackgroundTask.finish()
+  },
+)
 
 // Style definitions
 const styles = StyleSheet.create({

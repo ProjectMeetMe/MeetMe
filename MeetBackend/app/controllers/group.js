@@ -245,6 +245,10 @@ exports.getAvailabilities = function(req, res, next) {
 
     //Fill userschedules with schedules for all users in the group
     for (var i = 0; i < users.length; i++) {
+
+		//TODO: Check user events (from groups they are in) and subtract any that occur
+		//on this day (add additional input for specific day?)
+
         userSchedules.push(users[i].schedule);
     }
 

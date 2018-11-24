@@ -120,7 +120,7 @@ passport.use(new JWTStrategy({
     },
     function(jwtPayload, cb) { //jwtPayload contains user info unencrypted
 
-        //Find the user in db
+        //Tokens are valid if last login time matches and the user has not logged out since
         db.user.findOne({
                 where: {
                     id: jwtPayload.id,
@@ -132,11 +132,9 @@ passport.use(new JWTStrategy({
                 if (!userFound) { //no matching database entry - lastlogin invalid
                     return cb(null);
                 }
-				if (userFound.lastLogout != null){
-					console.log(userFound.lastLogout)
+				if (userFound.lastLogout != null && userFound.lastLogout > userFound.lastLogin){ //if a logout occured after the lastlogin, invalid token
+					return cb(null);
 				}
-
-
 
                 return cb(null, userFound.get()); //pass on user object to next function
             })

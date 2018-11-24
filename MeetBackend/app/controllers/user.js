@@ -3,11 +3,53 @@ const Op = Sequelize.Op;
 var bCrypt = require("bcrypt-nodejs");
 var jwt = require("jsonwebtoken");
 var config = require("config");
+var moment = require("moment");
 
 var db = require("../models/sequelize.js");
 var groupController = require("./group.js");
 
 /* Middlewares for handling user related requests */
+
+exports.getProfile = function(req, res, next) {
+    db.user.findOne({
+        where: {
+            id: req.user.id //user must belong to group
+        }
+    }).then(function(user) {
+        var user = user.get();
+        return res.status(200).json({
+            user,
+            message: "Successful profile retrieval"
+        }); //only return group info
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Profile could not be retrieved"
+        });
+    });
+}
+
+exports.logout = function(req, res, next) {
+    db.user.findOne({
+        where: {
+            id: req.user.id //user must belong to group
+        }
+    }).then(function(user) {
+        //Update login time
+		console.log("LAST LOGOUT UPDATE: " + moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"))
+
+        user.update({
+            lastLogout: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+        }).then(function(user) {
+            return res.status(200).json({
+                message: "Successful logout"
+            });
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Could not logout"
+        });
+    });
+}
 
 /*
 Finds a list of the groups that the currently logged in user belongs to
@@ -42,12 +84,11 @@ exports.getGroups = function(req, res, next) {
 Edits the user schedule specified by req.body.schedule
  */
 exports.editSchedule = function(req, res, next) {
-    //TODO: should confirm that req.body.schedule is in correct format
 
     db.user.update({
         //schedule: JSON.parse(req.body.schedule)
-		schedule: req.body.schedule
-	}, {
+        schedule: req.body.schedule
+    }, {
         where: {
             id: req.user.id
         }
@@ -88,10 +129,10 @@ exports.getEvents = function(req, res, next) {
     }).then(function(userWithGroups) {
         //construct groupid array
         var groups = [];
-		var groupNames = {};
+        var groupNames = {};
         for (var i = 0; i < userWithGroups.groups.length; i++) {
             groups.push(userWithGroups.groups[i].id);
-			groupNames[userWithGroups.groups[i].id] = userWithGroups.groups[i].groupName;
+            groupNames[userWithGroups.groups[i].id] = userWithGroups.groups[i].groupName;
         }
 
         db.event.findAll({
@@ -103,11 +144,11 @@ exports.getEvents = function(req, res, next) {
             raw: true
         }).then(function(events) {
 
-			//add a group name field to each event:
-			for (var i=0; i<events.length; i++){
-				var groupId = events[i].groupId;
-				events[i]["groupName"] = groupNames[groupId];
-			}
+            //add a group name field to each event:
+            for (var i = 0; i < events.length; i++) {
+                var groupId = events[i].groupId;
+                events[i]["groupName"] = groupNames[groupId];
+            }
 
             events = groupController.sortEvents(events);
 
@@ -128,75 +169,83 @@ exports.getEvents = function(req, res, next) {
 
 }
 
-exports.changePassword = function(req, res, next) {
-	var oldPass = req.body.oldPass;
-	var newPass = req.body.newPass;
-	var confirmPass = req.body.confirmPass;
 
-	if (!oldPass){
-		return res.status(400).json({
-			message: "Error: Old password is required"
-		});
-	}
-	if (newPass.length < 4) {
-		return res.status(400).json({
-			message: "Error: New password must be at least 4 characters"
-		});
-	}
-	if (newPass !== confirmPass){ //new passwords don't match
-		return res.status(400).json({
-			message: "Error: New passwords do not match"
-		});
-	}
-	next();
+/*
+Checks that change password fields are correct
+ */
+exports.changePassword = function(req, res, next) {
+    var oldPass = req.body.oldPass;
+    var newPass = req.body.newPass;
+    var confirmPass = req.body.confirmPass;
+
+    if (!oldPass) {
+        return res.status(400).json({
+            message: "Error: Old password is required"
+        });
+    }
+    if (newPass.length < 4) {
+        return res.status(400).json({
+            message: "Error: New password must be at least 4 characters"
+        });
+    }
+    if (newPass !== confirmPass) { //new passwords don't match
+        return res.status(400).json({
+            message: "Error: New passwords do not match"
+        });
+    }
+    next();
 };
 
-//Changes a user's password, given an email
-exports.updateDBPass = function(req, res, next){
+/*
+Updates the user password in the database
+ */
+exports.updateDBPass = function(req, res, next) {
 
-	var oldPass = req.body.oldPass;
-	var newPass = req.body.newPass;
+    var oldPass = req.body.oldPass;
+    var newPass = req.body.newPass;
 
-	db.user.findOne({
+    db.user.findOne({
         where: {
             id: req.user.id //user must belong to group
         }
     }).then(function(user) {
-		if (!user) { //no user found
-			return res.status(400).json({
-	            message: "Error: User does not exist"
-	        });
-		}
-		if (!bCrypt.compareSync(oldPass, user.password)) { //user found but passwords dont match
-			return res.status(400).json({
-	            message: "Error: Old password is incorrect"
-	        });
-		}
+        if (!user) { //no user found
+            return res.status(400).json({
+                message: "Error: User does not exist"
+            });
+        }
+        if (!bCrypt.compareSync(oldPass, user.password)) { //user found but passwords dont match
+            return res.status(400).json({
+                message: "Error: Old password is incorrect"
+            });
+        }
 
-		var encrypNewPass = bCrypt.hashSync(newPass, bCrypt.genSaltSync(10), null);
-		user.update({ //Update entry in database
-			password: encrypNewPass
-		}).then(function(updatedUser) {
-	        if (!updatedUser) {
-	            return res.status(400).json({
-	                message: "Error: password could not be updated"
-	            });
-	        } else {
-				var updatedUser = updatedUser.get();
-				const token = jwt.sign(updatedUser, config.get("jwtSecret"), {expiresIn: "30d"});
+        var encrypNewPass = bCrypt.hashSync(newPass, bCrypt.genSaltSync(10), null);
+        user.update({ //Update entry in database
+            password: encrypNewPass
+        }).then(function(updatedUser) {
+            if (!updatedUser) {
+                return res.status(400).json({
+                    message: "Error: password could not be updated"
+                });
+            } else {
+                var updatedUser = updatedUser.get();
+                const token = jwt.sign(updatedUser, config.get("jwtSecret"), {
+                    expiresIn: "30d"
+                });
 
-	            return res.status(200).json({
-					user: updatedUser,
-					token: token,
-	                message: "Successful password update"
-	            });
-	        }
-	    }).catch(function(err) {
-	        return res.status(400).json({
-	            message: "Some error occured",
-	            error: err
-	        });
-	    });
+                return res.status(200).json({
+                    user: updatedUser,
+                    token: token,
+                    message: "Successful password update"
+                });
+            }
+        }).catch(function(err) {
+            return res.status(400).json({
+                message: "Some error occured",
+                error: err
+            });
+        });
 
     }).catch(function(err) {
         return res.status(400).json({

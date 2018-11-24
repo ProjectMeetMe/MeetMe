@@ -12,31 +12,10 @@ router.get("/", function(req, res, next) {
 });
 
 /* GET user profile. */
-router.get("/profile", function(req, res, next) {
-
-	db.user.findOne({
-		where: {
-			id: req.user.id //user must belong to group
-		}
-	}).then(function(user) {
-		var user = user.get();
-		return res.status(200).json({
-			user,
-			message: "Successful profile retrieval"
-		}); //only return group info
-	}).catch(function(err) {
-		return res.status(400).json({
-			message: "Error: Profile could not be retrieved"
-		});
-	});
-});
+router.get("/profile", userController.getProfile);
 
 /* GET user profile. */
-router.get("/logout", function(req, res, next) {
-    //TODO: Should do something here to invalidate the current token, perhaps with a blacklist of token values
-    //Entries in blacklist do not have to stay for more than one day (JSON token expiry)
-    return res.status(200).json(req.user);
-});
+router.post("/logout", userController.logout);
 
 /* GET groups that curr user belongs to */
 router.get("/getGroups", userController.getGroups);

@@ -1,7 +1,6 @@
 var db = require("../models/sequelize.js");
 const Op = db.Sequelize.Op;
 var moment = require("moment");
-var pusher = require("../pushNotifications/pusher.js");
 
 const MAX_GROUP_USERS = 10; // Max allowed users per group
 
@@ -19,24 +18,10 @@ Group edit parameters are in req.body: (groupName)
  */
 exports.editGroup = function(req, res, next) {
     var group = req.group;
-    var oldName = group.groupName;
     group.update({
         groupName: req.body.groupName,
         description: req.body.groupDescription
     }).then(function(updatedInfo) {
-
-        //Trigger a push notification
-        var channel = req.query.groupId;
-        var event = "editGroup";
-        var message = ("Group info edited at group " + req.query.groupId + " or " + oldName);
-        pusher.trigger("my-channel", "my-event", {
-            "message": message
-        });
-        /*
-        pusher.trigger(channel, event, {
-        	"message": message
-        });
-        */
 
         return res.status(200).json({
             updatedInfo,
@@ -251,6 +236,8 @@ exports.getAvailabilities = function(req, res, next) {
         promises.push(exports.filterSchedule(users[i].schedule, date, day, users[i].id));
     }
 
+	console.log("UNFILTERED USER SCHEDULES: " + JSON.stringify(users[0].schedule))
+
     //Wait for all runs of filter schedule to finish
     Promise.all(promises).then(function(userSchedules) {
         //If userthreshold is not supplied, set it to 1
@@ -264,6 +251,8 @@ exports.getAvailabilities = function(req, res, next) {
         } else {
             timeThreshold = Math.ceil(timeThreshold * 2) / 2.0; //Round up to nearest 0.5
         }
+
+		console.log("FILTERED USER SCHEDULES: " + JSON.stringify(userSchedules))
 
         var freeTimes = exports.calculateAvailabilities(userSchedules, day, userThreshold, timeThreshold);
 
@@ -310,8 +299,6 @@ exports.filterSchedule = function(schedule, date, day, userId) {
             }
         }).then(function(events) {
 
-			console.log("EVENTS: " + JSON.stringify(events))
-
             for (var i = 0; i < events.length; i++) {
 
                 //Parse start and endtime for each event into hour multiples of .5
@@ -320,7 +307,7 @@ exports.filterSchedule = function(schedule, date, day, userId) {
 
                 //Anything between startTime and endTime (inclusive) should be purged from the schedule array
                 schedule[day] = schedule[day].filter(function(time) {
-                    return time < startTime || time > endTime;
+                    return time < startTime || time >= endTime;
                 });
 
             }
@@ -358,8 +345,8 @@ parseTime = function(timeString, isStart) {
             return retVal + 0.5;
     } else { //round up for an endTime
         if (minutes > 30)
-            if (retVal + 1 >= 24) //Max possible ret time
-                return 23.5;
+            if (retVal + 1 > 24) //Max possible ret time
+                return 24;
             else
                 return retVal + 1;
         else if (minutes > 0)

@@ -31,7 +31,7 @@ export default class Home extends Component{
     BackgroundTask.schedule();
     this.checkStatus();
     this.getGroups();
-    this.timer = setInterval(()=> this.refreshUserData(), 10000);
+    this.timer = setInterval(()=> this.refreshUserData(), 60000);
 
     // Pusher.logToConsole = true;
     // var pusher = new Pusher('acd79456b6d0660329b3',{

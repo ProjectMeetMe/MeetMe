@@ -60,6 +60,7 @@ export default class GroupInformation extends Component{
     
     this.setState({
       groupinfo: groupinfojson.groupInfo,
+      //leaderId: groupinfojson.groupInfo.leaderId,
       userid: curuserid,
       groupID: groupId,
     });
@@ -152,7 +153,7 @@ export default class GroupInformation extends Component{
           multiline={true}
           textAlignVertical={"top"}
           underlineColorAndroid="rgba(0,0,0,0)" 
-          defaultValue={this.state.groupinfo}
+          defaultValue={this.state.groupinfo.description}
           selectionColor="#000000"
           keyboardType="email-address"
           onChangeText={(newDescription) => this.setState({newDescription})}
@@ -172,7 +173,7 @@ export default class GroupInformation extends Component{
           <NavigationForm title="Group Information" type="groupinformation"></NavigationForm>
           
           <View>
-            <Text style={styles.text}>{this.state.groupinfo}</Text>
+            <Text style={styles.text}>{this.state.groupinfo.description}</Text>
           </View>
           <View style={styles.container}>	
             <TouchableOpacity style={styles.editButton} 

@@ -31,7 +31,7 @@ export default class Home extends Component{
     BackgroundTask.schedule();
     this.checkStatus();
     this.getGroups();
-    this.timer = setInterval(()=> this.refreshUserData(), 30000);
+    this.timer = setInterval(()=> this.refreshUserData(), 10000);
 
     // Pusher.logToConsole = true;
     // var pusher = new Pusher('acd79456b6d0660329b3',{
@@ -57,19 +57,24 @@ export default class Home extends Component{
     const usertoken = await AsyncStorage.getItem("token");
 
     console.log("usertoken:   " + usertoken);
+    if(usertoken != "" && usertoken != null)
+    {
+      var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
+        method: "get",
+        headers:{
+          "Authorization": "Bearer " + usertoken,
+        }
+      }).catch((error) => {
+        //console.error(error);
+      });
+      const userevent = await userevents.json();
 
-    var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
-          method: "get",
-          headers:{
-            "Authorization": "Bearer " + usertoken,
-          }
-        });
-    const userevent = await userevents.json();
+      await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
+      await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
+    }
 
-    await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
-    await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
    
-    console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    //console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
    }
   
   //Redirect page to creategroup view
@@ -94,24 +99,27 @@ export default class Home extends Component{
     const { groups, token, loading, refreshing } = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
-    console.log("usertoken:  " + usertoken);
-    YellowBox.ignoreWarnings(['Warning: Each child in an array or iterator should have a unique']);
 
-    var usergroups = await fetch("http://104.42.79.90:2990/user/getGroups", {
-          method: "get",
-          headers:{
-            "Authorization": "Bearer " + usertoken
-          }
-        });
-
-    const usergroup = await usergroups.json();
-
-    this.setState({
-      token: usertoken,
-      groups: usergroup.groups,
-      loading: false,
-      refreshing: false,
-    });
+      console.log("usertoken:  " + usertoken);
+      YellowBox.ignoreWarnings(['Warning: Each child in an array or iterator should have a unique']);
+  
+      var usergroups = await fetch("http://104.42.79.90:2990/user/getGroups", {
+            method: "get",
+            headers:{
+              "Authorization": "Bearer " + usertoken
+            }
+          }).catch((error) => {
+            //console.error(error);
+          });
+  
+      const usergroup = await usergroups.json();
+  
+      this.setState({
+        token: usertoken,
+        groups: usergroup.groups,
+        loading: false,
+        refreshing: false,
+      });
   }
 
   // Pull-down refresh
@@ -221,19 +229,22 @@ BackgroundTask.define(
     console.log('Background task start:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
 
     const usertoken = await AsyncStorage.getItem("token");
-
     console.log("usertoken:   " + usertoken);
 
-    var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
-          method: "get",
-          headers:{
-            "Authorization": "Bearer " + usertoken,
-          }
-        });
-    const userevent = await userevents.json();
+    if(usertoken != "" && usertoken != null)
+    {
+      var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
+        method: "get",
+        headers:{
+          "Authorization": "Bearer " + usertoken,
+        }
+      });
+      const userevent = await userevents.json();
 
-    await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
-    await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents)); 
+      await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
+      await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents)); 
+    }
+
 
     console.log('Background task Finish:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 

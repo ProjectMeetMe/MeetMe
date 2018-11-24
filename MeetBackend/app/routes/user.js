@@ -12,16 +12,10 @@ router.get("/", function(req, res, next) {
 });
 
 /* GET user profile. */
-router.get("/profile", function(req, res, next) {
-    return res.status(200).json(req.user);
-});
+router.get("/profile", userController.getProfile);
 
 /* GET user profile. */
-router.get("/logout", function(req, res, next) {
-    //TODO: Should do something here to invalidate the current token, perhaps with a blacklist of token values
-    //Entries in blacklist do not have to stay for more than one day (JSON token expiry)
-    return res.status(200).json(req.user);
-});
+router.post("/logout", userController.logout);
 
 /* GET groups that curr user belongs to */
 router.get("/getGroups", userController.getGroups);

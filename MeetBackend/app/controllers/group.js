@@ -1,6 +1,5 @@
-var Sequelize = require("sequelize");
-const Op = Sequelize.Op;
 var db = require("../models/sequelize.js");
+const Op = db.Sequelize.Op;
 var moment = require("moment");
 var pusher = require("../pushNotifications/pusher.js");
 
@@ -230,13 +229,12 @@ exports.destroyGroup = function(req, res, next) {
 
 /*
 Takes into consideration all user schedules in a group and outputs optimal
-user schedules
+user schedules, assumes that day (of week) and date are correctly correlated
  */
 exports.getAvailabilities = function(req, res, next) {
     var userThreshold = req.body.userThreshold;
     var timeThreshold = req.body.timeThreshold;
     var day = req.body.day;
-    var userSchedules = [];
     var users = req.group.users;
     var date = req.body.date;
 
@@ -246,51 +244,46 @@ exports.getAvailabilities = function(req, res, next) {
         });
     }
 
-    //Fill userschedules with schedules for all users in the group
+    //Begin queries for modified schedules (which considers weekly user availability and
+    //events in groups that user belongs to
+    var promises = [];
     for (var i = 0; i < users.length; i++) {
-
-        //TODO: Check user events (from groups they are in) and subtract any that occur
-        //on this day (add additional input for specific day?)
-        //modify users[i].schedule by SUBTRACTING any events that happen on that day
-        sched = exports.filterSchedule(users[i].schedule, date, day, users[i].id);
-		console.log("RETURNED SCHEDULE: " + JSON.stringify(sched));
-
-        userSchedules.push(sched);
+        promises.push(exports.filterSchedule(users[i].schedule, date, day, users[i].id));
     }
 
-    //If userthreshold is not supplied, set it to 1
-    if (!userThreshold) {
-        const PERCENT_REQUIRED = 0.6; //default user threshold is 0.6 of total members in group
-        userThreshold = Math.ceil(users.length * PERCENT_REQUIRED);
-    }
+    //Wait for all runs of filter schedule to finish
+    Promise.all(promises).then(function(userSchedules) {
+        //If userthreshold is not supplied, set it to 1
+        if (!userThreshold) {
+            const PERCENT_REQUIRED = 0.6; //default user threshold is 0.6 of total members in group
+            userThreshold = Math.ceil(users.length * PERCENT_REQUIRED);
+        }
 
-    if (!timeThreshold) {
-        timeThreshold = 0.5;
-    } else {
-        timeThreshold = Math.ceil(timeThreshold * 2) / 2.0; //Round up to nearest 0.5
-    }
+        if (!timeThreshold) {
+            timeThreshold = 0.5;
+        } else {
+            timeThreshold = Math.ceil(timeThreshold * 2) / 2.0; //Round up to nearest 0.5
+        }
 
-    var freeTimes = exports.calculateAvailabilities(userSchedules, day, userThreshold, timeThreshold);
+        var freeTimes = exports.calculateAvailabilities(userSchedules, day, userThreshold, timeThreshold);
 
-    return res.status(200).json({
-        freeTimes: freeTimes,
-        numUsersInGroup: users.length,
-        message: "Successful availabilities calculation"
+        return res.status(200).json({
+            freeTimes: freeTimes,
+            numUsersInGroup: users.length,
+            message: "Successful availabilities calculation"
+        });
     });
+
+
+
 }
 
 //Helper function to merge user's weekly availability schedule with any events for groups they
-//belong to, for a specific day of the week
+//belong to, for a specific day of the week, returns an asynchronous promise that must be
+//explicitly waited on
 exports.filterSchedule = function(schedule, date, day, userId) {
 
-	/*
-    console.log("Schedule: " + JSON.stringify(schedule));
-    console.log("Date: " + JSON.stringify(date));
-    console.log("Day: " + JSON.stringify(day));
-    console.log("UserID: " + userId);
-	*/
-
-    db.user.findOne({
+    return db.user.findOne({
         include: [{
             model: db.group,
             attributes: ["id"], //elements of the group that we want
@@ -307,30 +300,72 @@ exports.filterSchedule = function(schedule, date, day, userId) {
         for (var i = 0; i < userWithGroups.groups.length; i++) {
             groupIds.push(userWithGroups.groups[i].id);
         }
-		//console.log("GroupIDs: " + groupIds)
-
-        db.event.findAll({
+        return db.event.findAll({
             where: {
-                groupId: {
-                    [Op.or]: groupIds //All events that belong to groupIds in groups
-                }
-            },
-            raw: true
+                [Op.and]: [{
+                    groupId: {
+                        [Op.or]: groupIds //All events that belong to groupIds in groups
+                    }
+                }, db.sequelize.where(db.sequelize.fn("date", db.sequelize.col("startTime")), "=", date)]
+            }
         }).then(function(events) {
 
-            //console.log("EVENTS: " + JSON.stringify(events))
-			console.log("RETURNING SCHEDULE: " + JSON.stringify(schedule));
+            for (var i = 0; i < events.length; i++) {
+
+                //Parse start and endtime for each event into hour multiples of .5
+                var startTime = parseTime(JSON.stringify(events[i].startTime), 1); //translate the start time to
+                var endTime = parseTime(JSON.stringify(events[i].endTime), 0);
+
+                //Anything between startTime and endTime (inclusive) should be purged from the schedule array
+                schedule[day] = schedule[day].filter(function(time) {
+                    return time < startTime || time > endTime;
+                });
+
+            }
+
             return schedule;
 
-        }).catch(function(err) {
-			console.log("ERROR@")
+        }).catch(function(err) { //return unparsed array
             return schedule;
-
         });
-    }).catch(function(err) { //recoverable error, just don't filter
-		console.log("ERROR!")
+    }).catch(function(err) { //return unparsed array
         return schedule;
     });
+}
+
+//isStart == 1 if startTime, 0 if endTime
+parseTime = function(timeString, isStart) {
+    var retVal;
+
+    //08:00:00.000Z
+    timeString = timeString.slice(-14);
+    //08:00
+    timeString = timeString.slice(0, -8);
+
+    retVal = parseFloat(timeString.slice(0, -3)); //takes hour part of datetime
+
+    minutes = parseFloat(timeString.slice(-2));
+
+    if (isStart) { //round down for a startTime
+        if (minutes < 30)
+            return retVal;
+        else
+        if (retVal + 0.5 >= 24)
+            return 23.5;
+        else
+            return retVal + 0.5;
+    } else { //round up for an endTime
+        if (minutes > 30)
+            if (retVal + 1 >= 24) //Max possible ret time
+                return 23.5;
+            else
+                return retVal + 1;
+        else if (minutes > 0)
+            return retVal + 0.5;
+        else
+            return retVal;
+
+    }
 }
 
 //Helper function to calculate free availabilties, given a userThreshold AND specified day AND array of user schedules

@@ -5,6 +5,7 @@ var router = express.Router();
 var jwt = require("jsonwebtoken");
 var passport = require("passport");
 var config = require("config");
+var pusher = require("../pushNotifications/pusher.js");
 
 var authController = require("../controllers/auth.js");
 
@@ -75,11 +76,15 @@ router.post("/forgotPassword", authController.sendEmail, authController.resetDBP
 //For testing notifications
 router.post("/triggerNotification", function(req, res, next) {
     //Custom callback
-	var channel = 1;
+	var channel = "1";
 	var event = "testEvent";
-	var message = ("Test notification");
+	var message ="Test notification";
 	pusher.trigger(channel, event, {
 		"message": message
+	});
+
+	return res.status(200).json({
+		message: "Sent push not"
 	});
 });
 

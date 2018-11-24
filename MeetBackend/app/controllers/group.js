@@ -235,9 +235,6 @@ exports.getAvailabilities = function(req, res, next) {
     for (var i = 0; i < users.length; i++) {
         promises.push(exports.filterSchedule(users[i].schedule, date, day, users[i].id));
     }
-
-	console.log("UNFILTERED USER SCHEDULES: " + JSON.stringify(users[0].schedule))
-
     //Wait for all runs of filter schedule to finish
     Promise.all(promises).then(function(userSchedules) {
         //If userthreshold is not supplied, set it to 1
@@ -251,8 +248,6 @@ exports.getAvailabilities = function(req, res, next) {
         } else {
             timeThreshold = Math.ceil(timeThreshold * 2) / 2.0; //Round up to nearest 0.5
         }
-
-		console.log("FILTERED USER SCHEDULES: " + JSON.stringify(userSchedules))
 
         var freeTimes = exports.calculateAvailabilities(userSchedules, day, userThreshold, timeThreshold);
 

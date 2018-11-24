@@ -12,8 +12,7 @@ var dbDialect = config.get("dbConfig.dialect");
 var sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
     host: dbHost,
     dialect: dbDialect,
-	useUTC: false,
-	timezone: "-08:00",
+	timezone: "+08:00",
     logging: false, //disables console messages
     operatorsAliases: false, //suppress warnings
     pool: {
@@ -51,10 +50,10 @@ db.group.hasMany(db.event, {
 
 //Sync models with database
 sequelize.sync(
-// Enable to reset database
-/*{
-        force: true
-    }*/
+    // Enable to reset database
+    /*{
+            force: true
+        }*/
 );
 
 module.exports = db;

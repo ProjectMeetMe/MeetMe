@@ -310,6 +310,8 @@ exports.filterSchedule = function(schedule, date, day, userId) {
             }
         }).then(function(events) {
 
+			console.log("EVENTS: " + JSON.stringify(events))
+
             for (var i = 0; i < events.length; i++) {
 
                 //Parse start and endtime for each event into hour multiples of .5

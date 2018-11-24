@@ -11,7 +11,7 @@ import {Actions} from "react-native-router-flux";
 import {YellowBox} from "react-native";
 import _ from "lodash";
 import BackgroundTask from 'react-native-background-task'
-
+import Pusher from 'pusher-js/react-native';
 export default class Home extends Component{
   
   constructor() {
@@ -25,18 +25,30 @@ export default class Home extends Component{
       loading: true,
       query: "",
     };
-  }
+}
 
   componentDidMount() {
     BackgroundTask.schedule();
     this.checkStatus();
     this.getGroups();
-    this.timer = setInterval(()=> this.refreshUserData(), 30000)
+    this.timer = setInterval(()=> this.refreshUserData(), 30000);
+
+    // Pusher.logToConsole = true;
+    // var pusher = new Pusher('acd79456b6d0660329b3',{
+    //   cluster:  'mt1',
+    //   forceTLS: true
+    // });
+
+    // var channel = pusher.subscribe("1");
+    // channel.bind('testEvent', function(data)
+    // {
+    //   alert(data.message)
+    // });
   }
 
   async checkStatus() {
-    const status = await BackgroundTask.statusAsync()
-    console.log("status.available:      " + status.available)
+    const status = await BackgroundTask.statusAsync();
+    console.log("status.available:      " + status.available);
   }
 
   async refreshUserData(){

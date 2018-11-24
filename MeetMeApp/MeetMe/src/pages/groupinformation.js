@@ -14,9 +14,9 @@ import Dialog, {
   DialogButton,
 } from 'react-native-popup-dialog';
 import Icon from "react-native-vector-icons/Foundation";
-import Home from "../pages/home";
+import Home from "./home";
 
-export default class GroupMember extends Component{
+export default class GroupInformation extends Component{
 	
   constructor(props) {
 
@@ -307,7 +307,7 @@ export default class GroupMember extends Component{
 
       return(
         <View style={{flex: 1, backgroundColor: "#455a64"}}>          
-          <NavigationForm title="Group Member" type="groupmember"></NavigationForm>
+          <NavigationForm title="Group Information" type="groupinformation"></NavigationForm>
           <FlatList
             data={this.state.members}
             renderItem={({ item }) => (

@@ -11,7 +11,7 @@ import CreateGroup from "./pages/creategroup";
 import JoinGroup from "./pages/joingroup";
 import GroupProfile from "./pages/groupprofile";
 import CreateEvent from "./pages/createevent";
-import GroupMember from "./pages/groupmember";
+import GroupInformation from "./pages/groupinformation";
 import GroupSummary from "./pages/groupsummary";
 import SuggestEvent from "./pages/suggestevent";
 import UserCalendar from "./pages/usercalendar";
@@ -67,7 +67,7 @@ export default class Routes extends Component{
 					<Scene key="createevent" component={CreateEvent} title="CreateEvent"/>
 					<Scene key="suggestevent" component={SuggestEvent} title="SuggestEvent"/>
 					<Scene key="setting" component={Setting} title="SettingPage"/>
-					<Scene key="groupmember" component={GroupMember} title="GroupMember"/>
+					<Scene key="groupinformation" component={GroupInformation} title="GroupInformation"/>
 					<Scene key="groupsummary" component={GroupSummary} title="GroupSummary"/>
 			    </Stack>
 			</Router>

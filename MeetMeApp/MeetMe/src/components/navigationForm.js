@@ -57,9 +57,12 @@ export default class NavigationForm extends Component {
     {
       return (
         <NavBar style={styles}>          
-            <NavButton style={styles.navButton}>
+            <NavButton style={styles.navButton}
+            onPress={() => {Actions.groupinformation({groupID: this.props.groupID});
+          }}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
+                source={require("../images/android_icon_information.png")}
               />
             </NavButton>
           <NavTitle style={styles.title}>

@@ -1,20 +1,12 @@
-//Defines a group object
+//Defines a notification object
 
 module.exports = function(sequelize, Sequelize) {
 
-    var Group = sequelize.define("group", {
+    var Notification = sequelize.define("notification", {
         id: {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
-        },
-        groupName: {
-            type: Sequelize.STRING,
-            notEmpty: true
-        },
-        leaderId: {
-            type: Sequelize.STRING,
-            notEmpty: true
         },
         description: {
             type: Sequelize.TEXT,
@@ -22,5 +14,5 @@ module.exports = function(sequelize, Sequelize) {
         }
     });
 
-    return Group;
+    return Notification;
 };

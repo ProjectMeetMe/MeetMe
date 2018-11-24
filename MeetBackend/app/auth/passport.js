@@ -132,6 +132,12 @@ passport.use(new JWTStrategy({
                 if (!userFound) { //no matching database entry - lastlogin invalid
                     return cb(null);
                 }
+				if (userFound.lastLogout != null){
+					console.log(userFound.lastLogout)
+				}
+
+
+
                 return cb(null, userFound.get()); //pass on user object to next function
             })
             .catch(function(err) { //payload is nonsense

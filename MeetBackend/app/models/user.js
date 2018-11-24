@@ -29,8 +29,11 @@ module.exports = function(sequelize, Sequelize) {
         lastLogin: {
             type: Sequelize.DATE
         },
-		//JSON object represents individual user schedules (for one week),
-		//frontend needs to ensure this is correctly formatted
+        lastLogout: {
+            type: Sequelize.DATE
+        },
+        //JSON object represents individual user schedules (for one week),
+        //frontend needs to ensure this is correctly formatted
         schedule: {
             type: Sequelize.JSON
         }

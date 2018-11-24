@@ -128,7 +128,9 @@ export default class GroupSummary extends Component{
   
     const destroyGroupJson = await destroyGroup.json();
     Toast.show(destroyGroupJson.message, Toast.LONG);
+    Actions.reset("home");
     Actions.popTo("home");
+    
   }
 
   // Delete group from database and remove all members

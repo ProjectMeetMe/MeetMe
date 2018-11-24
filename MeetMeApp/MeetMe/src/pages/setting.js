@@ -84,7 +84,7 @@ export default class Setting extends Component{
     }).done();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getUserAvailability();
     console.log("THIS IS THE OLD AVAIL +++++++" + this.state.oldAvailability);
     this.renderTable();

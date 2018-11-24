@@ -33,7 +33,9 @@ export default class JoinGroupForm extends Component {
   }
 
   goBack() {
+    Actions.reset("home");
     Actions.pop();
+    
 }
 
   //Call joinGroup post API to join a exist group

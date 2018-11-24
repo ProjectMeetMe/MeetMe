@@ -53,10 +53,10 @@ export default class Home extends Component{
 
   async refreshUserData(){
 
-    console.log("Periocally get calls start:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    //console.log("Periocally get calls start:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     const usertoken = await AsyncStorage.getItem("token");
 
-    console.log("usertoken:   " + usertoken);
+    //console.log("usertoken:   " + usertoken);
 
     var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
           method: "get",
@@ -69,7 +69,7 @@ export default class Home extends Component{
     await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
     await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
    
-    console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    //console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
    }
   
   //Redirect page to creategroup view

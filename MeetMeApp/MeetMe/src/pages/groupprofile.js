@@ -273,6 +273,7 @@ export default class GroupProfile extends Component {
     };
 
     renderCreateEvent(){
+      //console.log("this.state.userid:   " + this.state.userid + "  this.state.groupinfo.leaderId:   " + this.state.groupinfo.leaderId);
       if(this.state.userid === this.state.groupinfo.leaderId)
       {
         return(

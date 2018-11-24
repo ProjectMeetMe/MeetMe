@@ -15,6 +15,7 @@ import GroupInformation from "./pages/groupinformation";
 import GroupSummary from "./pages/groupsummary";
 import SuggestEvent from "./pages/suggestevent";
 import UserCalendar from "./pages/usercalendar";
+import NotificationCenter from "./pages/notifications";
 import {YellowBox} from 'react-native';
 
 export default class Routes extends Component{
@@ -61,6 +62,7 @@ export default class Routes extends Component{
 					<Scene key="home" component={Home} title="HomePage" initial={this.state.logged}/>
 					<Scene key="profile" component={Profile} title="ProfilePage"/>
 					<Scene key="usercalendar" component={UserCalendar} title="UserCalendar"/>
+					<Scene key="notifications" component={NotificationCenter} title="NotificationCenter"/>
 					<Scene key="creategroup" component={CreateGroup} title="CreateGroup"/>
 					<Scene key="joingroup" component={JoinGroup} title="JoinGroup"/>
 					<Scene key="groupprofile" component={GroupProfile} title="GroupProfile"/>

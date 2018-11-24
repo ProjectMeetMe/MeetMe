@@ -102,20 +102,7 @@ export default class LoginFrom extends Component {
   
           //save token to asyncstorage 
           this.saveToken(token);
-          
-          //save user id to asyncstorage
-          fetch("http://104.42.79.90:2990/user/profile",{
-            method: "GET",
-            headers:{
-              "Authorization": "Bearer " + token
-            }
-          })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                var userid = responseJson.id;
-                //console.log(userid);
-                this.saveUserID(userid);
-          });
+          this.saveUserID(responseJson.user.id);
   
           //Login success, redirect view to home page
           //this.home();

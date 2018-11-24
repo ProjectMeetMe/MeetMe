@@ -160,6 +160,7 @@ subprojects {
 }
 
 dependencies {
+    compile project(':react-native-push-notification')
     compile project(':react-native-background-task')
     compile project(':react-native-vector-icons')
     compile project(':react-native-google-signin')

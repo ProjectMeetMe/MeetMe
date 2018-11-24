@@ -102,6 +102,8 @@ export default class GroupProfile extends Component {
 
     var curDate = year + "-" + month + "-" + date;
 
+    console.log("QQQQQQQQQQQQQQQQQQQ curDate", curDate);
+
     this.setState({
       curDate: curDate,
     });
@@ -219,6 +221,7 @@ export default class GroupProfile extends Component {
             loadItemsForMonth={this.loadItems.bind(this)}
             //onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
             //renderEmptyData={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
+            //selected={'2018-11-23'}
             selected={curDate}
             minDate={'2018-09-01'}
             maxDate={'2019-04-30'}

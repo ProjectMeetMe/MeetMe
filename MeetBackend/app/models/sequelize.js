@@ -12,7 +12,7 @@ var dbDialect = config.get("dbConfig.dialect");
 var sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
     host: dbHost,
     dialect: dbDialect,
-	timezone: "+08:00",
+    timezone: "+08:00", //pst is -8 utc, +8 allows dates to be stored in pst time in DB
     logging: false, //disables console messages
     operatorsAliases: false, //suppress warnings
     pool: {
@@ -32,6 +32,7 @@ db.sequelize = sequelize;
 db.user = require("./user.js")(sequelize, Sequelize);
 db.group = require("./group.js")(sequelize, Sequelize);
 db.event = require("./event.js")(sequelize, Sequelize);
+db.notification = require("./notification.js")(sequelize, Sequelize);
 
 //Defined relations
 //Many to many relation between group and users
@@ -48,10 +49,17 @@ db.group.hasMany(db.event, {
     as: "events"
 });
 
+//One to many relation between user and notifications
+db.notification.belongsTo(db.user);
+db.user.hasMany(db.notification, {
+    as: "notifications"
+});
+
 //Sync models with database
 sequelize.sync(
     // Enable to reset database
-    /*{
+    /*
+    {
             force: true
         }*/
 );

@@ -13,7 +13,22 @@ router.get("/", function(req, res, next) {
 
 /* GET user profile. */
 router.get("/profile", function(req, res, next) {
-    return res.status(200).json(req.user);
+
+	db.user.findOne({
+		where: {
+			id: req.user.id //user must belong to group
+		}
+	}).then(function(user) {
+		var user = user.get();
+		return res.status(200).json({
+			user,
+			message: "Successful profile retrieval"
+		}); //only return group info
+	}).catch(function(err) {
+		return res.status(400).json({
+			message: "Error: Profile could not be retrieved"
+		});
+	});
 });
 
 /* GET user profile. */

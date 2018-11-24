@@ -73,11 +73,7 @@ describe("User Account Related Tests", function() {
                 .end(function(err, res) {
                     res.should.have.status(200);
                     res.body.should.be.a("object");
-                    res.body.should.have.property("id");
-                    res.body.should.have.property("firstname");
-                    res.body.should.have.property("lastname");
-                    res.body.should.have.property("schedule");
-                    res.body.should.have.property("email");
+                    res.body.should.have.property("user");
                     done();
                 });
         });

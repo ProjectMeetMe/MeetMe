@@ -10,9 +10,13 @@ var eventController = require("../controllers/event.js");
 //Request body: {groupName: <string>}
 router.post("/createGroup", groupController.createGroup, groupController.addUser);
 
-/* PUT (edit) existing group info (currently can only change group name) */
-//Request header: {groupId: <int>}, body: {groupName: <string>}
+/* PUT (edit) existing group info */
+//Request header: {groupId: <int>}, body: {groupName: <string>, description: <string>}
 router.put("/editGroup", groupController.findGroup, groupController.checkPermissions, groupController.editGroup);
+
+/* PUT (edit) existing group description */
+//Request header: {groupId: <int>}, body: {description: <string>}
+router.put("/editGroupDescription", groupController.findGroup, groupController.checkMembership, groupController.editGroupDescription);
 
 /* GET information for one group, including users */
 //Request header: {groupId: <int>}

@@ -35,19 +35,19 @@ export default class NavigationForm extends Component {
     {
       return (
         <NavBar style={styles}>
-            <NavButton style={styles.navButton} onPress={this.profile}>
+            <NavButton style={styles.navButton} onPress={this.setting}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require("../images/android_icon_account.png")}
+                source={require("../images/android_icon_calendar.png")}
               />
             </NavButton>
           <NavTitle style={styles.title}>
           {this.props.title}
           </NavTitle>
-            <NavButton style={styles.navButton} onPress={this.setting}>
+            <NavButton style={styles.navButton} onPress={this.profile}>
             <Image style={{width:60, height: 45}}
                 resizeMode={"contain"}
-                source={require("../images/android_icon_setting.png")}
+                source={require("../images/android_icon_account.png")}
               />
             </NavButton>
          </NavBar> 

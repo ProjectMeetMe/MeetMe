@@ -10,6 +10,9 @@ var groupController = require("./group.js");
 
 /* Middlewares for handling user related requests */
 
+/*
+Retrieve user info
+ */
 exports.getProfile = function(req, res, next) {
     db.user.findOne({
         where: {

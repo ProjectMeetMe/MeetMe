@@ -11,7 +11,12 @@ module.exports = function(sequelize, Sequelize) {
         description: {
             type: Sequelize.TEXT,
             notEmpty: true
-        }
+        },
+		seen: {
+			type: Sequelize.BOOLEAN,
+            notEmpty: true,
+			defaultValue: false
+		}
     });
 
     return Notification;

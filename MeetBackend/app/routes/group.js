@@ -34,15 +34,14 @@ router.put("/removeMember", groupController.findGroup, groupController.checkPerm
 //Request header: {groupId: <int>}
 router.get("/getEvents", groupController.findGroup, groupController.checkMembership, groupController.getEvents);
 
-
+/* DELETE target group*/
+//Request header: {groupId: <int}
 router.delete("/destroyGroup", groupController.findGroup, groupController.checkPermissions, groupController.destroyGroup);
-
 
 /* GET optimal availibilties for all users in group*/
 //Request header: {groupId: <int>}
 //Body: {threshold: <int>, day: <string>}
 router.post("/getAvailabilities", groupController.findGroup, groupController.checkMembership, groupController.getAvailabilities);
-
 
 
 module.exports = router;

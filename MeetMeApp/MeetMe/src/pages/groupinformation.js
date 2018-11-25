@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { AsyncStorage,View,Text,StyleSheet,
-     ActivityIndicator, TouchableOpacity,TextInput } from "react-native";
+import { AsyncStorage,View,Text,StyleSheet,TouchableOpacity,TextInput } from "react-native";
 import NavigationForm from "../components/navigationForm";
-import {SearchBar } from "react-native-elements";
+import { Actions } from "react-native-router-flux";
+
 import Dialog, {
   DialogTitle,
   DialogButton,
   DialogContent,
 } from 'react-native-popup-dialog';
+import Toast from "react-native-simple-toast";
+
 
 export default class GroupInformation extends Component{
 	
@@ -18,7 +20,7 @@ export default class GroupInformation extends Component{
       refreshing: false,
       loading: true,
       showDialog: false,
-      
+      newDescription: "",
       userid: "",
       groupinfo: "",
       groupID: 0,
@@ -58,43 +60,32 @@ export default class GroupInformation extends Component{
     });
   }
 
-  // Pull-down refresh
-  handleRefresh = () => {
-    this.setState(
-      {
-        refreshing: true
-      },
-      () => {
-        this.getGroupInfo();
-      }
-    );
-  };
 
-
-  // Display searchbar
-  renderHeader = () => {
-    return <SearchBar 
-            platform={"android"}
-            clearIcon={{ color: "grey" }}
-            placeholder="Search Here..." 
-            inputContainerStyle={styles.container} 
-            round
-            />;
-  };
-
-  // Display loading icon
-  renderFooter = () => {
-    if (!this.state.loading) {
-        return null;
-    }
-
-    return (
-      <View style={styles.renderFooter}>
-        <ActivityIndicator animating size="large" />
-      </View>
-    );
-  };
-
+  async updateGroupDescription() {
+      this.setState({refreshing: true});
+      console.log("groupId:  " + this.state.groupID );
+      console.log("newdesc is : " + this.state.newDescription);
+      const usertoken = await AsyncStorage.getItem("token");
+      console.log("token ++++++" + usertoken);
+    
+      var groupUpdate = await fetch("http://104.42.79.90:2990/group/editGroupDescription?groupId=" + this.state.groupID, {
+            method: "put",
+            headers:{
+              "Accept": "application/json",
+              "Content-type": "application/json",
+              "Authorization": "Bearer " + usertoken,
+            },
+            body:JSON.stringify
+            ({
+              groupDescription: this.state.newDescription, 
+            })
+          });
+  
+      const groupUpdateJson = await groupUpdate.json();
+      //Toast.show(groupUpdateJson.message, Toast.LONG);
+      Actions.reset("groupinformation");
+      
+  }
 
   renderEditDialog() {
     return(
@@ -129,7 +120,7 @@ export default class GroupInformation extends Component{
           <DialogButton
             text="SAVE"
             onPress={() => {
-              //this.updateEventDescription();
+              this.updateGroupDescription();
               this.setState({ showDialog: false });
             }}
             key="save"
@@ -155,16 +146,13 @@ export default class GroupInformation extends Component{
     );   
   }    
 
-
- 
 	render(){
-
       return(
         <View style={{flex: 1, backgroundColor: "#455a64"}}>          
           <NavigationForm title="Group Information" type="groupinformation"></NavigationForm>
           
           <View>
-            <Text style={styles.text}>{this.state.groupinfo.description}</Text>
+            <Text style={styles.Text}>{this.state.groupinfo.description}</Text>
           </View>
           <View style={styles.container}>	
             <TouchableOpacity style={styles.editButton} 
@@ -209,9 +197,9 @@ const styles = StyleSheet.create({
 
   Text: {
     fontSize:16,
-    fontWeight:"500",
+    fontWeight:"400",
     color:"#ffffff",
-    textAlign:"center",
+    textAlign:"left",
   },
   titleText: {
     color:"#ffffff",

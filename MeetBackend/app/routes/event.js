@@ -20,4 +20,10 @@ router.put("/editEvent", eventController.findEvent, groupController.checkPermiss
 //Request header: {eventId: <int>}
 router.delete("/deleteEvent", eventController.findEvent, groupController.checkPermissions, eventController.deleteEvent);
 
+
+/* PUT to edit event description (only)*/
+//Request header: {eventId: <int>}
+//Body header: {description}
+router.put("/editEventDescription", eventController.findEvent, groupController.checkMembership, eventController.editEventDescription);
+
 module.exports = router;

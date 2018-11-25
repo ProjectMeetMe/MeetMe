@@ -69,6 +69,27 @@ exports.editEvent = function(req, res, next) {
     });
 };
 
+/*
+Edits an event specified by req.event for generic users
+Edit parameters are in req.body {description}
+ */
+exports.editEventDescription = function(req, res, next) {
+    var event = req.event;
+    event.update({
+        description: req.body.description,
+    }).then(function(updatedEvent) {
+        var newEventInfo = updatedEvent.get();
+        return res.status(200).json({
+            newEventInfo,
+            message: "Successful event update"
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Invalid event edit parameters"
+        });
+    });
+};
+
 
 /*
 Deletes an event specified by req.event.

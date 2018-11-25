@@ -14,7 +14,7 @@ const DAYS_IN_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 /*
 Edits a group specified by req.group
-Group edit parameters are in req.body: (groupName)
+Group edit parameters are in req.body: (groupName, description)
  */
 exports.editGroup = function(req, res, next) {
     var group = req.group;
@@ -30,6 +30,26 @@ exports.editGroup = function(req, res, next) {
     }).catch(function(err) {
         return res.status(400).json({
             message: "Error: Group could not be edited"
+        });
+    });
+};
+
+/*
+Edits a group specified by req.group
+Group edit parameters are in req.body: (description)
+ */
+exports.editGroupDescription = function(req, res, next) {
+    var group = req.group;
+    group.update({
+        description: req.body.groupDescription
+    }).then(function(updatedInfo) {
+        return res.status(200).json({
+            updatedInfo,
+            message: "Successful group description edit"
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Group description could not be edited"
         });
     });
 };

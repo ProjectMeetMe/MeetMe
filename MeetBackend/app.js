@@ -28,6 +28,9 @@ app.use("/group", passport.authenticate("jwt", {
 app.use("/event", passport.authenticate("jwt", {
     session: false
 }), require("./app/routes/event.js"));
+app.use("/notification", passport.authenticate("jwt", {
+    session: false
+}), require("./app/routes/notification.js"));
 
 
 //Start server

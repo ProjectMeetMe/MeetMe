@@ -173,7 +173,7 @@ exports.removeUser = function(req, res, next) {
     group.removeUser(req.body.userId).then(function(success) {
         if (success) {
 			//Notify target user that he/she was removed
-			var notificationDescription = "You have been removed from group: " + req.groupInfo.groupName;
+			var notificationDescription = "You have been removed from \"" + req.groupInfo.groupName + "\"";
 			var promise = notificationController.addNotification(req.body.userId, notificationDescription, req.user.id);
 			promise.then(function(){
 				return res.status(200).json({
@@ -225,17 +225,36 @@ exports.leaveGroup = function(req, res, next) {
 
 exports.destroyGroup = function(req, res, next) {
     var group = req.group;
+	var groupInfo = req.groupInfo
     group.destroy().then(function(success) {
         if (success) {
-            return res.status(200).json({
-                message: "Successful group destroy"
-            });
+
+			var notificationDescription = "\"" + groupInfo.groupName + "\" was disbanded";
+			var userIds = groupInfo.users;
+			var promises = [];
+			for (var i=0; i<userIds.length; i++) {
+				promises.push(notificationController.addNotification(userIds[i].id, notificationDescription, req.user.id))
+			}
+
+			//Waits for all notifications to be added
+			Promise.all(promises).then(function(){
+				return res.status(200).json({
+			  	  message: "Successful group destroy"
+			    });
+			}).catch(function(err){
+				return res.status(200).json({
+					newEventInfo,
+					message: "Successful group destroy, notification error"
+				});
+			})
+
         } else {
             return res.status(400).json({
                 message: "Error: Group could not be destroyed"
             });
         }
     }).catch(function(err) {
+		console.log(err)
         return res.status(400).json({
             message: "Error: Group could not be destroyed"
         });
@@ -346,6 +365,7 @@ exports.filterSchedule = function(schedule, date, day, userId) {
     });
 }
 
+//Helper function to transform start or endtime into multiple of .5
 //isStart == 1 if startTime, 0 if endTime
 parseTime = function(timeString, isStart) {
     var retVal;

@@ -1,21 +1,13 @@
 import React, { Component } from "react";
 import { AsyncStorage,View,Text,StyleSheet,
-    FlatList, ActivityIndicator, ScrollView, TouchableOpacity,TextInput } from "react-native";
-import NavBar from "react-native-nav";
+     ActivityIndicator, TouchableOpacity,TextInput } from "react-native";
 import NavigationForm from "../components/navigationForm";
-import { Actions } from "react-native-router-flux";
-import {List, ListItem, SearchBar } from "react-native-elements";
-import Toast from "react-native-simple-toast";
-import ActionButton from "react-native-action-button";
-import FetchAPI from "../controller/fetchAPI";
-import {YellowBox} from 'react-native';
+import {SearchBar } from "react-native-elements";
 import Dialog, {
   DialogTitle,
   DialogButton,
   DialogContent,
 } from 'react-native-popup-dialog';
-import Icon from "react-native-vector-icons/Foundation";
-import Home from "./home";
 
 export default class GroupInformation extends Component{
 	
@@ -107,7 +99,6 @@ export default class GroupInformation extends Component{
   renderEditDialog() {
     return(
       <Dialog
-        //dialogStyle={styles.dialogStyle}
         onDismiss={() => {
           this.setState({ showDialog: false });
         }}

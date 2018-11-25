@@ -60,7 +60,6 @@ export default class SignupForm extends Component {
     {
       fetch("http://104.42.79.90:2990/auth/signup", {
         method: "POST",
-        //credentials: "include",
         headers:{
         	"Accept": "application/json",
         	"Content-type": "application/json"
@@ -83,8 +82,6 @@ export default class SignupForm extends Component {
         {
           this.goBack();    
         }
-        // console.log("userEmail:     " + userEmail);
-        // console.log("userPassword:     " + userPassword);
         Toast.show(responseJson.message, Toast.LONG);
       });
     }

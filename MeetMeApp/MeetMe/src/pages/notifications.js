@@ -4,16 +4,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  Keyboard,
-  ScrollView,
   FlatList,
   ActivityIndicator
 } from "react-native";
 import { NetInfo } from 'react-native';
-import Icon from "react-native-vector-icons/Foundation";
-import {List, ListItem, SearchBar } from "react-native-elements";
-import Toast from "react-native-simple-toast";
+import {ListItem } from "react-native-elements";
 import {YellowBox} from 'react-native';
 import NavigationForm from "../components/navigationForm";
 
@@ -108,18 +103,6 @@ async componentDidMount() {
       </View>
     );
   };
-
-//   renderRightIcon(){
-//     return(
-//       <TouchableOpacity style={styles.addbutton} 
-//       onPress={() => {  
-//                       Toast.show("");
-//                   }}>
-//       <Text style={styles.buttonText}>Add
-//       </Text>
-//     </TouchableOpacity>   
-//     ); 
-// }
 
 	render() {
 		return(

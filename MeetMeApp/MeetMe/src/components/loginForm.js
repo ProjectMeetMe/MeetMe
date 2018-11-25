@@ -9,9 +9,7 @@ import {
   Keyboard 
 } from "react-native";
 import Toast from "react-native-simple-toast";
-import Home from "../pages/home";
 import {Actions} from "react-native-router-flux";
-//import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 
 export default class LoginFrom extends Component {
 
@@ -20,13 +18,8 @@ export default class LoginFrom extends Component {
 		this.state={
 			userEmail:"",
       userPassword:""
-
-      // This is for test purpose
-      // userEmail:"12345678@hotmail.com",
-      // userPassword:"12345678",
     };
   
-    //Actions.reset("login");
   }
 
   //Save user token into AsyncStorage

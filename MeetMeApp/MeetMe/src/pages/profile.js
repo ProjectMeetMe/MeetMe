@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { AsyncStorage, AppRegistry, View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import NavBar from "react-native-nav";
+import { AsyncStorage, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import NavigationForm from "../components/navigationForm";
 import Toast from "react-native-simple-toast";
 import {Actions} from "react-native-router-flux";
-import PushNotification from 'react-native-push-notification';
 
 export default class Profile extends Component{
   
@@ -19,12 +17,13 @@ export default class Profile extends Component{
       email: "",
       id:  "",
     };
+
   }
 
   componentDidMount() {
-    //this.configure(onRegister, onNotification);
     this.getProfile();
   }
+
 
   async getProfile()
   {
@@ -41,7 +40,6 @@ export default class Profile extends Component{
     });
 
     var profilejson = await userprofile.json();
-    //console.log("profilejson:", profilejson);
 
     this.setState({
       token: usertoken,
@@ -66,7 +64,6 @@ login() {
 
 	render(){
     const {profile, token, name, email, id} = this.state;
-    //Toast.show(profile, Toast.LONG);
       return(
         <View  style={{flex: 1}}>
         <NavigationForm title="Profile" type="profile"></NavigationForm>

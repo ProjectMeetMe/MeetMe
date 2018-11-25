@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {AppRegistry, View, Text, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import Logo from "../components/logo";
 import LoginFrom from "../components/loginForm";
-import { StackNavigator } from "react-navigation";
 import Dialog, {
   DialogTitle,
   DialogButton,
@@ -30,7 +29,6 @@ export default class Login extends Component {
 		Toast.show("forgot password");
 	}
 	resetPassword = () =>{
-		//console.log(this.state.email)
 		fetch("http://104.42.79.90:2990/auth/forgotPassword" ,{
 			      method:"post",
 			      headers:{

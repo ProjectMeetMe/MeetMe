@@ -1,14 +1,8 @@
 import React, { Component } from "react";
 import {Image} from "react-native";
-import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
+import NavBar, { NavButton, NavTitle } from "react-native-nav";
 import {Actions} from "react-native-router-flux";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity 
-} from "react-native";
+import {StyleSheet} from "react-native";
 
 //This function generate the navigation bar that display at
 //the top of this app

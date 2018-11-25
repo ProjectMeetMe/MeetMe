@@ -6,12 +6,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Keyboard 
 } from "react-native";
 import Toast from "react-native-simple-toast";
 import {Actions} from "react-native-router-flux";
 import NavigationForm from "../components/navigationForm";
-import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import { Agenda } from "react-native-calendars";
 import ActionButton from "react-native-action-button";
 import Icon from "react-native-vector-icons/AntDesign";
 import Dialog, {
@@ -98,8 +97,7 @@ export default class GroupProfile extends Component {
     var year = new Date().getFullYear();
 
     var curDate = year+ "-" + month + "-" + date;
-
-    console.log("QQQQQQQQQQQQQQQQQQQ curDate", curDate);
+    //console.log("QQQQQQQQQQQQQQQQQQQ curDate", curDate);
     
     this.setState({
       curDate: curDate,
@@ -137,7 +135,6 @@ export default class GroupProfile extends Component {
   
   async updateEventDescription()
   {
-    console.log("eventId:  " + this.state.deleteEventId );
     const usertoken = await AsyncStorage.getItem("token");
   
     var eventUpdate = await fetch("http://104.42.79.90:2990/event/editEvent?eventId=" + this.state.deleteEventId, {
@@ -163,7 +160,6 @@ export default class GroupProfile extends Component {
 
   async deleteGroupEvent()
   {
-    console.log("eventId:  " + this.state.deleteEventId );
     const usertoken = await AsyncStorage.getItem("token");
 
     var eventRemove = await fetch("http://104.42.79.90:2990/event/deleteEvent?eventId=" + this.state.deleteEventId, {
@@ -397,7 +393,6 @@ export default class GroupProfile extends Component {
                                   deleteEventId: item.id,
                                   deleteEventName: item.eventName,
                               })
-                              console.log("after clicked: ", this.state.customBackgroundDialog);
                           }}/>
                   </View>
                   <View>

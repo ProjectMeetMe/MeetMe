@@ -4,11 +4,9 @@ import {
   StyleSheet,
   Text,
   View,
-  String,
   TextInput,
   TouchableOpacity,
   Keyboard ,
-  AutoGrowingTextInput,
   ScrollView 
 } from "react-native";
 import Toast from "react-native-simple-toast";
@@ -40,19 +38,7 @@ export default class CreateEvent extends Component {
           this.setState({token: value});
       }).done();
 
-    // this.removeItemValue("startTime");
-    // this.removeItemValue("endTime");
   }
-
-  // async removeItemValue(key) {
-  //   try {
-  //     await AsyncStorage.removeItem(key);
-  //     return true;
-  //   }
-  //   catch(exception) {
-  //     return false;
-  //   }
-  // }
 
   //Call addEvent API, send groupId, eventName, description
   //startTime and endTime as key value pair in the post API 
@@ -65,8 +51,6 @@ export default class CreateEvent extends Component {
       Toast.show("Please fill in the required* information", Toast.LONG);
     }
     else {
-    // var groupId = this.props.groupID;		
-    //console.log("groupId:  " + this.state.groupId);
     
     // String manipulation to compare start and end times and check for bad input
     var startDay, startMonth, startYear, endDay, endMonth, endYear;
@@ -120,8 +104,6 @@ export default class CreateEvent extends Component {
             return response.json();
           })
 		      .then((responseJson) => {
-                    console.log("responseJson:  " + responseJson);
-                    console.log("responseJson.message:  " + responseJson.message);
                     if(status === 200)    //success
                     {
                       Toast.show(responseJson.message, Toast.LONG);	
@@ -140,7 +122,6 @@ hideStartDateTimePicker  = () => this.setState({ startDateTimePickerVisible: fal
 
 // Interpret start date
 handleStartDatePicked  = (date) => {
-  //console.log("Start Time has been picked: ", date);
   var dateString = date.toString();
   // E.G: dateString = Sun Oct 21 2018 17:38:00 GMT-700 (PDT)
   var dateStringArray = dateString.split(" ",5);
@@ -215,7 +196,6 @@ hideEndDateTimePicker  = () => this.setState({ endDateTimePickerVisible: false }
 
 // Interpret end date
 handleEndDatePicked  = (date) => {
-  //console.log("End Time has been picked: ", date);
   var dateString = date.toString();
   //[0] = dayName; [1] = month; [2] = dayNum; [3] yearNum, [4] time
   var dateStringArray = dateString.split(" ",5);
@@ -254,13 +234,6 @@ renderEndTime()
 }
 
 	render(){
-    // if(this.props.startTime != "")
-    // {
-    //   this.setState({
-    //     startTime : this.props.startTime,
-    //     endTime : this.props.endTime,
-    //   })
-    // }
 		return(
       <View style={{flex: 1, backgroundColor: "#455a64"}}>
       <NavigationForm title="Create New Event" type="createEvent"></NavigationForm>

@@ -1,17 +1,14 @@
 import React, { Component } from "react";
-import { AsyncStorage, AppRegistry,View,Text,StyleSheet,
+import { AsyncStorage,View,Text,StyleSheet,
     FlatList, ActivityIndicator, ScrollView } from "react-native";
-import NavBar from "react-native-nav";
 import NavigationForm from "../components/navigationForm";
-import {List, ListItem, SearchBar } from "react-native-elements";
-import Toast from "react-native-simple-toast";
+import {ListItem} from "react-native-elements";
 import ActionButton from "react-native-action-button";
 import Icon from "react-native-vector-icons/AntDesign";
 import {Actions} from "react-native-router-flux";
 import {YellowBox} from "react-native";
 import _ from "lodash";
 import BackgroundTask from 'react-native-background-task'
-import Pusher from 'pusher-js/react-native';
 import PushNotification from 'react-native-push-notification';
 
 export default class Home extends Component{
@@ -41,7 +38,7 @@ export default class Home extends Component{
   configure(onRegister, onNotification, gcm = "") {
     PushNotification.configure({
       onRegister: onRegister, //this._onRegister.bind(this),
-      onNotification: onNotification, //this._onNotification,
+      onNotification: onNotification =>{Actions.notifications();}, //this._onNotification,
       senderID: gcm,
       popInitialNotification: true,
       requestPermissions: true,
@@ -68,7 +65,7 @@ export default class Home extends Component{
       playSound: false, // (optional) default: true
       soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      actions: '["Check Notifications", "Cancel"]',  // (Android only) See the doc for notification actions to know more
+      actions: '["Check Notifications"]',  // (Android only) See the doc for notification actions to know more
     });
   }
 
@@ -86,15 +83,12 @@ export default class Home extends Component{
 
   async checkStatus() {
     const status = await BackgroundTask.statusAsync();
-    console.log("status.available:      " + status.available);
   }
 
   async refreshUserData(){
 
-    console.log("Periocally get calls start:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     const usertoken = await AsyncStorage.getItem("token");
 
-    console.log("usertoken:   " + usertoken);
     if(usertoken != "" && usertoken != null)
     {
       var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
@@ -122,9 +116,6 @@ export default class Home extends Component{
       const userNotification = await userNotifications.json();
       const oldNotification = await AsyncStorage.getItem("notifications");
 
-      console.log("userNotification" + JSON.stringify(userNotification.notifications));
-      console.log("oldNotification" + oldNotification);
-
       if(oldNotification != "" && oldNotification != null)
       {
         if(JSON.stringify(userNotification.notifications) != oldNotification)
@@ -135,7 +126,6 @@ export default class Home extends Component{
 
       await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
     }
-    //console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
    }
   
   //Redirect page to creategroup view
@@ -160,8 +150,6 @@ export default class Home extends Component{
     const { groups, token, loading, refreshing } = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
-
-      console.log("usertoken:  " + usertoken);
       YellowBox.ignoreWarnings(['Warning: Each child in an array or iterator should have a unique']);
   
       var usergroups = await fetch("http://104.42.79.90:2990/user/getGroups", {
@@ -287,10 +275,7 @@ export default class Home extends Component{
 
 BackgroundTask.define(
   async () => {
-    console.log('Background task start:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
-
     const usertoken = await AsyncStorage.getItem("token");
-    console.log("usertoken:   " + usertoken);
 
     if(usertoken != "" && usertoken != null)
     {
@@ -319,9 +304,6 @@ BackgroundTask.define(
       const userNotification = await userNotifications.json();
       const oldNotification = await AsyncStorage.getItem("notifications");
 
-      console.log("userNotification" + JSON.stringify(userNotification.notifications));
-      console.log("oldNotification" + oldNotification);
-
       if(oldNotification != "" && oldNotification != null)
       {
         if(JSON.stringify(userNotification.notifications) != oldNotification)
@@ -332,7 +314,6 @@ BackgroundTask.define(
 
       await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
     }
-    console.log('Background task Finish:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 
     BackgroundTask.finish()
   },

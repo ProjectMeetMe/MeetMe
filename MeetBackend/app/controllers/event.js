@@ -78,6 +78,7 @@ exports.editEventDescription = function(req, res, next) {
     event.update({
         description: req.body.description,
     }).then(function(updatedEvent) {
+		console.log("new event info: " + JSON.stringify(newEventInfo))
         var newEventInfo = updatedEvent.get();
         return res.status(200).json({
             newEventInfo,
@@ -123,11 +124,29 @@ exports.findEvent = function(req, res, next) {
                 message: "Error: Invalid event id"
             });
         } else {
-            eventFound.getGroup().then(function(group){
-				req.event = eventFound;
-				req.groupInfo = group;
-				next();
-			});
+			db.group.findOne({ //Find associated group + users in group
+		        include: [{
+		            model: db.user,
+		            attributes: ["id", "firstname", "lastname", "email", "schedule"], //elements of the group that we want
+		            through: {
+		                attributes: []
+		            }
+		        }],
+		        where: {
+		            id: eventFound.groupId
+		        }
+		    }).then(function(groupFound) {
+		        if (!groupFound) {
+		            return res.status(400).json({
+		                message: "Error: Associated group could not be found"
+		            });
+		        } else {
+					req.event = eventFound;
+		            req.group = groupFound; //Can directly perform db operations
+		            req.groupInfo = groupFound.get(); //Only contains info
+		            next();
+		        }
+		    })
         }
     }).catch(function(err) {
         return res.status(400).json({

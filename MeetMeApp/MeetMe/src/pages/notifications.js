@@ -127,15 +127,17 @@ async componentDidMount() {
       <NavigationForm title="Notification" type="notification"></NavigationForm>
 			<View style={styles.container}>
 				<FlatList
-          data={this.state.notification.notifications}
+          data={this.state.notifications}
           renderItem={({ item }) => (
           <ListItem 
+            id={item.id}
             containerStyle={{backgroundColor: "#455a64", borderBottomWidth: 0}}
             roundAvatar
             titleStyle={styles.titleText}
-            title={"item.description"}
+            title={item.description}
             subtitle={"Time: " + item.createdAt}
             //rightIcon={this.renderRightIcon()}
+            hideChevron={true}
           >
           </ListItem>
         )}
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   container : {
     backgroundColor:"#455a64",
     flex: 1,
-    alignItems:"center",
+    //alignItems:"center",
     justifyContent :"center"
   },
   iconClose: {

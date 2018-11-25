@@ -61,7 +61,7 @@ async componentDidMount() {
       headers:{
         "Authorization": "Bearer " + usertoken,
       }
-    }).catch((error) => {
+      }).catch((error) => {
       //console.error(error);
     });
 

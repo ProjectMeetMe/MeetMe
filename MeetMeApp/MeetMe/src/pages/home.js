@@ -12,9 +12,11 @@ import {YellowBox} from "react-native";
 import _ from "lodash";
 import BackgroundTask from 'react-native-background-task'
 import Pusher from 'pusher-js/react-native';
+import PushNotification from 'react-native-push-notification';
+
 export default class Home extends Component{
   
-  constructor() {
+  constructor(onRegister, onNotification) {
 
     super();
 
@@ -25,25 +27,61 @@ export default class Home extends Component{
       loading: true,
       query: "",
     };
+
+    this.configure(onRegister, onNotification);
 }
 
   componentDidMount() {
     BackgroundTask.schedule();
     this.checkStatus();
     this.getGroups();
-    this.timer = setInterval(()=> this.refreshUserData(), 60000);
+    this.timer = setInterval(()=> this.refreshUserData(), 10000);
+  }
 
-    // Pusher.logToConsole = true;
-    // var pusher = new Pusher('acd79456b6d0660329b3',{
-    //   cluster:  'mt1',
-    //   forceTLS: true
-    // });
+  configure(onRegister, onNotification, gcm = "") {
+    PushNotification.configure({
+      onRegister: onRegister, //this._onRegister.bind(this),
+      onNotification: onNotification, //this._onNotification,
+      senderID: gcm,
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
+  }
 
-    // var channel = pusher.subscribe("1");
-    // channel.bind('testEvent', function(data)
-    // {
-    //   alert(data.message)
-    // });
+  localNotif(message) {
+    PushNotification.localNotification({
+      ticker: "My Notification Ticker", // (optional)
+      autoCancel: true, // (optional) default: true
+      largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
+      smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher"
+      //bigText: "My big text that will be shown when notification is expanded", // (optional) default: "message" prop
+      subText: "Notification Center", // (optional) default: none
+      color: "green", // (optional) default: system default
+      vibrate: true, // (optional) default: true
+      vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
+      tag: 'some_tag', // (optional) add tag to message
+      group: "group", // (optional) add group to message
+      ongoing: false, // (optional) set whether this is an "ongoing" notification
+
+      title: "New Notification", // (optional)
+      message: message, // (required)
+      playSound: false, // (optional) default: true
+      soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+      number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+      actions: '["Check Notifications", "Cancel"]',  // (Android only) See the doc for notification actions to know more
+    });
+  }
+
+  checkPermission(cbk) {
+    return PushNotification.checkPermissions(cbk);
+  }
+
+  cancelNotif() {
+    PushNotification.cancelLocalNotifications({id: ''+this.lastId});
+  }
+
+  cancelAll() {
+    PushNotification.cancelAllLocalNotifications();
   }
 
   async checkStatus() {
@@ -71,9 +109,32 @@ export default class Home extends Component{
 
       await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
       await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
-    }
 
-   
+      var userNotifications = await fetch("http://104.42.79.90:2990/notification/getNotifications", {
+      method: "get",
+      headers:{
+        "Authorization": "Bearer " + usertoken,
+      }
+      }).catch((error) => {
+      //console.error(error);
+      });
+
+      const userNotification = await userNotifications.json();
+      const oldNotification = await AsyncStorage.getItem("notifications");
+
+      console.log("userNotification" + JSON.stringify(userNotification.notifications));
+      console.log("oldNotification" + oldNotification);
+
+      if(oldNotification != "" && oldNotification != null)
+      {
+        if(JSON.stringify(userNotification.notifications) != oldNotification)
+        {
+          this.localNotif(userNotification.notifications[0].description);
+        }
+      }
+
+      await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
+    }
     //console.log("Periocally get calls end:   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
    }
   
@@ -238,14 +299,39 @@ BackgroundTask.define(
         headers:{
           "Authorization": "Bearer " + usertoken,
         }
+      }).catch((error) => {
+        //console.error(error);
       });
       const userevent = await userevents.json();
 
       await AsyncStorage.setItem("useritems", JSON.stringify(userevent.events.categorizedEvents)); 
-      await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents)); 
+      await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
+
+      var userNotifications = await fetch("http://104.42.79.90:2990/notification/getNotifications", {
+      method: "get",
+      headers:{
+        "Authorization": "Bearer " + usertoken,
+      }
+      }).catch((error) => {
+      //console.error(error);
+      });
+
+      const userNotification = await userNotifications.json();
+      const oldNotification = await AsyncStorage.getItem("notifications");
+
+      console.log("userNotification" + JSON.stringify(userNotification.notifications));
+      console.log("oldNotification" + oldNotification);
+
+      if(oldNotification != "" && oldNotification != null)
+      {
+        if(JSON.stringify(userNotification.notifications) != oldNotification)
+        {
+          this.localNotif(userNotification.notifications[0].description);
+        }
+      }
+
+      await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
     }
-
-
     console.log('Background task Finish:   FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 
     BackgroundTask.finish()

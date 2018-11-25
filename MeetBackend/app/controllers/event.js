@@ -18,7 +18,7 @@ exports.createEvent = function(req, res, next) {
         var newEventInfo = newEvent.get();
 
 		//Send notifications to each user in the group that an event was created
-		var notificationDescription = "New event was created at group: " + req.groupInfo.groupName;
+		var notificationDescription = "A new event, \"" + newEventInfo.eventName + "\" was created in \"" + req.groupInfo.groupName +"\"" ;
 		var userIds = req.groupInfo.users;
 		var promises = [];
 		for (var i=0; i<userIds.length; i++) {
@@ -68,6 +68,7 @@ exports.editEvent = function(req, res, next) {
         });
     });
 };
+
 
 /*
 Edits an event specified by req.event for generic users

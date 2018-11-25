@@ -46,7 +46,9 @@ db.group.belongsToMany(db.user, {
 //One to many relation between groups and events
 db.event.belongsTo(db.group);
 db.group.hasMany(db.event, {
-    as: "events"
+    as: "events",
+	onDelete: "CASCADE",
+	hooks: true
 });
 
 //One to many relation between user and notifications

@@ -55,7 +55,7 @@ exports.sendEmail = function(req, res, next) {
                 from: config.get("email.email"),
                 to: email,
                 subject: "Password reset for MeetMe App",
-                text: "Your password has been successfuly reset!\nYour new password is: " + newPass
+                text: "Your password has been successfully reset!\nYour new password is: " + newPass
             };
 
             transporter.sendMail(mailOptions, function(error, info) {

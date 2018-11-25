@@ -118,7 +118,7 @@ async componentDidMount() {
             roundAvatar
             titleStyle={styles.titleText}
             title={item.description}
-            subtitle={"Time: " + item.createdAt}
+            subtitle={"Time: " + item.createdAt.substring(0,10)}
             //rightIcon={this.renderRightIcon()}
             hideChevron={true}
           >

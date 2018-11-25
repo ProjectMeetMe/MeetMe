@@ -150,6 +150,10 @@ login() {
                   <Text style={styles.buttonText}>Test Push Notification</Text>
               </TouchableOpacity>
 
+              <TouchableOpacity style={styles.scheduleButton} onPress={() =>{Actions.notifications();}}>
+                  <Text style={styles.buttonText}>My Notifications</Text>
+              </TouchableOpacity>
+
               <TouchableOpacity style={styles.scheduleButton}  onPress={() => {Actions.usercalendar()}}>
                   <Text style={styles.buttonText}>My Schedule</Text>
               </TouchableOpacity> 

@@ -4,11 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  String,
-  TextInput,
   TouchableOpacity,
-  Keyboard ,
-  AutoGrowingTextInput,
+  Keyboard,
   ScrollView,
   FlatList
 } from "react-native";
@@ -362,13 +359,6 @@ renderRightIcon(eventStartTime, eventEndTime){
     </TouchableOpacity>   
     ); 
 }
-
-// componentWillReceiveProps(newProps) {
-//   this.setState({
-//     startTime: newProps.startTime,
-//     endTime: newProps.endTime
-//   });
-// }
 
 renderSuggestions()
 {

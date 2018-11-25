@@ -76,7 +76,9 @@ login() {
               <TouchableOpacity style={styles.scheduleButton}  onPress={() => {Actions.usercalendar()}}>
                   <Text style={styles.buttonText}>My Schedule</Text>
               </TouchableOpacity> 
-
+         </View>
+         
+          <View style={styles.container}>
               <TouchableOpacity style={styles.button} onPress={this.logout}>
                   <Text style={styles.buttonText}>Log Out</Text>
               </TouchableOpacity>  

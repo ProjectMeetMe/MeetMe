@@ -1,6 +1,7 @@
 var db = require("../models/sequelize.js");
 const Op = db.Sequelize.Op;
 var moment = require("moment");
+var notificationController = require("../controllers/notification.js");
 
 const MAX_GROUP_USERS = 10; // Max allowed users per group
 
@@ -14,7 +15,7 @@ const DAYS_IN_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 /*
 Edits a group specified by req.group
-Group edit parameters are in req.body: (groupName)
+Group edit parameters are in req.body: (groupName, description)
  */
 exports.editGroup = function(req, res, next) {
     var group = req.group;
@@ -33,6 +34,28 @@ exports.editGroup = function(req, res, next) {
         });
     });
 };
+
+
+/*
+Edits a group specified by req.group
+Group edit parameters are in req.body: (description)
+ */
+exports.editGroupDescription = function(req, res, next) {
+    var group = req.group;
+    group.update({
+        description: req.body.groupDescription
+    }).then(function(updatedInfo) {
+        return res.status(200).json({
+            updatedInfo,
+            message: "Successful group description edit"
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Group description could not be edited"
+        });
+    });
+};
+
 
 /*
 Gets group info specified by req.group
@@ -149,9 +172,15 @@ exports.removeUser = function(req, res, next) {
 
     group.removeUser(req.body.userId).then(function(success) {
         if (success) {
-            return res.status(200).json({
-                message: "Successful member remove"
-            });
+			//Notify target user that he/she was removed
+			var notificationDescription = "You have been removed from group: " + req.groupInfo.groupName;
+			var promise = notificationController.addNotification(req.body.userId, notificationDescription, req.user.id);
+			promise.then(function(){
+				return res.status(200).json({
+	                message: "Successful member remove"
+	            });
+			})
+
         } else {
             return res.status(400).json({
                 message: "Error: User does not exist in group"
@@ -193,6 +222,7 @@ exports.leaveGroup = function(req, res, next) {
     });
 }
 
+
 exports.destroyGroup = function(req, res, next) {
     var group = req.group;
     group.destroy().then(function(success) {
@@ -211,6 +241,7 @@ exports.destroyGroup = function(req, res, next) {
         });
     });
 }
+
 
 /*
 Takes into consideration all user schedules in a group and outputs optimal
@@ -257,10 +288,8 @@ exports.getAvailabilities = function(req, res, next) {
             message: "Successful availabilities calculation"
         });
     });
-
-
-
 }
+
 
 //Helper function to merge user's weekly availability schedule with any events for groups they
 //belong to, for a specific day of the week, returns an asynchronous promise that must be
@@ -352,6 +381,7 @@ parseTime = function(timeString, isStart) {
     }
 }
 
+
 //Helper function to calculate free availabilties, given a userThreshold AND specified day AND array of user schedules
 exports.calculateAvailabilities = function(schedules, day, userThreshold, timeThreshold) {
 
@@ -407,7 +437,6 @@ exports.calculateAvailabilities = function(schedules, day, userThreshold, timeTh
 
     return freeTimes;
 }
-
 
 
 /* HELPER MIDDLEWARES THAT DO NOT RESOLVE A REQUEST, MUST BE USED WITH FUNCTIONS*/
@@ -482,6 +511,7 @@ exports.checkPermissions = function(req, res, next) {
         next();
     }
 }
+
 
 /*
 Checks that the current user is a member of the group

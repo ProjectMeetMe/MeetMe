@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {AppRegistry, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {View, StyleSheet } from "react-native";
 import JoinGroupForm from "../components/joingroupForm";
 import NavigationForm from "../components/navigationForm";
 

@@ -1,20 +1,16 @@
 import React, { Component } from "react";
 import { AsyncStorage,View,Text,StyleSheet,
-    FlatList, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
-import NavBar from "react-native-nav";
+    FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import NavigationForm from "../components/navigationForm";
 import { Actions } from "react-native-router-flux";
-import {List, ListItem, SearchBar } from "react-native-elements";
+import {ListItem } from "react-native-elements";
 import Toast from "react-native-simple-toast";
-import ActionButton from "react-native-action-button";
-import FetchAPI from "../controller/fetchAPI";
 import {YellowBox} from 'react-native';
 import Dialog, {
   DialogTitle,
   DialogButton,
 } from 'react-native-popup-dialog';
 import Icon from "react-native-vector-icons/Foundation";
-import Home from "../pages/home";
 
 export default class GroupSummary extends Component{
 	
@@ -73,8 +69,6 @@ export default class GroupSummary extends Component{
     const usertoken = await AsyncStorage.getItem("token");
     var groupId = this.props.groupID;
 
-    console.log("this.state.deleteUserId: =============" + this.state.deleteUserId);
-
     var memberRemove = await fetch("http://104.42.79.90:2990/group/removeMember?groupId=" + groupId, {
           method: "put",
           headers:{
@@ -115,8 +109,6 @@ export default class GroupSummary extends Component{
     const usertoken = await AsyncStorage.getItem("token");
     var groupId = this.props.groupID;
     
-    console.log("usertoken+++++++" + usertoken);
-    console.log("groupId+++++++" + groupId);
     var destroyGroup = await fetch("http://104.42.79.90:2990/group/destroyGroup?groupId=" + groupId, {
           method: "delete",
           headers:{
@@ -133,11 +125,6 @@ export default class GroupSummary extends Component{
     
   }
 
-  // Delete group from database and remove all members
-  // destroyGroup() 
-  // {
-  //   Toast.show("Destroy Group function to be implemented", Toast.LONG);
-  // }
   // Pull-down refresh
   handleRefresh = () => {
     this.setState(

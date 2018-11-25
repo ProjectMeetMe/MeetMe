@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { AsyncStorage, AppRegistry, View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert} from "react-native";
-import NavigationForm from "../components/navigationForm";
+import { AsyncStorage, View, Text, StyleSheet, ScrollView, TouchableOpacity} from "react-native";
 import { Table, Row, } from 'react-native-table-component';
-import NavBar, { NavGroup, NavButton, NavButtonText, NavTitle } from "react-native-nav";
+import NavBar, { NavButton, NavTitle } from "react-native-nav";
 import {Image} from "react-native";
 import Toast from "react-native-simple-toast";
-import update from 'react-addons-update';
 import {Actions} from "react-native-router-flux";
 
 
@@ -86,28 +84,8 @@ export default class Setting extends Component{
 
   async componentDidMount() {
     this.getUserAvailability();
-    console.log("THIS IS THE OLD AVAIL +++++++" + this.state.oldAvailability);
     this.renderTable();
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.profileOrError === null) {
-  //     // At this point, we're in the "commit" phase, so it's safe to load the new data.
-  //     this._loadUserData();
-  //   }
-  // }
-
-  // componentDidUpdate()
-  // {
-  //   this.renderTable();
-  // }
-
-  // updateStateboxChoose(whichDay, whichHour, bool)
-  // {
-  //   this.setState({
-  //     boxChoose: update(this.state.boxChoose, {whichDay: {whichHour: bool}})
-  //   })
-  // }
 
   // COORDINATES ARE ONLY USED FOR DISPLAY PURPOSES. 
   //Calculations are all done using "value" 
@@ -137,9 +115,6 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-        //console.log("Sunday array is: " + state.Sun);
-        //console.log("boxChoose is: " + this.state.boxChoose);
-        //console.log("tableData is: " + this.state.tableData);
         break;
       case 1:
         whichDay = "MON";
@@ -158,7 +133,6 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-         console.log("Monday array is: " + state.Mon);
         break;
       case 2:
         whichDay = "TUE";
@@ -177,7 +151,6 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-        console.log("Tuesday array is: " + state.Tues);
         break;
       case 3:
         whichDay = "WED";
@@ -196,7 +169,6 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-         console.log("Wednesday array is: " + state.Wed);
         break;
       case 4:
         whichDay = "THUR";
@@ -215,7 +187,6 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-         console.log("Thursday array is: " + state.Thurs);
         break;
       case 5:
         whichDay = "FRI";
@@ -234,7 +205,6 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-        console.log("Friday array is: " + state.Fri);
         break;
       case 6:
         whichDay = "SAT";
@@ -253,20 +223,15 @@ export default class Setting extends Component{
           this.state.tableData[X][Y + 1] = this.button(7*X + Y, X, Y);
           this.forceUpdate();
         }
-        console.log("Saturday array is: " + state.Sat);
         break;
       default: 
         whichDay = "ERR";
     }
     this.forceUpdate();
-    console.log("boxChoose is: " + this.state.boxChoose);
-    //Alert.alert(`Button #${value}, ${whichDay}, Hour: ${whichHour}, Coord (${X},${Y})`);
   }
 
   async getUserAvailability()
   {
-
-   // const {profile, token, name, email, id} = this.state;
     const usertoken = await AsyncStorage.getItem("token");
 
     var userprofile = await fetch("http://104.42.79.90:2990/user/profile", {
@@ -277,7 +242,6 @@ export default class Setting extends Component{
     });
 
     var profilejson = await userprofile.json();
-    //console.log("profilejson:", profilejson);
 
     this.setState({
       token: usertoken,
@@ -287,9 +251,7 @@ export default class Setting extends Component{
 
   saveFreeTime = () =>{
     const {token, Mon, Tues, Wed, Thurs, Fri, Sat, Sun} = this.state;
-    console.log("monday ---> ", Mon);
-    console.log("sunday ----> ",  Sun);
-    console.log("user token" + token);
+
     //Call saveFreeTime API, send the user free time slots to
     //post API call with user token
     fetch("http://104.42.79.90:2990/user/editSchedule",{       
@@ -322,15 +284,7 @@ export default class Setting extends Component{
 
 
 button = (value, X, Y) => (
-  <TouchableOpacity onPress={() => {this.buttonAction(value, X, Y);
-                                    // if(this.state.boxChoose[X][Y])
-                                    // {this.state.boxChoose[X][Y] == 0;}
-                                    // else
-                                    // {
-                                    //   this.state.boxChoose[X][Y] == 1;
-                                    // }
-                                    // this.forceUpdate();
-                                    }}>
+  <TouchableOpacity onPress={() => {this.buttonAction(value, X, Y); }}>
     <View 
      style={this.state.boxChoose[X][Y] ? styles.greenbutton : styles.greybutton}>
       <Text style={styles.btnText}> </Text>
@@ -386,7 +340,6 @@ button = (value, X, Y) => (
 
 	render(){
     const state = this.state;
-    //this.renderTable();
 
 		return(
       <View style={{flex: 1}}>

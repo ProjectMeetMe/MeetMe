@@ -4,16 +4,9 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  TouchableOpacity,
-  Keyboard 
 } from "react-native";
-import Toast from "react-native-simple-toast";
-import {Actions} from "react-native-router-flux";
 import NavigationForm from "../components/navigationForm";
-import { Calendar, CalendarList, Agenda } from "react-native-calendars";
-import ActionButton from "react-native-action-button";
-import Icon from "react-native-vector-icons/AntDesign";
+import { Agenda } from "react-native-calendars";
 import {YellowBox} from 'react-native';
 import { NetInfo } from 'react-native';
 
@@ -95,8 +88,6 @@ export default class UserCalendar extends Component {
   async getEvents()
   {
     const usertoken = await AsyncStorage.getItem("token");
-
-    console.log("usertoken:   " + usertoken);
 
     var userevents = await fetch("http://104.42.79.90:2990/user/getEvents", {
           method: "get",

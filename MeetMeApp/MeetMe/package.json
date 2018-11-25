@@ -14,7 +14,6 @@
     "appium-doctor": "^1.6.0",
     "babel-preset-react-native": "^4.0.1",
     "immutability-helper": "^2.8.1",
-    "pusher-js": "^4.3.1",
     "react": "16.5.0",
     "react-addons-update": "^15.6.2",
     "react-native": "0.57.1",

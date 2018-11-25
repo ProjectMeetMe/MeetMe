@@ -4,11 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  String,
-  TextInput,
   TouchableOpacity,
-  Keyboard ,
-  AutoGrowingTextInput,
+  Keyboard,
   ScrollView,
   FlatList
 } from "react-native";
@@ -17,8 +14,7 @@ import {Actions} from "react-native-router-flux";
 import NavigationForm from "../components/navigationForm";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import RNPickerSelect from 'react-native-picker-select';
-import Icon from "react-native-vector-icons/Foundation";
-import {List, ListItem, SearchBar } from "react-native-elements";
+import {ListItem } from "react-native-elements";
 
 export default class SuggestEvent extends Component {
 
@@ -56,72 +52,56 @@ export default class SuggestEvent extends Component {
                     value:    1.5,
                 },
                 {
-                    label: ' 2.0 Hours',
+                    label: ' 2 Hours',
                     value:      2,
                 },
                 {
-                    label: ' 2.5 Hours',
+                    label: ' 2 Hours 30 minutes',
                     value:    2.5,
                 },
                 {
-                    label: ' 3.0 Hours',
+                    label: ' 3 Hours',
                     value:      3,
                 },
                 {
-                    label: ' 3.5 Hours',
+                    label: ' 3 Hours 30 minutes',
                     value:    3.5,
                 },
                 {
-                    label: ' 4.0 Hours',
+                    label: ' 4 Hours',
                     value:      4,
                 },
                 {
-                    label: ' 4.5 Hours',
+                    label: ' 4 Hours 30 minutes',
                     value:    4.5,
                 },
                 {
-                    label: ' 5.0 Hours',
+                    label: ' 5 Hours',
                     value:      5,
                 },
                 {
-                  label: ' 5.5 Hours',
+                  label: ' 5 Hours 30 minutes',
                   value:    5.5,
               },
               {
-                  label: ' 6.0 Hours',
+                  label: ' 6 Hours',
                   value:      6,
               },
               {
-                  label: ' 6.5 Hours',
+                  label: ' 6 Hours 30 minutes',
                   value:    6.5,
               },
               {
-                  label: ' 7.0 Hours',
+                  label: ' 7 Hours',
                   value:      7,
               },
               {
-                  label: ' 7.5 Hours',
+                  label: ' 7 Hours 30 minutes',
                   value:    7.5,
               },
               {
-                  label: ' 8.0 Hours',
+                  label: ' 8 Hours',
                   value:      8,
-              },
-              {
-                  label: ' 8.5 Hours',
-                  value:    8.5,
-              },
-              {
-                  label: ' 9.0 Hours',
-                  value:      9,
-              },
-              {
-                  label: '10.0 Hours',
-                  value:    10,
-              },
-              {
-                  label: '10.5 Hours',
-                  value:   10.5,
               },
             ],
     };
@@ -131,19 +111,7 @@ export default class SuggestEvent extends Component {
           this.setState({token: value});
       }).done();
 
-  //  this.removeItemValue("startTime");
-  //  this.removeItemValue("endTime");
   }
-
-  // async removeItemValue(key) {
-  //   try {
-  //     await AsyncStorage.removeItem(key);
-  //     return true;
-  //   }
-  //   catch(exception) {
-  //     return false;
-  //   }
-  // }
 
   async saveStartTime(value) {
     try {
@@ -166,9 +134,6 @@ export default class SuggestEvent extends Component {
   //call and allow user to sign up a new account
   addEvent = () => {
     const {token, pickedDate, groupId, duration, weekDay} = this.state;
-    
-    //console.log("token:   " + token);
-    //console.log("weekDay:   " + weekDay);
 
     if(pickedDate == "")
     {
@@ -196,8 +161,6 @@ export default class SuggestEvent extends Component {
 		      })
 		      .then((response) => response.json())
 		      .then((responseJson) => {
-                    console.log("responseJson:  " + responseJson);
-                    console.log("responseJson.message:  " + responseJson.message);
 
                     this.setState({
                       suggestions: responseJson,
@@ -362,13 +325,6 @@ renderRightIcon(eventStartTime, eventEndTime){
     </TouchableOpacity>   
     ); 
 }
-
-// componentWillReceiveProps(newProps) {
-//   this.setState({
-//     startTime: newProps.startTime,
-//     endTime: newProps.endTime
-//   });
-// }
 
 renderSuggestions()
 {

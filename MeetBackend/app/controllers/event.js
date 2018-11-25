@@ -1,4 +1,5 @@
 var db = require("../models/sequelize.js");
+var notificationController = require("../controllers/notification.js");
 
 /* Middlewares for handling event related requests */
 
@@ -16,10 +17,26 @@ exports.createEvent = function(req, res, next) {
     db.event.create(event).then(function(newEvent) {
         var newEventInfo = newEvent.get();
 
-        return res.status(200).json({
-            newEventInfo,
-            message: "Successful event add"
-        });
+		//Send notifications to each user in the group that an event was created
+		var notificationDescription = "New event was created at group: " + req.groupInfo.groupName;
+		var userIds = req.groupInfo.users;
+		var promises = [];
+		for (var i=0; i<userIds.length; i++) {
+			promises.push(notificationController.addNotification(userIds[i].id, notificationDescription, req.user.id))
+		}
+
+		//Waits for all notifications to be added
+		Promise.all(promises).then(function(){
+			return res.status(200).json({
+	            newEventInfo,
+	            message: "Successful event add"
+	        });
+		}).catch(function(err){
+			return res.status(200).json({
+				newEventInfo,
+				message: "Successful event add, notification error"
+			});
+		})
     }).catch(function(err) {
         return res.status(400).json({
             message: "Error: Invalid event creation parameters"
@@ -39,6 +56,27 @@ exports.editEvent = function(req, res, next) {
         description: req.body.description,
         startTime: req.body.startTime,
         endTime: req.body.endTime
+    }).then(function(updatedEvent) {
+        var newEventInfo = updatedEvent.get();
+        return res.status(200).json({
+            newEventInfo,
+            message: "Successful event update"
+        });
+    }).catch(function(err) {
+        return res.status(400).json({
+            message: "Error: Invalid event edit parameters"
+        });
+    });
+};
+
+/*
+Edits an event specified by req.event for generic users
+Edit parameters are in req.body {description}
+ */
+exports.editEventDescription = function(req, res, next) {
+    var event = req.event;
+    event.update({
+        description: req.body.description,
     }).then(function(updatedEvent) {
         var newEventInfo = updatedEvent.get();
         return res.status(200).json({

@@ -97,7 +97,6 @@ export default class GroupProfile extends Component {
     var year = new Date().getFullYear();
 
     var curDate = year+ "-" + month + "-" + date;
-    //console.log("QQQQQQQQQQQQQQQQQQQ curDate", curDate);
     
     this.setState({
       curDate: curDate,
@@ -137,7 +136,7 @@ export default class GroupProfile extends Component {
   {
     const usertoken = await AsyncStorage.getItem("token");
   
-    var eventUpdate = await fetch("http://104.42.79.90:2990/event/editEvent?eventId=" + this.state.deleteEventId, {
+    var eventUpdate = await fetch("http://104.42.79.90:2990/event/editEventDescription?eventId=" + this.state.deleteEventId, {
           method: "put",
           headers:{
             "Accept": "application/json",
@@ -151,9 +150,7 @@ export default class GroupProfile extends Component {
         });
 
     const eventUpdateJson = await eventUpdate.json();
-    Toast.show(eventUpdateJson.message, Toast.LONG);
-
-   
+    Toast.show("Updated Event Notes", Toast.SHORT);
 
     this.handleRefresh();
   }
@@ -172,7 +169,7 @@ export default class GroupProfile extends Component {
         });
 
     const eventRemoveJson = await eventRemove.json();
-    Toast.show(eventRemoveJson.message, Toast.LONG);
+    //Toast.show("eventRemoveJson.message", Toast.LONG);
 
     this.handleRefresh();
   }
@@ -429,8 +426,30 @@ export default class GroupProfile extends Component {
           <View style={[styles.item]}>
               <View>
                   <View><Text>{item.startTime.substring(11, 16) + " - " + item.endTime.substring(11, 16)}</Text></View>
-                  <View><Text>{item.eventName}</Text></View>
-                  <View><Text>{item.description}</Text></View>
+                  <View>
+                    <TouchableOpacity onPress={() => {
+                      this.setState({ 
+                        editDialog: true, 
+                        // We use deleteEventId for convenience. Name of variable does not matter
+                        deleteEventId: item.id, 
+                        curDescription: item.description,
+                      })
+                    }}>	
+						          <Text style={styles.eventNameText}>{item.eventName}</Text>
+				          	</TouchableOpacity>
+                  </View>
+                  <View>
+                    <TouchableOpacity onPress={() => {
+                      this.setState({ 
+                        editDialog: true, 
+                        // We use deleteEventId for convenience. Name of variable does not matter
+                        deleteEventId: item.id, 
+                        curDescription: item.description
+                      })
+                    }}>	
+						          <Text>{item.description}</Text>
+				          	</TouchableOpacity>
+                  </View>
               </View>
             </View>
         );

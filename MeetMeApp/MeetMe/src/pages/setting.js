@@ -350,7 +350,7 @@ button = (value, X, Y) => (
               />
             </NavButton>
           <NavTitle style={styles.title}>
-          {"Settings"}
+          {"Save Your Availability"}
           </NavTitle>
             <NavButton style={styles.navButton} 
                 onPress={this.saveFreeTime}>

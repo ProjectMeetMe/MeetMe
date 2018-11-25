@@ -316,9 +316,10 @@ const styles = StyleSheet.create({
   longInputBox: {
     minHeight: 100,
     width:300,
-    backgroundColor:"rgba(255, 255,255,0.2)",
+    //backgroundColor:"rgba(255, 255,255,0.2)",
     borderRadius: 25,
     paddingHorizontal:16,
+    paddingVertical:16,
     fontSize:16,
     color:"#ffffff",
     marginVertical: 10

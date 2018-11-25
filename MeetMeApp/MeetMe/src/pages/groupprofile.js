@@ -153,8 +153,9 @@ export default class GroupProfile extends Component {
     const eventUpdateJson = await eventUpdate.json();
     Toast.show(eventUpdateJson.message, Toast.LONG);
 
-   
-
+    //setTimeout(() => {this.handleRefresh();}, 10);
+    //Actions.refresh({key: 'groupprofile'});
+    this.handleRefresh();
     this.handleRefresh();
   }
 

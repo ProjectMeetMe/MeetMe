@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { AsyncStorage,View,Text,StyleSheet,TouchableOpacity,TextInput } from "react-native";
+import { AsyncStorage,View,Text,StyleSheet,TouchableOpacity,TextInput,ScrollView  } from "react-native";
 import NavigationForm from "../components/navigationForm";
 import { Actions } from "react-native-router-flux";
 
@@ -62,7 +62,7 @@ export default class GroupInformation extends Component{
 
 
   async updateGroupDescription() {
-      this.setState({refreshing: true});
+      //this.setState({refreshing: true});
       console.log("groupId:  " + this.state.groupID );
       console.log("newdesc is : " + this.state.newDescription);
       const usertoken = await AsyncStorage.getItem("token");
@@ -82,8 +82,10 @@ export default class GroupInformation extends Component{
           });
   
       const groupUpdateJson = await groupUpdate.json();
-      //Toast.show(groupUpdateJson.message, Toast.LONG);
-      Actions.reset("groupinformation");
+
+      Toast.show(groupUpdateJson.updatedInfo.description, Toast.LONG);
+      this.getGroupInfo();
+
       
   }
 
@@ -150,10 +152,30 @@ export default class GroupInformation extends Component{
       return(
         <View style={{flex: 1, backgroundColor: "#455a64"}}>          
           <NavigationForm title="Group Information" type="groupinformation"></NavigationForm>
-          
-          <View>
-            <Text style={styles.Text}>{this.state.groupinfo.description}</Text>
+          <ScrollView contentContainerStyle={styles.contentContainer}>
+          <View justifyContent="center" alignItems= "center">
+            <Text style={styles.longInputBox} 
+                    multiline={true}
+                    textAlignVertical={"top"}
+                    underlineColorAndroid="rgba(0,0,0,0)" 
+                    placeholder="Group Description"
+                    placeholderTextColor = "#ffffff"
+                    selectionColor="#fff"
+                    keyboardType="email-address">{this.state.groupinfo.description}</Text>
           </View>
+          {/* <View>
+          <Text style={styles.longInputBox} 
+                    multiline={true}
+                    textAlignVertical={"top"}
+                    underlineColorAndroid="rgba(0,0,0,0)" 
+                    placeholder="Group Description"
+                    placeholderTextColor = "#ffffff"
+                    selectionColor="#fff"
+                    keyboardType="email-address"
+                    //onChangeText={(description) => this.setState({description})}
+          />{this.state.groupinfo.description}</Text>
+          </View> */}
+
           <View style={styles.container}>	
             <TouchableOpacity style={styles.editButton} 
               onPress={() => {
@@ -165,6 +187,7 @@ export default class GroupInformation extends Component{
           </View>
         
         { this.renderEditDialog() }
+        </ScrollView>
         </View> 
       );
 	}
@@ -255,5 +278,15 @@ editButtonText: {
   textAlign:"center"
 },
 
+longInputBox: {
+  minHeight: 100,
+  width:300,
+  backgroundColor:"rgba(255, 255,255,0.2)",
+  //borderRadius: 25,
+  paddingHorizontal:16,
+  fontSize:16,
+  color:"#ffffff",
+  marginVertical: 10
+},
 
 });

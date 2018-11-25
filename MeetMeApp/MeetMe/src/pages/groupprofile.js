@@ -79,9 +79,6 @@ export default class GroupProfile extends Component {
         });
 
     const userevent = await userevents.json();
-
-    // console.log(userevents.events);
-    // console.log(userevent.events);
     //store events array
     this.setState({
       userid: curuserid,
@@ -100,13 +97,15 @@ export default class GroupProfile extends Component {
     var month = new Date().getMonth() + 1;
     var year = new Date().getFullYear();
 
-    var curDate = year + "-" + month + "-" + date;
+    var curDate = year+ "-" + month + "-" + date;
 
     console.log("QQQQQQQQQQQQQQQQQQQ curDate", curDate);
-
+    
     this.setState({
       curDate: curDate,
     });
+
+
   }
 
   //Call getGroup API to reterive all information about this
@@ -182,21 +181,12 @@ export default class GroupProfile extends Component {
     this.handleRefresh();
   }
 
-  wait(ms){
-    var start = new Date().getTime();
-    var end = start;
-    while(end < start + ms) {
-      end = new Date().getTime();
-   }
- }
-
   handleRefresh = () => {
     this.setState(
       {
         refreshing: true
       },
       () => {
-        //this.wait(300);
         this.getDate();
         this.getEvents();
       }
@@ -206,11 +196,6 @@ export default class GroupProfile extends Component {
 	render(){
     const { events, token, userid, groupinfo, groupID, curDate} = this.state;
 
-    // if(this.state.loading == true) {
-		// 	return <View style={styles.container}>
-		// 			<Text style={styles.Text}>Loading...</Text>
-		// 			</View>;
-    // }
       return(
         <View style={{flex: 1}}>
         <NavigationForm type="groupprofile" title={this.props.groupName}
@@ -219,8 +204,6 @@ export default class GroupProfile extends Component {
             items={this.state.items}
             // callback that gets called when items for a certain month should be loaded (month became visible)
             loadItemsForMonth={this.loadItems.bind(this)}
-            //onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
-            //renderEmptyData={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
             //selected={'2018-11-23'}
             selected={curDate}
             minDate={'2018-09-01'}
@@ -245,17 +228,7 @@ export default class GroupProfile extends Component {
           />
           { this.renderPopupDialog() }
           { this.renderEditDialog() }
-          
-          {/* <ActionButton buttonColor="rgba(231,76,60,1)">
-              <ActionButton.Item buttonColor="#9b59b6" title="Group Chat" 
-                textStyle = {styles.itemStyle}
-                textContainerStyle = {styles.itemStyle}
-                onPress={() => {Toast.show("Group Chat");
-                }}>
-                {<Icon name="message1" style={styles.actionButtonIcon} />}
-              </ActionButton.Item> */}
-              { this.renderCreateEvent() }
-          {/* </ActionButton> */}
+          { this.renderCreateEvent() }
         </View> 
       );
     }
@@ -273,7 +246,6 @@ export default class GroupProfile extends Component {
     };
 
     renderCreateEvent(){
-      //console.log("this.state.userid:   " + this.state.userid + "  this.state.groupinfo.leaderId:   " + this.state.groupinfo.leaderId);
       if(this.state.userid === this.state.groupinfo.leaderId)
       {
         return(
@@ -300,62 +272,7 @@ export default class GroupProfile extends Component {
         }, 1000);
     }
   
-    // loadItems(day) {
-    //   setTimeout(() => {
-    //       const newItems = {};
-
-    //       time = day.timestamp;
-    //       const strTime = this.timeToString(time);
-
-    //       if(!this.state.items[strTime])
-    //       {
-    //         this.state.items[strTime].push({
-    //           eventStartTime: "No event found at that day for group " + this.props.groupName,
-    //           height: Math.max(50, Math.floor(Math.random() * 150))
-    //         });
-    //         Object.keys(this.state.items).forEach(key => { newItems[key] = this.state.items[key]; });
-    //         this.setState({
-    //           items: newItems
-    //         });
-    //       }
-    //       else
-    //       {
-    //         Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
-    //         this.setState({
-    //           items: newItems
-    //         });
-    //       }
-    //     }, 1000);
-    // }
-
-    // loadItems(day) {
-    //   setTimeout(() => {
-    //     for (let i = -15; i < 85; i++) {
-    //       const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-    //       const strTime = this.timeToString(time);
-    //       if (!this.state.items[strTime]) {
-    //         this.state.items[strTime] = [];
-    //         const numItems = Math.floor(Math.random() * 5);
-    //         for (let j = 0; j < numItems; j++) {
-    //           this.state.items[strTime].push({
-    //             eventStartTime: 'Item for ' + strTime,
-    //             height: Math.max(50, Math.floor(Math.random() * 150))
-    //           });
-    //         }
-    //       }
-    //     }
-    //     //console.log(this.state.items);
-    //     const newItems = {};
-    //     Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
-    //     this.setState({
-    //       items: newItems
-    //     });
-    //   }, 1000);
-    //   // console.log(`Load Items for ${day.year}-${day.month}`);
-    // }
     renderPopupDialog(){
-      // console.log("this.state.groupinfo.leaderId: " + this.state.groupinfo.leaderId);
-      // console.log("this.state.userid: " + this.state.userid);
       if(this.state.userid == this.state.groupinfo.leaderId)
       {  
         return(
@@ -408,7 +325,6 @@ export default class GroupProfile extends Component {
       renderEditDialog() {
           return(
             <Dialog
-              //dialogStyle={styles.dialogStyle}
               onDismiss={() => {
                 this.setState({ editDialog: false });
               }}
@@ -476,7 +392,6 @@ export default class GroupProfile extends Component {
                         <Text>{item.startTime.substring(11, 16) + " - " + item.endTime.substring(11, 16)}</Text>
                         <Icon name="close" style={styles.iconClose}                
                           onPress={() => {
-                            //Toast.show("clicked");
                                 this.setState({
                                   customBackgroundDialog: true,
                                   deleteEventId: item.id,

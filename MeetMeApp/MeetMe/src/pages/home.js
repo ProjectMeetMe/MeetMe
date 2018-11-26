@@ -105,26 +105,25 @@ export default class Home extends Component{
       await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
 
       var userNotifications = await fetch("http://104.42.79.90:2990/notification/getNotifications", {
-      method: "get",
-      headers:{
-        "Authorization": "Bearer " + usertoken,
-      }
-      }).catch((error) => {
-      //console.error(error);
-      });
-
-      const userNotification = await userNotifications.json();
-      const oldNotification = await AsyncStorage.getItem("notifications");
-
-      if(oldNotification != "" && oldNotification != null)
-      {
-        if(JSON.stringify(userNotification.notifications) != oldNotification)
-        {
-          this.localNotif(userNotification.notifications[0].description);
+        method: "get",
+        headers:{
+          "Authorization": "Bearer " + usertoken,
         }
-      }
-
-      await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
+        }).catch((error) => {
+        //console.error(error);
+        });
+        
+        const userNotification = await userNotifications.json();
+        const oldNotification = await AsyncStorage.getItem("notifications");
+        if(oldNotification != "" && oldNotification != null)
+        {
+          //if(JSON.stringify(userNotification.notifications) != oldNotification)
+          if(JSON.stringify(userNotification.notifications[0].id) != JSON.parse(oldNotification)[0].id)
+          {
+            this.localNotif(userNotification.notifications[0].description);
+          }
+        }
+        await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
     }
    }
   
@@ -293,26 +292,25 @@ BackgroundTask.define(
       await AsyncStorage.setItem("userdotEvents", JSON.stringify(userevent.events.dotEvents));
 
       var userNotifications = await fetch("http://104.42.79.90:2990/notification/getNotifications", {
-      method: "get",
-      headers:{
-        "Authorization": "Bearer " + usertoken,
-      }
-      }).catch((error) => {
-      //console.error(error);
-      });
-
-      const userNotification = await userNotifications.json();
-      const oldNotification = await AsyncStorage.getItem("notifications");
-
-      if(oldNotification != "" && oldNotification != null)
-      {
-        if(JSON.stringify(userNotification.notifications) != oldNotification)
-        {
-          this.localNotif(userNotification.notifications[0].description);
+        method: "get",
+        headers:{
+          "Authorization": "Bearer " + usertoken,
         }
-      }
-
-      await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
+        }).catch((error) => {
+        //console.error(error);
+        });
+        
+        const userNotification = await userNotifications.json();
+        const oldNotification = await AsyncStorage.getItem("notifications");
+        if(oldNotification != "" && oldNotification != null)
+        {
+          //if(JSON.stringify(userNotification.notifications) != oldNotification)
+          if(JSON.stringify(userNotification.notifications[0].id) != JSON.parse(oldNotification)[0].id)
+          {
+            this.localNotif(userNotification.notifications[0].description);
+          }
+        }
+        await AsyncStorage.setItem("notifications", JSON.stringify(userNotification.notifications)); 
     }
 
     BackgroundTask.finish()

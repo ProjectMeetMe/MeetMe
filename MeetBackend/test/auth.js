@@ -112,6 +112,7 @@ describe("Account Signup and Login Tests", function() {
                 });
         });
 
+		/*
         it("Test an unsuccessful login request due to incorrect password", function(done) {
             var userLogin = {
                 email: "Tester@test.com",
@@ -128,6 +129,7 @@ describe("Account Signup and Login Tests", function() {
                     done();
                 });
         });
+		*/
 
         it("Test an unsuccessful login request due to incorrect email", function(done) {
             var userLogin = {

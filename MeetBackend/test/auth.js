@@ -147,6 +147,27 @@ describe("Account Signup and Login Tests", function() {
                     done();
                 });
         });
+    });
+
+
+	//Tests for POST /auth/forgotPassword
+    describe("POST /auth/forgotPassword", function() {
+
+        it("Unsuccessful forgot password due to email not existing", function(done) {
+            var email = {
+                email: "Tester12345@test.com"
+            }
+            chai.request(server)
+                .post("/auth/forgotPassword")
+                .send(email)
+                .end(function(err, res) {
+                    res.should.have.status(400);
+                    res.body.should.be.a("object");
+                    res.body.should.have.property("message");
+                    res.body.message.should.be.eql("Error: email does not belong to any account");
+                    done();
+                });
+        });
 
     });
 

@@ -79,7 +79,6 @@ export default class GroupInformation extends Component{
   
       const groupUpdateJson = await groupUpdate.json();
 
-      Toast.show(groupUpdateJson.updatedInfo.description, Toast.LONG);
       this.getGroupInfo();
 
       
@@ -129,7 +128,7 @@ export default class GroupInformation extends Component{
       >
       <DialogContent>
         {
-          <TextInput style={styles.longInputBox} 
+          <TextInput style={styles.longInputBox2} 
           multiline={true}
           textAlignVertical={"top"}
           underlineColorAndroid="rgba(0,0,0,0)" 
@@ -150,7 +149,7 @@ export default class GroupInformation extends Component{
           <NavigationForm title="Group Information" type="groupinformation"></NavigationForm>
           <ScrollView contentContainerStyle={styles.contentContainer}>
           <View justifyContent="center" alignItems= "center">
-            <Text style={styles.longInputBox} 
+            <Text style={styles.longInputBox1} 
                     multiline={true}
                     textAlignVertical={"top"}
                     underlineColorAndroid="rgba(0,0,0,0)" 
@@ -159,18 +158,6 @@ export default class GroupInformation extends Component{
                     selectionColor="#fff"
                     keyboardType="email-address">{this.state.groupinfo.description}</Text>
           </View>
-          {/* <View>
-          <Text style={styles.longInputBox} 
-                    multiline={true}
-                    textAlignVertical={"top"}
-                    underlineColorAndroid="rgba(0,0,0,0)" 
-                    placeholder="Group Description"
-                    placeholderTextColor = "#ffffff"
-                    selectionColor="#fff"
-                    keyboardType="email-address"
-                    //onChangeText={(description) => this.setState({description})}
-          />{this.state.groupinfo.description}</Text>
-          </View> */}
 
           <View style={styles.container}>	
             <TouchableOpacity style={styles.editButton} 
@@ -274,14 +261,23 @@ editButtonText: {
   textAlign:"center"
 },
 
-longInputBox: {
+longInputBox1: {
   minHeight: 100,
   width:300,
   backgroundColor:"rgba(255, 255,255,0.2)",
-  //borderRadius: 25,
   paddingHorizontal:16,
   fontSize:16,
   color:"#ffffff",
+  marginVertical: 10
+},
+
+longInputBox2: {
+  minHeight: 100,
+  width:290,
+  backgroundColor:"rgb(245, 245,245)",
+  paddingHorizontal:16,
+  fontSize:16,
+  color:"#000000",
   marginVertical: 10
 },
 

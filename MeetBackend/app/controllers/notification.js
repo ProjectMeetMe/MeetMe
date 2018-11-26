@@ -1,5 +1,8 @@
 var db = require("../models/sequelize.js");
 
+/*
+Middleware for retrieving a user's notifications
+ */
 exports.getNotifications = function(req, res, next) {
 
     //Retrieve 20 most recent notifications

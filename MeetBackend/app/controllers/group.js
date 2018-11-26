@@ -172,14 +172,14 @@ exports.removeUser = function(req, res, next) {
 
     group.removeUser(req.body.userId).then(function(success) {
         if (success) {
-			//Notify target user that he/she was removed
-			var notificationDescription = "You have been removed from \"" + req.groupInfo.groupName + "\"";
-			var promise = notificationController.addNotification(req.body.userId, notificationDescription, req.user.id);
-			promise.then(function(){
-				return res.status(200).json({
-	                message: "Successful member remove"
-	            });
-			})
+            //Notify target user that he/she was removed
+            var notificationDescription = "You have been removed from \"" + req.groupInfo.groupName + "\"";
+            var promise = notificationController.addNotification(req.body.userId, notificationDescription, req.user.id);
+            promise.then(function() {
+                return res.status(200).json({
+                    message: "Successful member remove"
+                });
+            })
 
         } else {
             return res.status(400).json({
@@ -225,28 +225,28 @@ exports.leaveGroup = function(req, res, next) {
 
 exports.destroyGroup = function(req, res, next) {
     var group = req.group;
-	var groupInfo = req.groupInfo
+    var groupInfo = req.groupInfo
     group.destroy().then(function(success) {
         if (success) {
 
-			var notificationDescription = "\"" + groupInfo.groupName + "\" was disbanded";
-			var userIds = groupInfo.users;
-			var promises = [];
-			for (var i=0; i<userIds.length; i++) {
-				promises.push(notificationController.addNotification(userIds[i].id, notificationDescription, req.user.id))
-			}
+            var notificationDescription = "\"" + groupInfo.groupName + "\" was disbanded";
+            var userIds = groupInfo.users;
+            var promises = [];
+            for (var i = 0; i < userIds.length; i++) {
+                promises.push(notificationController.addNotification(userIds[i].id, notificationDescription, req.user.id))
+            }
 
-			//Waits for all notifications to be added
-			Promise.all(promises).then(function(){
-				return res.status(200).json({
-			  	  message: "Successful group destroy"
-			    });
-			}).catch(function(err){
-				return res.status(200).json({
-					newEventInfo,
-					message: "Successful group destroy, notification error"
-				});
-			})
+            //Waits for all notifications to be added
+            Promise.all(promises).then(function() {
+                return res.status(200).json({
+                    message: "Successful group destroy"
+                });
+            }).catch(function(err) {
+                return res.status(200).json({
+                    newEventInfo,
+                    message: "Successful group destroy, notification error"
+                });
+            })
 
         } else {
             return res.status(400).json({
@@ -254,7 +254,7 @@ exports.destroyGroup = function(req, res, next) {
             });
         }
     }).catch(function(err) {
-		console.log(err)
+        console.log(err)
         return res.status(400).json({
             message: "Error: Group could not be destroyed"
         });
@@ -382,21 +382,21 @@ parseTime = function(timeString, isStart) {
     if (isStart) { //round down for a startTime
         if (minutes < 30)
             return retVal;
-        else
-        if (retVal + 0.5 >= 24)
-            return 23.5;
-        else
-            return retVal + 0.5;
+        else {
+            if (retVal + 0.5 >= 24)
+                return 23.5;
+            else
+                return retVal + 0.5;
+        }
     } else { //round up for an endTime
-        if (minutes > 30)
+        if (minutes >= 30) {
             if (retVal + 1 > 24) //Max possible ret time
                 return 24;
             else
                 return retVal + 1;
-        else if (minutes > 0)
+        } else {
             return retVal + 0.5;
-        else
-            return retVal;
+        }
 
     }
 }
@@ -408,7 +408,7 @@ exports.calculateAvailabilities = function(schedules, day, userThreshold, timeTh
     var freqTable = {};
     var freeTimes = [];
     //Construct a frequency table for availabilties
-    for (var schedule in schedules) { //Loop through keys
+    for (var schedule in schedules) {
         //add entry for freq table
         for (var ind in schedules[schedule][day]) {
             var timeSlot = schedules[schedule][day][ind];

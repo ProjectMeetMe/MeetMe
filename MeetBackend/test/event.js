@@ -281,21 +281,6 @@ describe("Event Related Tests", function() {
 					done();
 				});
 		});
-/*
-		it("Check that event database was successfully updated", function(done) {
-			chai.request(server)
-				.get("/group/getEvents?groupId=" + groupId)
-				.set("Authorization", "Bearer " + userToken)
-				.end(function(err, res) {
-					res.should.have.status(200);
-					res.body.should.be.a("object");
-					res.body.should.have.property("events");
-					eventsKey = moment.utc(Date.now()).format("YYYY-MM-DD");
-					res.body.events.categorizedEvents[eventsKey].should.have.length(1);
-					done();
-				});
-		});
-*/
 
 		it("Unsuccessful event deletion due to invalid user token", function(done) {
 			chai.request(server)

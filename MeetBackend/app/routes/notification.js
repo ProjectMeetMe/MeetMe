@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var db = require("../models/sequelize.js"); //includes all models
+var db = require("../models/sequelize.js");
 
 var notificationController = require("../controllers/notification.js");
 

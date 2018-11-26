@@ -62,11 +62,7 @@ export default class GroupInformation extends Component{
 
 
   async updateGroupDescription() {
-      //this.setState({refreshing: true});
-      console.log("groupId:  " + this.state.groupID );
-      console.log("newdesc is : " + this.state.newDescription);
       const usertoken = await AsyncStorage.getItem("token");
-      console.log("token ++++++" + usertoken);
     
       var groupUpdate = await fetch("http://104.42.79.90:2990/group/editGroupDescription?groupId=" + this.state.groupID, {
             method: "put",

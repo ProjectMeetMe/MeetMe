@@ -207,12 +207,29 @@ describe("Event Related Tests", function() {
 			startTime: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
 			endTime: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
 		};
+		var eventEditDescriptionForm = {
+			description: "New description"
+		}
 
 		it("Successful event update", function(done) {
 			chai.request(server)
 				.put("/event/editEvent?eventId=" + eventId)
 				.set("Authorization", "Bearer " + userToken)
 				.send(eventEditForm)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("message");
+					res.body.message.should.be.eql("Successful event update")
+					done();
+				});
+		});
+
+		it("Successful call to edit event description", function(done) {
+			chai.request(server)
+				.put("/event/editEventDescription?eventId=" + eventId)
+				.set("Authorization", "Bearer " + userToken)
+				.send(eventEditDescriptionForm)
 				.end(function(err, res) {
 					res.should.have.status(200);
 					res.body.should.be.a("object");

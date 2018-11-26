@@ -8,7 +8,7 @@ var moment = require("moment");
 var passport = require("passport");
 var config = require("config");
 
-var db = require("../models/sequelize.js"); //load models
+var db = require("../models/sequelize.js");
 var LocalStrategy = require("passport-local").Strategy;
 
 /* LOCAL SIGNUP */
@@ -20,19 +20,17 @@ passport.use("local-signup", new LocalStrategy({
     },
     function(req, email, password, done) {
 
-        if (password.length < 4) {
+        if (password.length < 8) {
             return done(null, false, {
-                message: "Error: Password must be at least 4 characters"
+                message: "Error: Password must be at least 8 characters"
             });
         }
-
 
         //encrypts password
         var generateHash = function(password) {
             return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
         };
 
-        //If sequelize finds matching email in DB ...
         db.user.findOne({
             where: {
                 email: email
@@ -54,9 +52,9 @@ passport.use("local-signup", new LocalStrategy({
 
                 db.user.create(userData).then(function(newuser) {
                     if (!newuser) {
-                        return done(null, false); //failed
+                        return done(null, false);
                     } else {
-                        return done(null, newuser); //return new user object
+                        return done(null, newuser); //return new user object (successful creation)
                     }
                 }).catch(function(error) { //email invalid or some other creation error
                     return done(null, false, {
@@ -77,10 +75,9 @@ passport.use("local-signin", new LocalStrategy({
     },
 
     function(req, email, password, done) {
-        var isValidPassword = function(userpass, password) { //userpass = encrypted password
+        var isValidPassword = function(userpass, password) { //userpass == encrypted password
             return bCrypt.compareSync(password, userpass);
         }
-        //If sequelize finds matching email in DB ...
         db.user.findOne({
             where: {
                 email: email
@@ -138,7 +135,7 @@ passport.use(new JWTStrategy({
 
                 return cb(null, userFound.get()); //pass on user object to next function
             })
-            .catch(function(err) { //payload is nonsense
+            .catch(function(err) {
                 return cb(err);
             })
     }));

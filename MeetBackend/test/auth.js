@@ -52,7 +52,7 @@ describe("Account Signup and Login Tests", function() {
         it("Test an unsuccessful signup request due to email used before", function(done) {
             var userSignup = {
                 email: "Tester@test.com",
-                password: "12345",
+                password: "12345789",
                 firstname: "Steve",
                 lastname: "Rogers"
             }
@@ -71,7 +71,7 @@ describe("Account Signup and Login Tests", function() {
         it("Test an unsuccessful signup request due to invalid email format", function(done) {
             var userSignup = {
                 email: "Jim123",
-                password: "123fdsf",
+                password: "123fdsffdaf",
                 firstname: "Jim",
                 lastname: "Jo"
             }
@@ -112,24 +112,6 @@ describe("Account Signup and Login Tests", function() {
                 });
         });
 
-		/*
-        it("Test an unsuccessful login request due to incorrect password", function(done) {
-            var userLogin = {
-                email: "Tester@test.com",
-                password: "12345",
-            }
-            chai.request(server)
-                .post("/auth/signin")
-                .send(userLogin)
-                .end(function(err, res) {
-                    res.should.have.status(400);
-                    res.body.should.be.a("object");
-                    res.body.should.have.property("message");
-                    res.body.message.should.be.eql("Error: Incorrect password");
-                    done();
-                });
-        });
-		*/
 
         it("Test an unsuccessful login request due to incorrect email", function(done) {
             var userLogin = {

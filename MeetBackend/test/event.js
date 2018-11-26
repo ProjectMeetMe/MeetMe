@@ -149,6 +149,20 @@ describe("Event Related Tests", function() {
 				});
 		});
 
+		it("Check that event was successfully added access by user", function(done) {
+			chai.request(server)
+				.get("/user/getEvents?groupId=" + groupId)
+				.set("Authorization", "Bearer " + userToken)
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.body.should.have.property("events");
+					eventsKey = moment.utc(Date.now()).format("YYYY-MM-DD");
+					res.body.events.categorizedEvents[eventsKey].should.have.length(2);
+					done();
+				});
+		});
+
 		it("Unsuccessful event add due to invalid token", function(done) {
 			chai.request(server)
 				.post("/event/addEvent?groupId=" + groupId)

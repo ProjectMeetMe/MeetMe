@@ -38,8 +38,6 @@ exports.logout = function(req, res, next) {
         }
     }).then(function(user) {
         //Update login time
-		console.log("LAST LOGOUT UPDATE: " + moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"))
-
         user.update({
             lastLogout: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
         }).then(function(user) {

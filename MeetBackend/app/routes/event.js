@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var db = require("../models/sequelize.js"); //user model
+var db = require("../models/sequelize.js"); 
 
 var groupController = require("../controllers/group.js");
 var userController = require("../controllers/user.js");

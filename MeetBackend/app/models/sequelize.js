@@ -9,7 +9,7 @@ var dbHost = config.get("dbConfig.host");
 var dbDialect = config.get("dbConfig.dialect");
 
 //Connect to mysql database
-var sequelize = new Sequelize(dbName, dbUser, dbPassword, { //database username password
+var sequelize = new Sequelize(dbName, dbUser, dbPassword, {
     host: dbHost,
     dialect: dbDialect,
     timezone: "+08:00", //pst is -8 utc, +8 allows dates to be stored in pst time in DB

@@ -1,4 +1,4 @@
-/* Routes related to account creation/login -> does NOT require a JSON web token for authentication */
+/* Routes related to account creation/login, does NOT require a JSON web token for authentication */
 
 var express = require("express");
 var router = express.Router();
@@ -8,6 +8,10 @@ var config = require("config");
 
 var authController = require("../controllers/auth.js");
 
+/*
+POST request to signup a user
+Request body: {email: <string>, password: <string>, firstname: <string>, lastname: <string>}
+ */
 router.post("/signup", function(req, res, next) {
     //Custom callback
     passport.authenticate("local-signup", {
@@ -29,7 +33,10 @@ router.post("/signup", function(req, res, next) {
     })(req, res, next);
 });
 
-
+/*
+POST request to signin a user given an email and password
+Request body: {email: <string>, password: <string>}
+ */
 router.post("/signin", function(req, res, next) {
     //Custom callback
     passport.authenticate("local-signin", {

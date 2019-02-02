@@ -10,13 +10,13 @@ The app is able to:
 * Record history and notes on previous and upcoming meetings
 
 ## Built With
-Frontend:
+### Frontend:
 * [React Native] - Frontend framework for mobile app
-Backend:
+### Backend:
 * [Express] - Web framework for RESTful API
 * [Passport.js] - Authentication framework for verifying user accounts through JSON tokens
 * [Sequelize] - Used in conjunction with MySQL database for managing data models and relationships
-Testing:
+### Testing:
 * [Mocha.js] - Used for backend unit testing
 * [Travis CI] - Used for continuous integration testing
 * [Coveralls] - Used to generate test coverage reports
